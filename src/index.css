@@ -144,6 +144,19 @@ a {
   inset: 0 0 0 30%;
 }
 
+.hero-static {
+  --accent: #ff5d6c;
+  display: grid;
+  place-items: center;
+  height: 100%;
+  opacity: 0.55;
+}
+
+.hero-static .glyph {
+  width: min(60vw, 420px);
+  height: auto;
+}
+
 .hero-visual .holo-canvas {
   width: 100% !important;
   height: 100% !important;

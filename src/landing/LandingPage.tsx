@@ -78,12 +78,14 @@ export default function LandingPage() {
   const [showHero, setShowHero] = useState(false)
 
   useEffect(() => {
+    // Phones and narrow screens get the light hero: the lab needs a laptop anyway.
+    if (mobile || window.innerWidth < 760) return
     const id = window.requestIdleCallback?.(() => setShowHero(true)) ?? window.setTimeout(() => setShowHero(true), 300)
     return () => {
       if (window.cancelIdleCallback) window.cancelIdleCallback(id)
       else window.clearTimeout(id)
     }
-  }, [])
+  }, [mobile])
 
   // Hero assembles as you scroll: 0.25 at the top, whole after ~70% of a screen.
   const progress = useCallback(() => Math.min(1, 0.25 + window.scrollY / (window.innerHeight * 0.7)), [])
@@ -101,10 +103,14 @@ export default function LandingPage() {
 
       <section className="hero">
         <div className="hero-visual" aria-hidden="true">
-          {showHero && (
+          {showHero ? (
             <Suspense fallback={null}>
               <HeroScene def={library[0]} progress={progress} />
             </Suspense>
+          ) : (
+            <div className="hero-static">
+              <ModelGlyph id="heart" />
+            </div>
           )}
         </div>
         <motion.div
