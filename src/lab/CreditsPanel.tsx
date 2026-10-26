@@ -20,38 +20,16 @@ export function CreditsPanel() {
           <li key={m.id}>
             <strong>{tx(keys.title(m.id))}</strong>
             <p>{tx(keys.credit(m.id))}</p>
-            {m.id === 'heart' && (
-              <p className="credits-small">
-                Browne, K. (2024). 3D Reference Organ for Heart, Male, v1.3.{' '}
-                <a href="https://doi.org/10.48539/HBM564.WKNG.249" target="_blank" rel="noreferrer">
-                  doi:10.48539/HBM564.WKNG.249
-                </a>
-                <br />
-                Browne, K. &amp; Schlehlein, H. (2024). 3D Reference Organ for Blood Vasculature, Male, v1.3.{' '}
-                <a href="https://doi.org/10.48539/HBM473.XTPP.725" target="_blank" rel="noreferrer">
-                  doi:10.48539/HBM473.XTPP.725
-                </a>
-                <br />
-                <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">
-                  CC BY 4.0
-                </a>
-              </p>
-            )}
-            {m.id === 'robotDog' && (
-              <p className="credits-small">
-                <a href="https://github.com/mangdangroboticsclub/mini_pupper_ros" target="_blank" rel="noreferrer">
-                  mangdangroboticsclub/mini_pupper_ros
-                </a>{' '}
-                ·{' '}
-                <a href="/licenses/mini-pupper-apache-2.0.txt" target="_blank" rel="noreferrer">
-                  {t('credits.licenseLink')}
-                </a>{' '}
-                ·{' '}
-                <a href="/licenses/mini-pupper-NOTICE.txt" target="_blank" rel="noreferrer">
-                  NOTICE
-                </a>
-              </p>
-            )}
+            <p className="credits-small">
+              {m.sources.map((src, i) => (
+                <span key={src.url}>
+                  {i > 0 && <br />}
+                  <a href={src.url} target="_blank" rel="noreferrer">
+                    {src.text}
+                  </a>
+                </span>
+              ))}
+            </p>
           </li>
         ))}
         <li>

@@ -18,6 +18,19 @@ Licence: [Creative Commons Attribution 4.0 International](https://creativecommon
 - Grouped the meshes into 18 parts.
 - Simplified and compressed the meshes.
 
+### Human brain: Human Reference Atlas (HuBMAP), CC BY 4.0
+`public/models/brain.glb` is built by `scripts/build-brain.ts` from:
+
+- Browne, Kristen, and Heidi Schlehlein. 2023. *3D Reference Organ for Brain, Male, v1.3.* HuBMAP. https://doi.org/10.48539/HBM929.XKCL.339 (structures from the Allen Human Brain Atlas, registered to the Visible Human Male).
+
+Licence: [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/).
+
+**Changes made:**
+- Grouped 283 structures into 22 parts.
+- Left out the forebrain white-matter mass.
+- Labelled the hemispheres by position, consistent with the heart model.
+- Simplified and compressed the meshes.
+
 ### Robot dog: Mini Pupper 2 by MangDang, Apache License 2.0
 `public/models/robot-dog.glb` is built by `scripts/build-dog.ts` from the Mini Pupper 2 robot description (URDF and STL meshes) in [mangdangroboticsclub/mini_pupper_ros](https://github.com/mangdangroboticsclub/mini_pupper_ros). Copyright MangDang. Licensed under the Apache License, Version 2.0; the full text is in `public/licenses/mini-pupper-apache-2.0.txt` and its NOTICE in `public/licenses/mini-pupper-NOTICE.txt`.
 

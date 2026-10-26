@@ -26,6 +26,11 @@ export const robotDog: ModelDefinition = {
   glow: 0.42,
   initialRotation: [0.35, -0.55, 0],
   accent: CYAN,
+  sources: [
+    { text: 'mangdangroboticsclub/mini_pupper_ros', url: 'https://github.com/mangdangroboticsclub/mini_pupper_ros' },
+    { text: 'Apache License 2.0', url: '/licenses/mini-pupper-apache-2.0.txt' },
+    { text: 'NOTICE', url: '/licenses/mini-pupper-NOTICE.txt' },
+  ],
   parts: [
     { id: 'frame', group: 'body', color: CYAN, dependsOn: [], explodeScale: 0.2 },
     { id: 'battery', group: 'body', color: AMBER, dependsOn: ['frame'], explodeDir: [0, -1, 0] },

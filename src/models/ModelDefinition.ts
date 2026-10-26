@@ -1,7 +1,7 @@
 // Shared schema: every mode (explore, explode, study, assembly) works from this
 // data alone, so a new model is a GLB plus one definition file.
 
-export type ModelId = 'heart' | 'robotDog'
+export type ModelId = 'heart' | 'robotDog' | 'brain'
 
 export interface PartDef {
   /** Node name in the GLB. */
@@ -41,6 +41,8 @@ export interface ModelDefinition {
   initialRotation: [number, number, number]
   /** Accent colour for cards in the library. */
   accent: string
+  /** Citations shown in the credits panel. */
+  sources: { text: string; url: string }[]
 }
 
 // i18n key conventions (checked by tests for every part of every model).

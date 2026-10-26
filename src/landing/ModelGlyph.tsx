@@ -12,6 +12,17 @@ export function ModelGlyph({ id }: { id: ModelId }) {
       </svg>
     )
   }
+  if (id === 'brain') {
+    return (
+      <svg viewBox="0 0 200 200" className="glyph">
+        <path className="glyph-main" d="M100 46c-12-10-34-8-42 6-16 2-26 18-20 34-10 12-6 32 10 38 2 16 18 26 34 20 6 8 12 10 18 8V46z" />
+        <path className="glyph-main" d="M100 46c12-10 34-8 42 6 16 2 26 18 20 34 10 12 6 32-10 38-2 16-18 26-34 20-6 8-12 10-18 8" />
+        <path className="glyph-sub" d="M70 70c10 4 14 14 10 24M130 70c-10 4-14 14-10 24M60 104c14-2 22 6 24 16M140 104c-14-2-22 6-24 16" />
+        <path className="glyph-accent" d="M96 152c0 10 2 18 8 26" />
+        <circle className="glyph-dot" cx="100" cy="100" r="4" />
+      </svg>
+    )
+  }
   return (
     <svg viewBox="0 0 200 200" className="glyph">
       <rect className="glyph-main" x="40" y="70" width="120" height="42" rx="8" />

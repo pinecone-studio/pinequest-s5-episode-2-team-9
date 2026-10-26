@@ -17,6 +17,14 @@ export const heart: ModelDefinition = {
   glow: 1,
   initialRotation: [0.1, -0.35, 0],
   accent: RED,
+  sources: [
+    { text: 'Browne, K. (2024). 3D Reference Organ for Heart, Male, v1.3. HuBMAP.', url: 'https://doi.org/10.48539/HBM564.WKNG.249' },
+    {
+      text: 'Browne, K. & Schlehlein, H. (2024). 3D Reference Organ for Blood Vasculature, Male, v1.3. HuBMAP.',
+      url: 'https://doi.org/10.48539/HBM473.XTPP.725',
+    },
+    { text: 'Creative Commons Attribution 4.0', url: 'https://creativecommons.org/licenses/by/4.0/' },
+  ],
   parts: [
     { id: 'septum', group: 'chambers', color: VIOLET, dependsOn: [], explodeScale: 0.3 },
     { id: 'right_ventricle', group: 'chambers', color: BLUE, dependsOn: ['septum'], hint: 'ventricle' },
