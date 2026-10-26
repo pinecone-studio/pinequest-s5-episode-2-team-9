@@ -26,9 +26,9 @@ export function transformDirection(m: ArrayLike<number>, x: number, y: number, z
 
 /** Triangle soup (world space) of every primitive under a node. */
 export interface MeshData {
-  positions: Float32Array
-  normals: Float32Array
-  indices: Uint32Array
+  positions: Float32Array<ArrayBuffer>
+  normals: Float32Array<ArrayBuffer>
+  indices: Uint32Array<ArrayBuffer>
 }
 
 export function worldMeshData(node: Node): MeshData {

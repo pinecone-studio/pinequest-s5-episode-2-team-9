@@ -28,3 +28,12 @@ export function useT(): (key: I18nKey) => string {
   const lang = useLang((s) => s.lang)
   return (key) => translate(lang, key)
 }
+
+/** For keys built at runtime (model parts). Missing keys fall back to English, then to the key itself. */
+export function useTx(): (key: string) => string {
+  const lang = useLang((s) => s.lang)
+  return (key) => {
+    const dict = dictionaries[lang] as Record<string, string>
+    return dict[key] ?? (dictionaries.en as Record<string, string>)[key] ?? key
+  }
+}

@@ -1,17 +1,23 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { Suspense, useEffect, useMemo, useRef } from 'react'
+import { unlockAudio } from '../audio/sfx'
 import { Link, useParams } from 'react-router'
 import { CameraError, startCamera, stopCamera, type CameraErrorKind } from '../input/camera'
 import { HandInput } from '../input/handInput'
 import { PointerHub } from '../interaction/pointerHub'
 import { useT, type I18nKey } from '../i18n'
 import { HoloCanvas } from '../scene/HoloCanvas'
-import { HoloCube } from '../scene/HoloCube'
+import { modelBySlug } from '../models/registry'
+import { ModelScene } from '../scene/ModelScene'
 import { CalibrationOverlay } from './CalibrationOverlay'
 import { DebugPanel } from './DebugPanel'
 import { DevPanel } from './DevPanel'
 import { HandLayer } from './HandLayer'
 import { LabContext, type LabServices } from './LabContext'
+import { CreditsPanel } from './CreditsPanel'
 import { useLab } from './labStore'
+import { useModel } from './modelStore'
+import { ModelPanel } from './panels/ModelPanel'
+import { PartLabel } from './PartLabel'
 import { SettingsPanel } from './SettingsPanel'
 
 const reasonKeys: Record<CameraErrorKind, I18nKey> = {
@@ -21,15 +27,25 @@ const reasonKeys: Record<CameraErrorKind, I18nKey> = {
   unknown: 'lab.cameraUnknown',
 }
 
-const knownModels = new Set(['test'])
-
 export default function LabPage() {
   const t = useT()
   const { modelId = '' } = useParams()
   const rootRef = useRef<HTMLElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const services = useMemo<LabServices>(() => ({ input: new HandInput(), hub: new PointerHub() }), [])
-  const { camera, tracking, debug, devPanel, settingsOpen, set } = useLab()
+  const { camera, tracking, debug, devPanel, settingsOpen, creditsOpen, set } = useLab()
+  const def = modelBySlug(modelId)
+  const loaded = useModel((s) => s.loaded)
+
+  useEffect(() => {
+    if (def) useModel.getState().load(def)
+  }, [def])
+
+  // Sound needs one user gesture to unlock (the landing's Start click usually did it).
+  useEffect(() => {
+    window.addEventListener('pointerdown', unlockAudio)
+    return () => window.removeEventListener('pointerdown', unlockAudio)
+  }, [])
 
   // Camera → hand tracking → (first visit) quick calibration.
   useEffect(() => {
@@ -99,13 +115,17 @@ export default function LabPage() {
     <LabContext.Provider value={services}>
       <main ref={rootRef} className="lab">
         <video ref={videoRef} className="lab-video" data-live={camera.state === 'live'} />
-        {knownModels.has(modelId) ? (
+        {def ? (
           <HoloCanvas>
-            <HoloCube />
+            <Suspense fallback={null}>
+              <ModelScene def={def} />
+            </Suspense>
           </HoloCanvas>
         ) : (
           <p className="lab-message">{t('lab.unknownModel')}</p>
         )}
+        {def && !loaded && <p className="lab-loading">{t('model.loading')}</p>}
+        <PartLabel />
         <HandLayer />
 
         <header className="lab-bar" data-hud>
@@ -135,14 +155,16 @@ export default function LabPage() {
           </div>
         )}
         {camera.state === 'mouse' && (
-          <div className="lab-notice lab-notice--bottom" data-hud>
+          <div className="lab-notice lab-notice--bottom lab-notice--fade" data-hud>
             <span className="hud-tag">{t('lab.mouseMode')}</span>
             <p>{t(reasonKeys[camera.reason])}</p>
           </div>
         )}
 
+        {def && loaded && <ModelPanel />}
         <CalibrationOverlay />
         {settingsOpen && <SettingsPanel />}
+        {creditsOpen && <CreditsPanel />}
         {debug && <DebugPanel />}
         {devPanel && <DevPanel />}
       </main>

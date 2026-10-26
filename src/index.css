@@ -124,6 +124,8 @@ a {
   position: fixed;
   inset: 0;
   overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
   background: var(--bg);
 }
 
@@ -178,8 +180,13 @@ a {
 
 .lab-notice--bottom {
   top: auto;
-  bottom: 24px;
-  transform: translateX(-50%);
+  left: 16px;
+  bottom: 16px;
+  max-width: min(360px, calc(100% - 32px));
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  text-align: left;
+  transform: none;
 }
 
 .lab-notice p {
@@ -478,4 +485,320 @@ a {
 .dev-row input {
   width: 100%;
   accent-color: var(--cyan);
+}
+
+/* Model panel */
+.model-panel {
+  top: 64px;
+  bottom: 16px;
+  max-height: none;
+  width: min(352px, calc(100% - 32px));
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.model-panel .hud-panel-head {
+  margin-bottom: 0;
+}
+
+.mode-chip {
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-dim);
+  font: 600 0.66rem/1 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hud-button--primary {
+  border-color: var(--cyan);
+  background: rgba(94, 231, 255, 0.14);
+}
+
+.hud-button--wide {
+  justify-content: center;
+  width: 100%;
+}
+
+.slider-row {
+  display: grid;
+  gap: 6px;
+  font: 600 0.72rem/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+.slider-row input {
+  width: 100%;
+  height: 22px;
+  accent-color: var(--cyan);
+  cursor: pointer;
+}
+
+.panel-hint {
+  margin: 0;
+  color: var(--ink-dim);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.panel-actions > * {
+  flex: 1 1 auto;
+  justify-content: center;
+}
+
+.parts-list {
+  display: grid;
+  gap: 8px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(94, 231, 255, 0.12);
+}
+
+.parts-group {
+  display: grid;
+  gap: 3px;
+}
+
+.parts-group-name {
+  margin-top: 4px;
+  color: var(--ink-dim);
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.part-button {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: rgba(94, 231, 255, 0.04);
+  color: var(--ink);
+  font: 500 0.85rem/1.2 var(--font-sans);
+  text-align: left;
+  cursor: pointer;
+}
+
+.part-button:hover,
+.part-button[data-selected='true'] {
+  border-color: var(--line);
+  background: rgba(94, 231, 255, 0.1);
+}
+
+.part-button i {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
+}
+
+/* Study card */
+.study-card {
+  display: grid;
+  gap: 10px;
+}
+
+.study-card h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+.study-card > p {
+  margin: 0;
+  line-height: 1.55;
+  font-size: 0.92rem;
+}
+
+.study-group {
+  font: 600 0.7rem/1 var(--font-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.study-fact {
+  padding: 10px 12px;
+  border-left: 2px solid var(--violet);
+  border-radius: 4px;
+  background: rgba(167, 139, 255, 0.08);
+}
+
+.study-fact p {
+  margin: 6px 0 0;
+  line-height: 1.5;
+  font-size: 0.88rem;
+}
+
+/* Assembly */
+.assembly-panel {
+  display: grid;
+  gap: 10px;
+}
+
+.assembly-progress {
+  display: grid;
+  gap: 6px;
+  font: 600 0.75rem/1 var(--font-mono);
+  color: var(--ink-dim);
+}
+
+.progress-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(94, 231, 255, 0.15);
+  overflow: hidden;
+}
+
+.progress-bar > div {
+  height: 100%;
+  background: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan);
+  transition: width 0.4s ease;
+}
+
+.assembly-message {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgba(94, 231, 255, 0.06);
+  animation: message-in 0.3s ease;
+}
+
+.assembly-message strong {
+  font-size: 0.9rem;
+}
+
+.assembly-message p {
+  margin: 4px 0 0;
+  line-height: 1.5;
+  font-size: 0.86rem;
+}
+
+.assembly-message--wrong {
+  border-color: rgba(255, 140, 120, 0.6);
+  background: rgba(255, 110, 90, 0.1);
+}
+
+.assembly-message--placed {
+  border-color: rgba(94, 255, 190, 0.5);
+}
+
+.assembly-message--complete {
+  border-color: var(--cyan);
+  background: rgba(94, 231, 255, 0.14);
+  text-align: center;
+}
+
+.assembly-message--complete strong {
+  font-size: 1.1rem;
+  color: var(--cyan);
+}
+
+@keyframes message-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* Floating part label */
+.part-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 6;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.part-label span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(4, 5, 11, 0.72);
+  font: 600 0.8rem/1 var(--font-sans);
+  white-space: nowrap;
+  transform: translate(-50%, calc(-100% - 14px));
+  backdrop-filter: blur(6px);
+}
+
+.part-label i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.lab-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  color: var(--cyan);
+  font: 600 0.85rem/1 var(--font-mono);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  animation: cal-blink 1.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Credits */
+.credits-panel {
+  z-index: 11;
+}
+
+.credits-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.credits-list p {
+  margin: 4px 0 0;
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.credits-small {
+  color: var(--ink-dim);
+}
+
+.credits-small a {
+  color: var(--cyan);
+}
+
+@media (max-width: 700px) {
+  .model-panel {
+    top: auto;
+    max-height: 45%;
+  }
+}
+
+.lab-notice--fade {
+  animation: notice-fade 0.6s ease 7s forwards;
+}
+
+@keyframes notice-fade {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
 }
