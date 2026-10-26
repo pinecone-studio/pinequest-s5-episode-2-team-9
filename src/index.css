@@ -199,3 +199,283 @@ a {
   place-items: center;
   color: var(--ink-dim);
 }
+
+/* Hand overlay */
+.hand-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Dwell-to-press fill (driven by --dwell from the pointer hub) */
+.hud-button,
+.settings-row {
+  position: relative;
+  overflow: hidden;
+}
+
+.is-dwelling::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(94, 231, 255, 0.28) calc(var(--dwell, 0) * 100%), transparent 0);
+  pointer-events: none;
+}
+
+.lab-bar,
+.lab-notice,
+.cal-overlay,
+.hud-panel,
+.debug-panel,
+.dev-panel {
+  z-index: 10;
+}
+
+/* Calibration */
+.cal-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at center, rgba(4, 5, 11, 0.25), rgba(4, 5, 11, 0.6));
+  pointer-events: none;
+}
+
+.cal-card {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  max-width: min(440px, calc(100% - 32px));
+  padding: 22px 26px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  text-align: center;
+  backdrop-filter: blur(10px);
+  pointer-events: auto;
+}
+
+.cal-card h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.cal-card p {
+  margin: 0;
+  color: var(--ink-dim);
+  line-height: 1.5;
+}
+
+.cal-card--done h2 {
+  color: var(--cyan);
+}
+
+.cal-ring {
+  position: relative;
+  width: 132px;
+  height: 132px;
+}
+
+.cal-ring > svg:first-child {
+  position: absolute;
+  inset: 0;
+  transform: rotate(-90deg);
+}
+
+.cal-ring-track,
+.cal-ring-fill {
+  fill: none;
+  stroke-width: 3;
+}
+
+.cal-ring-track {
+  stroke: rgba(94, 231, 255, 0.18);
+}
+
+.cal-ring-fill {
+  stroke: var(--cyan);
+  filter: drop-shadow(0 0 6px rgba(94, 231, 255, 0.8));
+  transition: stroke-dashoffset 0.15s linear;
+}
+
+.cal-glyph {
+  position: absolute;
+  inset: 26px;
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cal-glyph--palms {
+  animation: cal-breathe 2.4s ease-in-out infinite;
+}
+
+.cal-pinch-dot {
+  fill: var(--cyan);
+  stroke: none;
+  animation: cal-blink 1.2s ease-in-out infinite;
+}
+
+@keyframes cal-breathe {
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes cal-blink {
+  50% {
+    opacity: 0.15;
+  }
+}
+
+/* HUD panels */
+.hud-panel {
+  position: absolute;
+  top: 64px;
+  right: 16px;
+  width: min(340px, calc(100% - 32px));
+  max-height: calc(100% - 80px);
+  overflow-y: auto;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  backdrop-filter: blur(10px);
+}
+
+.hud-panel-head,
+.dev-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.settings-row {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  margin-top: 6px;
+  padding: 12px;
+  border: 1px solid rgba(94, 231, 255, 0.16);
+  border-radius: 6px;
+  background: rgba(94, 231, 255, 0.04);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.settings-row:hover:not(:disabled) {
+  border-color: var(--cyan);
+}
+
+.settings-row:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.settings-row strong {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.settings-row span {
+  color: var(--ink-dim);
+  font-size: 0.82rem;
+}
+
+.settings-row--static {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  cursor: default;
+}
+
+.switch {
+  position: relative;
+  width: 30px;
+  height: 16px;
+  border-radius: 999px;
+  background: rgba(138, 163, 184, 0.35);
+}
+
+.switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--ink);
+  transition: transform 0.15s ease;
+}
+
+.switch[data-on='true'] {
+  background: var(--cyan);
+}
+
+.switch[data-on='true']::after {
+  transform: translateX(14px);
+  background: var(--bg);
+}
+
+/* Debug + dev panels */
+.debug-panel {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgba(4, 5, 11, 0.75);
+  font: 500 0.75rem/1.6 var(--font-mono);
+  white-space: pre;
+}
+
+.dev-panel {
+  position: absolute;
+  left: 16px;
+  top: 64px;
+  width: min(300px, calc(100% - 32px));
+  max-height: calc(100% - 200px);
+  overflow-y: auto;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgba(4, 5, 11, 0.8);
+  font: 500 0.72rem/1.4 var(--font-mono);
+}
+
+.dev-row {
+  display: grid;
+  gap: 2px;
+  margin-top: 8px;
+}
+
+.dev-row span {
+  display: flex;
+  gap: 6px;
+}
+
+.dev-row b {
+  margin-left: auto;
+  color: var(--cyan);
+}
+
+.dev-row i {
+  color: var(--ink-dim);
+}
+
+.dev-row input {
+  width: 100%;
+  accent-color: var(--cyan);
+}
