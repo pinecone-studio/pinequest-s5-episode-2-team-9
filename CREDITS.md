@@ -19,7 +19,7 @@ Licence: [Creative Commons Attribution 4.0 International](https://creativecommon
 - Simplified and compressed the meshes.
 
 ### Robot dog: Mini Pupper 2 by MangDang, Apache License 2.0
-`public/models/robot-dog.glb` is built by `scripts/build-dog.ts` from the Mini Pupper 2 robot description (URDF and STL meshes) in [mangdangroboticsclub/mini_pupper_ros](https://github.com/mangdangroboticsclub/mini_pupper_ros). Copyright MangDang. Licensed under the Apache License, Version 2.0; the full text is in `public/licenses/mini-pupper-apache-2.0.txt`.
+`public/models/robot-dog.glb` is built by `scripts/build-dog.ts` from the Mini Pupper 2 robot description (URDF and STL meshes) in [mangdangroboticsclub/mini_pupper_ros](https://github.com/mangdangroboticsclub/mini_pupper_ros). Copyright MangDang. Licensed under the Apache License, Version 2.0; the full text is in `public/licenses/mini-pupper-apache-2.0.txt` and its NOTICE in `public/licenses/mini-pupper-NOTICE.txt`.
 
 **Changes made:**
 - Posed the legs standing.
