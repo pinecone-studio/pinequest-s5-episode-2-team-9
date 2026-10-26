@@ -95,4 +95,13 @@ describe('GestureMachine', () => {
     expect(m.update(track(0.2), cal, t, 33).state.pinchProgress).toBeCloseTo(0.6)
     expect(m.update(track(0.2), cal, t, 150).state.pinchProgress).toBe(1)
   })
+  it('releases a pinch that closes into a fist, then counts the fist', () => {
+    const m = new GestureMachine(1)
+    run(m, [0.2, 0.2, 0.2, 0.2])
+    const events: GestureEvent[] = []
+    for (let i = 0; i < 50; i++) {
+      events.push(...m.update(track(0.15, { curls: [200, 200, 200, 200] }), cal, t, 200 + i * 33).events)
+    }
+    expect(events.map((e) => e.type)).toEqual(['pinchEnd', 'fistHold'])
+  })
 })

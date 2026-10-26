@@ -113,7 +113,7 @@ export function CalibrationOverlay() {
           <HandGlyph step={step} />
         </div>
         <h2>
-          {title}
+          {t(title)}
           {step === 'pinch' && progress ? ` · ${progress.pinches}/3` : ''}
         </h2>
         <p>{handsVisible ? t(hint) : t('cal.noHands')}</p>

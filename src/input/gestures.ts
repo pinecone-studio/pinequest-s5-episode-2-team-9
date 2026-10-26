@@ -27,6 +27,9 @@ export interface GestureState {
 /** Index finger curl above which a closed thumb-index gap is a fist, not a pinch. */
 const PINCH_MAX_INDEX_CURL = 175
 
+/** A pinch that closes into a fist for this long is released (a fist means "back"). */
+const FIST_RELEASES_PINCH_MS = 300
+
 export class GestureMachine {
   readonly handId: number
   private phase: PinchPhase = 'open'
@@ -34,6 +37,7 @@ export class GestureMachine {
   private fistSince: number | null = null
   private fistFired = false
   private lastRatio = Infinity
+  private fistWhilePinched: number | null = null
 
   constructor(handId: number) {
     this.handId = handId
@@ -64,6 +68,13 @@ export class GestureMachine {
           break
         case 'pinched':
           if (ratio > cal.release) this.go('releasing', now)
+          else if (fist) {
+            this.fistWhilePinched ??= now
+            if (now - this.fistWhilePinched >= FIST_RELEASES_PINCH_MS) {
+              this.go('open', now)
+              events.push({ type: 'pinchEnd', handId: this.handId, time: now, cancelled: false })
+            }
+          }
           break
         case 'releasing':
           if (ratio <= cal.release) this.go('pinched', now)
@@ -74,6 +85,7 @@ export class GestureMachine {
           break
       }
 
+      if (!fist) this.fistWhilePinched = null
       if (fist && !this.isPinched()) {
         this.fistSince ??= now
         if (!this.fistFired && now - this.fistSince >= t.fistHoldMs) {
@@ -99,6 +111,7 @@ export class GestureMachine {
   private go(phase: PinchPhase, now: number) {
     this.phase = phase
     this.since = now
+    this.fistWhilePinched = null
   }
 
   private snapshot(cal: Calibration, t: Tuning, now: number): GestureState {
