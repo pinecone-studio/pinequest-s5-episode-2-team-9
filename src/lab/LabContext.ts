@@ -1,10 +1,12 @@
 import { createContext, useContext } from 'react'
+import type { FaceTracker } from '../input/faceTracker'
 import type { HandInput } from '../input/handInput'
 import type { PointerHub } from '../interaction/pointerHub'
 
 export interface LabServices {
   input: HandInput
   hub: PointerHub
+  face: FaceTracker
 }
 
 export const LabContext = createContext<LabServices | null>(null)

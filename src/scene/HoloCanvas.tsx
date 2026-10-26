@@ -1,5 +1,6 @@
 import { Canvas } from '@react-three/fiber'
 import type { ReactNode } from 'react'
+import { AutoQuality } from './AutoQuality'
 import { PostFX } from './PostFX'
 
 // Debug switch: ?fx=0 disables post effects.
@@ -20,6 +21,7 @@ export function HoloCanvas({ children }: { children: ReactNode }) {
     >
       {children}
       {postFx && <PostFX />}
+      <AutoQuality />
     </Canvas>
   )
 }

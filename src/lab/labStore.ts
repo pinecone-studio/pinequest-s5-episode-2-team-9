@@ -15,8 +15,11 @@ interface LabState {
   debug: boolean
   devPanel: boolean
   creditsOpen: boolean
+  tipsOpen: boolean
   /** Persisted user preferences. */
   headParallax: boolean
+  /** The gesture tips were shown once already. */
+  tipsSeen: boolean
 
   set: (patch: Partial<Omit<LabState, 'set'>>) => void
 }
@@ -31,12 +34,14 @@ export const useLab = create<LabState>()(
       debug: false,
       devPanel: false,
       creditsOpen: false,
+      tipsOpen: false,
       headParallax: false,
+      tipsSeen: false,
       set: (patch) => set(patch),
     }),
     {
       name: 'hololemma.lab',
-      partialize: (s) => ({ headParallax: s.headParallax }),
+      partialize: (s) => ({ headParallax: s.headParallax, tipsSeen: s.tipsSeen }),
     },
   ),
 )

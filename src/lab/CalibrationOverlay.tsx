@@ -55,7 +55,9 @@ export function CalibrationOverlay() {
           setDone(true)
           window.setTimeout(() => {
             setDone(false)
-            set({ calibrating: null })
+            // First time: show the gesture cheat sheet once.
+            const seen = useLab.getState().tipsSeen
+            set({ calibrating: null, ...(seen ? {} : { tipsOpen: true, tipsSeen: true }) })
           }, 1400)
         }
       }),
@@ -72,7 +74,8 @@ export function CalibrationOverlay() {
 
   const skip = () => {
     input.cancelCalibration()
-    set({ calibrating: null })
+    const seen = useLab.getState().tipsSeen
+    set({ calibrating: null, ...(seen ? {} : { tipsOpen: true, tipsSeen: true }) })
   }
 
   if (done) {

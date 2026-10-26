@@ -2,18 +2,22 @@ import { Suspense, useEffect, useMemo, useRef } from 'react'
 import { unlockAudio } from '../audio/sfx'
 import { Link, useParams } from 'react-router'
 import { CameraError, startCamera, stopCamera, type CameraErrorKind } from '../input/camera'
+import { FaceTracker } from '../input/faceTracker'
 import { HandInput } from '../input/handInput'
 import { PointerHub } from '../interaction/pointerHub'
 import { useT, type I18nKey } from '../i18n'
+import { HeadParallax } from '../scene/HeadParallax'
 import { HoloCanvas } from '../scene/HoloCanvas'
 import { modelBySlug } from '../models/registry'
 import { ModelScene } from '../scene/ModelScene'
 import { CalibrationOverlay } from './CalibrationOverlay'
 import { DebugPanel } from './DebugPanel'
 import { DevPanel } from './DevPanel'
+import { GestureTips } from './GestureTips'
 import { HandLayer } from './HandLayer'
 import { LabContext, type LabServices } from './LabContext'
 import { CreditsPanel } from './CreditsPanel'
+import { trackLab } from './labAnalytics'
 import { useLab } from './labStore'
 import { useModel } from './modelStore'
 import { ModelPanel } from './panels/ModelPanel'
@@ -32,8 +36,24 @@ export default function LabPage() {
   const { modelId = '' } = useParams()
   const rootRef = useRef<HTMLElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
-  const services = useMemo<LabServices>(() => ({ input: new HandInput(), hub: new PointerHub() }), [])
-  const { camera, tracking, debug, devPanel, settingsOpen, creditsOpen, set } = useLab()
+  const services = useMemo<LabServices>(
+    () => ({ input: new HandInput(), hub: new PointerHub(), face: new FaceTracker() }),
+    [],
+  )
+  const { camera, tracking, debug, devPanel, settingsOpen, creditsOpen, tipsOpen, headParallax, set } = useLab()
+  const parallaxOn = headParallax && camera.state === 'live'
+
+  // Head tracking runs only while head-coupled 3D is switched on.
+  useEffect(() => {
+    const video = videoRef.current
+    if (!parallaxOn || !video) return
+    const { face } = services
+    void face.start(video)
+    return () => face.stop()
+  }, [parallaxOn, services])
+
+  useEffect(() => () => services.face.close(), [services])
+  useEffect(() => trackLab(), [])
   const def = modelBySlug(modelId)
   const loaded = useModel((s) => s.loaded)
 
@@ -120,6 +140,7 @@ export default function LabPage() {
             <Suspense fallback={null}>
               <ModelScene def={def} />
             </Suspense>
+            {parallaxOn && <HeadParallax head={() => services.face.latest} />}
           </HoloCanvas>
         ) : (
           <p className="lab-message">{t('lab.unknownModel')}</p>
@@ -132,9 +153,14 @@ export default function LabPage() {
           <Link to="/" className="hud-button">
             ← {t('lab.back')}
           </Link>
-          <button type="button" className="hud-button" onClick={() => set({ settingsOpen: !settingsOpen })}>
-            {t('settings.open')}
-          </button>
+          <div className="lab-bar-right">
+            <button type="button" className="hud-button" onClick={() => set({ tipsOpen: !tipsOpen })}>
+              {t('tips.open')}
+            </button>
+            <button type="button" className="hud-button" onClick={() => set({ settingsOpen: !settingsOpen })}>
+              {t('settings.open')}
+            </button>
+          </div>
         </header>
 
         {camera.state === 'requesting' && (
@@ -165,6 +191,7 @@ export default function LabPage() {
         <CalibrationOverlay />
         {settingsOpen && <SettingsPanel />}
         {creditsOpen && <CreditsPanel />}
+        {tipsOpen && <GestureTips />}
         {debug && <DebugPanel />}
         {devPanel && <DevPanel />}
       </main>

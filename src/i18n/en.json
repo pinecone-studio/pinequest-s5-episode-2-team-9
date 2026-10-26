@@ -228,5 +228,21 @@
   "landing.copyLink": "Copy link",
   "landing.copied": "Link copied",
   "landing.credits": "Credits",
-  "landing.mouseNote": "No webcam? You can still explore with a mouse."
+  "landing.mouseNote": "No webcam? You can still explore with a mouse.",
+  "tips.title": "Gestures",
+  "tips.open": "Gestures",
+  "tips.point": "Point at a part",
+  "tips.pointText": "Its name appears.",
+  "tips.pinch": "Pinch and move",
+  "tips.pinchText": "Turns the model. Let go and it keeps spinning a little.",
+  "tips.pull": "Pinch with both hands near the model, pull apart",
+  "tips.pullText": "Takes it to pieces. Push your hands together to close it.",
+  "tips.grab": "Pinch a loose part",
+  "tips.grabText": "Pick it up. Pinch with your other hand and pull away to study it.",
+  "tips.dwell": "Hover over a button",
+  "tips.dwellText": "Hold still until it fills — or pinch it.",
+  "tips.fist": "Make a fist for a second",
+  "tips.fistText": "Goes back.",
+  "tips.mouse": "Mouse: drag to turn, scroll to zoom, double-click a part to study it.",
+  "tips.close": "Got it"
 }

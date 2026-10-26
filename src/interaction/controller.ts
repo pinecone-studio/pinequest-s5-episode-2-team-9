@@ -113,7 +113,7 @@ export class InteractionController {
   private back(): void {
     const lab = useLab.getState()
     const store = useModel.getState()
-    if (lab.settingsOpen || lab.creditsOpen) lab.set({ settingsOpen: false, creditsOpen: false })
+    if (lab.settingsOpen || lab.creditsOpen || lab.tipsOpen) lab.set({ settingsOpen: false, creditsOpen: false, tipsOpen: false })
     else if (store.mode === 'study') store.closeStudy()
     else if (store.selected) store.set({ selected: null })
     else if (store.mode === 'explore' && store.explode > 0) store.set({ explode: 0 })
