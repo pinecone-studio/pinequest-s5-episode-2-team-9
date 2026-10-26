@@ -1,7 +1,7 @@
 // Shared schema: every mode (explore, explode, study, assembly) works from this
 // data alone, so a new model is a GLB plus one definition file.
 
-export type ModelId = 'heart' | 'robotDog' | 'brain'
+export type ModelId = 'heart' | 'robotDog' | 'brain' | 'rocketEngine' | 'electricMotor' | 'skeleton' | 'muscles'
 
 export interface PartDef {
   /** Node name in the GLB. */

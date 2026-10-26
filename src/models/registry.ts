@@ -3,8 +3,9 @@ import { brain } from './brain/definition'
 import { heart } from './heart/definition'
 import type { ModelDefinition } from './ModelDefinition'
 import { robotDog } from './robotDog/definition'
+import { rocketEngine } from './rocketEngine/definition'
 
-export const library: ModelDefinition[] = [heart, brain, robotDog]
+export const library: ModelDefinition[] = [heart, brain, robotDog, rocketEngine]
 
 export function modelBySlug(slug: string): ModelDefinition | undefined {
   return library.find((m) => m.slug === slug)
