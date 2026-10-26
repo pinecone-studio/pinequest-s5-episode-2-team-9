@@ -1,0 +1,17 @@
+{
+  "app.name": "Hololemma",
+  "landing.tagline": "A holographic lab you control with your bare hands.",
+  "landing.subtitle": "Take a human heart and a robot dog apart in mid-air, study every piece, then put them back together. All you need is a laptop webcam.",
+  "start.words": "Conjure|Summon|Materialize|Manifest|Project|Illuminate|Ignite|Awaken|Unveil|Beam|Phase in|Shimmer|Emerge|Envision|Holo-up",
+  "lang.toggle": "МН",
+  "lang.toggleLabel": "Switch to Mongolian",
+  "lab.privacy": "Your camera stays on your device. Video is never uploaded or recorded.",
+  "lab.cameraRequesting": "Waiting for camera permission…",
+  "lab.cameraDenied": "Camera access was blocked. You can still explore with your mouse.",
+  "lab.cameraNotFound": "No webcam found. You can still explore with your mouse.",
+  "lab.cameraUnsupported": "This browser can't use the camera. Try Chrome or Edge on a laptop.",
+  "lab.cameraUnknown": "The camera couldn't start. You can still explore with your mouse.",
+  "lab.mouseMode": "Mouse mode",
+  "lab.back": "Back",
+  "lab.unknownModel": "This model isn't in the library yet."
+}
