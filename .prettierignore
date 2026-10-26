@@ -1,4 +1,6 @@
 dist
 node_modules
-public/models
+
 .plans
+public/models
+public/licenses
