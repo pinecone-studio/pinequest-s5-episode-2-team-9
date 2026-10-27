@@ -12,6 +12,46 @@ export function ModelGlyph({ id }: { id: ModelId }) {
       </svg>
     )
   }
+  if (id === 'skeleton') {
+    return (
+      <svg viewBox="0 0 200 200" className="glyph">
+        <circle className="glyph-main" cx="100" cy="34" r="16" />
+        <path className="glyph-accent" d="M100 50v74" />
+        <path className="glyph-sub" d="M80 66c10 6 30 6 40 0M78 78c12 6 32 6 44 0M80 90c10 6 30 6 40 0" />
+        <path className="glyph-main" d="M76 62l-18 44-6 30M124 62l18 44 6 30M84 128l-6 30-2 28M116 128l6 30 2 28M84 126h32" />
+      </svg>
+    )
+  }
+  if (id === 'muscles') {
+    return (
+      <svg viewBox="0 0 200 200" className="glyph">
+        <circle className="glyph-sub" cx="100" cy="32" r="14" />
+        <path className="glyph-main" d="M72 60c10-8 46-8 56 0l10 46c2 10-6 34-10 40M72 60l-10 46c-2 10 6 34 10 40" />
+        <path className="glyph-accent" d="M88 70c4 20 4 40 0 56M112 70c-4 20-4 40 0 56" />
+        <path className="glyph-main" d="M82 128c-4 20-2 40 0 58M118 128c4 20 2 40 0 58" />
+      </svg>
+    )
+  }
+  if (id === 'rocketEngine') {
+    return (
+      <svg viewBox="0 0 200 200" className="glyph">
+        <path className="glyph-sub" d="M70 30h60M86 30l-8 22M114 30l8 22" />
+        <path className="glyph-main" d="M84 56c-6 10-6 24 0 34l6 10c-14 30-28 52-34 76h88c-6-24-20-46-34-76l6-10c6-10 6-24 0-34z" />
+        <path className="glyph-accent" d="M58 150c28 6 56 6 84 0M66 126c22 5 46 5 68 0" />
+        <circle className="glyph-dot" cx="100" cy="94" r="4" />
+      </svg>
+    )
+  }
+  if (id === 'electricMotor') {
+    return (
+      <svg viewBox="0 0 200 200" className="glyph">
+        <rect className="glyph-main" x="50" y="60" width="90" height="80" rx="14" />
+        <path className="glyph-sub" d="M140 86h14v28h-14M30 100h20M154 100h20" />
+        <path className="glyph-accent" d="M70 76c12 8 12 40 0 48M90 76c12 8 12 40 0 48M110 76c12 8 12 40 0 48" />
+        <circle className="glyph-dot" cx="164" cy="100" r="4" />
+      </svg>
+    )
+  }
   if (id === 'brain') {
     return (
       <svg viewBox="0 0 200 200" className="glyph">
