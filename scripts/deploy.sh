@@ -6,6 +6,9 @@
 #   1. pulls team9/main into the local main (fast-forward only),
 #   2. mirrors it to the personal repo (remote "origin", brkh1222-byte/Hologemma),
 #   3. deploys to production with the Vercel CLI under your account.
+#
+# The deploy uploads a copy of the code without .git: Vercel blocks deploys whose
+# latest commit author is not a member of the Vercel project (teammates aren't).
 # Usage: npm run deploy            (production)
 #        npm run deploy -- preview (preview URL only)
 set -e
@@ -24,8 +27,14 @@ git push -q origin main
 npm ci --no-audit --no-fund
 npm test
 
+src="$(mktemp -d)"
+trap 'rm -rf "$src"' EXIT
+git archive HEAD | tar -x -C "$src"
+mkdir "$src/.vercel"
+cp .vercel/project.json "$src/.vercel/"
+
 if [ "$1" = "preview" ]; then
-  npx -y vercel@latest deploy --yes
+  npx -y vercel@latest deploy --yes --cwd "$src"
 else
-  npx -y vercel@latest deploy --prod --yes
+  npx -y vercel@latest deploy --prod --yes --cwd "$src"
 fi
