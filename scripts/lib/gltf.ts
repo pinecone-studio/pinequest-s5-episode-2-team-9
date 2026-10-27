@@ -1,5 +1,5 @@
 // Shared helpers for the asset build scripts (Node only).
-import { Document, type Node } from '@gltf-transform/core'
+import { Document, type Material, type Node } from '@gltf-transform/core'
 
 export type Vec3 = [number, number, number]
 
@@ -95,7 +95,7 @@ export function mergeMeshData(parts: MeshData[]): MeshData {
 }
 
 /** Adds a named node with one mesh (positions relative to `pivot`) to a document. */
-export function addMeshNode(doc: Document, name: string, data: MeshData, pivot: Vec3): Node {
+export function addMeshNode(doc: Document, name: string, data: MeshData, pivot: Vec3, material?: Material): Node {
   const buffer = doc.getRoot().listBuffers()[0] ?? doc.createBuffer()
   const local = new Float32Array(data.positions.length)
   for (let i = 0; i < data.positions.length; i += 3) {
@@ -106,7 +106,7 @@ export function addMeshNode(doc: Document, name: string, data: MeshData, pivot: 
   const position = doc.createAccessor(`${name}_position`).setType('VEC3').setArray(local).setBuffer(buffer)
   const normal = doc.createAccessor(`${name}_normal`).setType('VEC3').setArray(data.normals).setBuffer(buffer)
   const indices = doc.createAccessor(`${name}_indices`).setType('SCALAR').setArray(data.indices).setBuffer(buffer)
-  const material = doc.getRoot().listMaterials()[0] ?? doc.createMaterial('holo')
+  material ??= doc.getRoot().listMaterials()[0] ?? doc.createMaterial('holo')
   const prim = doc
     .createPrimitive()
     .setAttribute('POSITION', position)

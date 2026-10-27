@@ -16,7 +16,7 @@ const enabled = (() => {
 // bloom spreads alpha. Scanlines and flicker live in HoloMaterial instead.
 export function PostFX() {
   const level = useQuality((s) => s.level)
-  const realistic = useLab((s) => s.viewStyle === 'realistic')
+  const realistic = useLab((s) => s.viewStyle === 'realistic' || s.forcedRealistic)
   if (level === 0) return null
   if (realistic) {
     // Real objects: only a faint bloom on highlights, no hologram fringing.

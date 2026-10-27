@@ -28,11 +28,12 @@ import {
   type MeshPhysicalMaterial,
   type ShaderMaterial,
 } from 'three'
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from 'three-mesh-bvh'
 import type { ModelDefinition, PartDef } from '../models/ModelDefinition'
 import { lookFor, type ModelDefinition as Def } from '../models/ModelDefinition'
 import { createHoloMaterial } from './HoloMaterial'
-import { createRealisticMaterial } from './realisticLooks'
+import { createRealisticMaterial, LOOKS, type LookId } from './realisticLooks'
 
 Object.assign(BufferGeometry.prototype, { computeBoundsTree, disposeBoundsTree })
 Mesh.prototype.raycast = acceleratedRaycast
@@ -47,11 +48,13 @@ export interface RigMotion {
 
 export interface PartRig {
   def: PartDef
-  mesh: Mesh<BufferGeometry, Material>
+  mesh: Mesh<BufferGeometry, Material | Material[]>
   /** Hologram material. */
   holo: ShaderMaterial
-  /** Realistic (physically based) material. */
+  /** Realistic (physically based) material: the first of `reals`. */
   real: MeshPhysicalMaterial
+  /** One realistic material per geometry group (parts built from several looks). */
+  reals: MeshPhysicalMaterial[]
   edges: LineSegments | null
   ghost: Mesh<BufferGeometry, ShaderMaterial>
   /** Assembled position in model (inner) space. */
@@ -134,8 +137,8 @@ export class ModelRig {
     if (this.realistic === on) return
     this.realistic = on
     for (const part of this.parts.values()) {
-      part.mesh.material = on ? part.real : part.holo
-      part.mesh.renderOrder = on && (part.real.userData.baseOpacity as number) < 1 ? 1 : 0
+      part.mesh.material = on ? (part.reals.length > 1 ? part.reals : part.real) : part.holo
+      part.mesh.renderOrder = on && part.reals.some((m) => (m.userData.baseOpacity as number) < 1) ? 1 : 0
     }
   }
 
@@ -149,18 +152,26 @@ export class ModelRig {
     const sphere = new Sphere()
     for (const partDef of def.parts) {
       const src = scene.getObjectByName(partDef.id)
-      const srcMesh = (src instanceof Mesh ? src : src?.children.find((c) => c instanceof Mesh)) as Mesh | undefined
-      if (!srcMesh) throw new Error(`Part "${partDef.id}" not found in ${def.url}`)
-      const geometry = srcMesh.geometry as BufferGeometry
+      // A node with several primitives loads as a group of meshes, one per material.
+      const srcMeshes = (src instanceof Mesh ? [src] : (src?.children.filter((c) => c instanceof Mesh) ?? [])) as Mesh[]
+      if (!srcMeshes.length) throw new Error(`Part "${partDef.id}" not found in ${def.url}`)
+      const srcMesh = srcMeshes[0]
+      const layered = new Set(srcMeshes.map((m) => (m.material as Material).name)).size > 1
+      const geometry = layered ? mergeLayers(srcMeshes) : (srcMesh.geometry as BufferGeometry)
       if (!geometry.boundsTree) geometry.computeBoundsTree()
       geometry.computeBoundingSphere()
       src!.updateWorldMatrix(true, false)
       const home = new Vector3().setFromMatrixPosition(src!.matrixWorld)
-      box.expandByObject(srcMesh)
+      box.expandByObject(layered ? src! : srcMesh)
 
       const holo = createHoloMaterial({ color: partDef.color })
-      const real = createRealisticMaterial(lookFor(def as Def, partDef))
-      const mesh = new Mesh<BufferGeometry, Material>(geometry, holo)
+      const fallback = lookFor(def as Def, partDef)
+      const reals = (layered ? srcMeshes : [srcMesh]).map((m) => {
+        const name = (m.material as Material).name
+        return createRealisticMaterial(layered && name in LOOKS ? (name as LookId) : fallback)
+      })
+      const real = reals[0]
+      const mesh = new Mesh<BufferGeometry, Material | Material[]>(geometry, holo)
       mesh.name = partDef.id
       mesh.position.copy(home)
       mesh.userData.partId = partDef.id
@@ -193,6 +204,7 @@ export class ModelRig {
         mesh,
         holo,
         real,
+        reals,
         edges,
         ghost: ghost as Mesh<BufferGeometry, ShaderMaterial>,
         home,
@@ -415,8 +427,15 @@ export class ModelRig {
 
       part.opacityTarget = focus && focus !== id ? 0 : 1
       const hinted = s.hintPart === id
+      // The part being studied is shown alone, so it needs no highlight tint.
       part.highlightTarget =
-        s.hovered === id || s.selected === id || s.carried === id ? 1 : hinted ? 0.6 + 0.4 * Math.sin(this.time * 6) : 0
+        focus === id
+          ? 0
+          : s.hovered === id || s.selected === id || s.carried === id
+            ? 1
+            : hinted
+              ? 0.6 + 0.4 * Math.sin(this.time * 6)
+              : 0
 
       part.pose.lerp(part.targetPos, part.location === 'carry' ? kFast : k)
       part.poseScale += (part.targetScale - part.poseScale) * k
@@ -430,14 +449,14 @@ export class ModelRig {
 
       const dimmed = dimOthers && s.selected !== id && s.carried !== id && part.highlight < 0.5
       if (this.realistic) {
-        const m = part.real
-        const base = m.userData.baseOpacity as number
-        m.opacity = base * part.opacity
-        m.depthWrite = base >= 1 && part.opacity > 0.98
-        m.color.copy(m.userData.baseColor as Color).multiplyScalar(dimmed ? 0.45 : 1)
-        m.emissive
-          .copy(m.userData.baseEmissive as Color)
-          .add(tmpColor.set(part.def.color).multiplyScalar(0.28 * (part.highlight + part.flash * 2)))
+        tmpColor.set(part.def.color).multiplyScalar(0.28 * (part.highlight + part.flash * 2))
+        for (const m of part.reals) {
+          const base = m.userData.baseOpacity as number
+          m.opacity = base * part.opacity
+          m.depthWrite = base >= 1 && part.opacity > 0.98
+          m.color.copy(m.userData.baseColor as Color).multiplyScalar(dimmed ? 0.45 : 1)
+          m.emissive.copy(m.userData.baseEmissive as Color).add(tmpColor)
+        }
       }
       const u = part.holo.uniforms
       u.uTime.value = this.time
@@ -510,8 +529,8 @@ export class ModelRig {
     void camera
     for (const part of this.parts.values()) {
       const planes = active && part.location === 'model' ? [this.clipPlane] : []
-      if (part.mesh.material.clippingPlanes?.length !== planes.length) {
-        for (const m of [part.holo, part.real]) {
+      if (part.holo.clippingPlanes?.length !== planes.length) {
+        for (const m of [part.holo, ...part.reals]) {
           m.clippingPlanes = planes
           m.needsUpdate = true
         }
@@ -526,7 +545,7 @@ export class ModelRig {
   dispose(): void {
     for (const part of this.parts.values()) {
       part.holo.dispose()
-      part.real.dispose()
+      for (const m of part.reals) m.dispose()
       part.ghost.material.dispose()
       if (part.edges) {
         part.edges.geometry.dispose()
@@ -538,4 +557,25 @@ export class ModelRig {
     this.carryLine.geometry.dispose()
     ;(this.carryLine.material as LineDashedMaterial).dispose()
   }
+}
+
+/** Merges the meshes of a multi-material part into one geometry with a group per mesh. */
+function mergeLayers(meshes: Mesh[]): BufferGeometry {
+  const plain = meshes.map((m) => {
+    // Rebuild with plain float attributes so quantized or interleaved data merges cleanly.
+    const src = m.geometry as BufferGeometry
+    const g = new BufferGeometry()
+    for (const name of ['position', 'normal'] as const) {
+      const a = src.getAttribute(name)
+      const out = new Float32Array(a.count * 3)
+      for (let i = 0; i < a.count; i++) out.set([a.getX(i), a.getY(i), a.getZ(i)], i * 3)
+      g.setAttribute(name, new BufferAttribute(out, 3))
+    }
+    if (src.index) g.setIndex(new BufferAttribute(Uint32Array.from(src.index.array), 1))
+    g.applyMatrix4(m.matrix)
+    return g
+  })
+  const merged = mergeGeometries(plain, true)
+  plain.forEach((g) => g.dispose())
+  return merged
 }
