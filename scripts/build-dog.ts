@@ -63,16 +63,16 @@ function legServos(leg: Leg): MeshData {
 }
 
 const PARTS: PartSpec[] = [
-  { id: 'frame', links: ['base_link'], maxTriangles: 6000 },
+  { id: 'frame', links: ['base_link'], maxTriangles: 10800 },
   { id: 'battery', extra: () => boxMesh([-0.008, 0, -0.014], [0.07, 0.03, 0.017]), maxTriangles: 100 },
-  { id: 'controller_board', links: ['Board_PCB', 'Board_connectors_1', 'Board_connectors_2'], maxTriangles: 9000 },
-  ...LEGS.map((leg) => ({ id: `servos_${leg}`, extra: () => legServos(leg), maxTriangles: 1000 })),
-  ...LEGS.map((leg) => ({ id: `hip_${leg}`, links: [`${leg}1`, `${leg[0]}p${leg[1]}1`], maxTriangles: 2500 })),
-  ...LEGS.map((leg) => ({ id: `upper_leg_${leg}`, links: [`${leg}2`, `${leg[0]}p${leg[1]}2`], maxTriangles: 1500 })),
-  ...LEGS.map((leg) => ({ id: `lower_leg_${leg}`, links: [`${leg}3`, `${leg}foot`], maxTriangles: 3500 })),
-  { id: 'lidar', links: ['lidar_link'], maxTriangles: 2000 },
-  { id: 'front_plate', links: ['Body_front'], maxTriangles: 3000 },
-  { id: 'side_shells', links: ['Shell_Side'], maxTriangles: 2500 },
+  { id: 'controller_board', links: ['Board_PCB', 'Board_connectors_1', 'Board_connectors_2'], maxTriangles: 16200 },
+  ...LEGS.map((leg) => ({ id: `servos_${leg}`, extra: () => legServos(leg), maxTriangles: 1800 })),
+  ...LEGS.map((leg) => ({ id: `hip_${leg}`, links: [`${leg}1`, `${leg[0]}p${leg[1]}1`], maxTriangles: 4500 })),
+  ...LEGS.map((leg) => ({ id: `upper_leg_${leg}`, links: [`${leg}2`, `${leg[0]}p${leg[1]}2`], maxTriangles: 2700 })),
+  ...LEGS.map((leg) => ({ id: `lower_leg_${leg}`, links: [`${leg}3`, `${leg}foot`], maxTriangles: 6300 })),
+  { id: 'lidar', links: ['lidar_link'], maxTriangles: 3600 },
+  { id: 'front_plate', links: ['Body_front'], maxTriangles: 5400 },
+  { id: 'side_shells', links: ['Shell_Side'], maxTriangles: 4500 },
 ]
 
 const exists = (p: string) => stat(p).then(() => true, () => false)

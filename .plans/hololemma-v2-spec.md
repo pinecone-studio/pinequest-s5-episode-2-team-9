@@ -18,3 +18,8 @@ After testing v1 ("so nice"), the user asked for more models and more realism. B
    - A **Realistic view** switch: PBR materials and lighting, with the hologram as the other view.
    - **More detail** in the meshes and parts.
    - **Optional motion:** heart tempo with blood flow and valves; dog gait; engines running.
+
+## Status (end of 2026-10-27)
+All five items are built and deployed.
+- **Gap:** the muscle model lacks a few muscles (see PROGRESS.md).
+- **Motion design:** motion is optional. The heart, motor, rocket and dog each have a Play button.

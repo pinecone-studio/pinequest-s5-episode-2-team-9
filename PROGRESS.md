@@ -3,7 +3,29 @@
 Live: **https://hololemma.vercel.app** · Repo: `brkh1222-byte/Hololemma` (private; every push to `main` deploys).
 Spec: `.plans/hololemma-v1-spec.md` · Design: `PLAN.md`.
 
-## Status: v1 built, waiting for webcam testing
+## v2 (2026-10-27): new models, realism, motion
+
+| Item | Status | Notes |
+|---|---|---|
+| Human brain | ✅ | HRA brain (Allen structures), CC BY 4.0, 22 parts |
+| Skeleton | ✅ | BodyParts3D (CC BY 4.0), 34 bone groups |
+| Muscles | ✅ | BodyParts3D, 38 muscle groups on a skeleton base. **Missing from the source:** latissimus dorsi, rectus abdominis, internal oblique, jaw and face muscles. Z-Anatomy has them, but opening its .blend in Blender needs the owner's permission (a .blend can run embedded scripts) |
+| Rocket engine | ✅ | Original, modelled in code (gas-generator cycle), 18 parts |
+| Electric motor | ✅ | Original brushed DC motor, 14 parts |
+| Atoms & quantum lab | ✅ | Build atoms (Z ≤ 20), hydrogen orbitals (real ψ), energy levels and photons, double slit, Stern–Gerlach |
+| Realistic view | ✅ | PBR presets, studio lighting, Hologram/Realistic switch |
+| More detail | ✅ | Heart 148k triangles, robot dog 87k |
+| Motion | ✅ | Heart beat (BPM, valves, blood flow, ECG, sounds), motor spin, rocket firing, dog walk/trot with IK |
+
+### v2 test checklist
+1. Library: the brain, skeleton, muscles, rocket engine, electric motor and atoms cards open.
+2. In any model, switch Hologram ↔ Realistic.
+3. Heart → "Make it beat": change the BPM; watch the ECG and the phase text; try the cut-away while it beats.
+4. Robot dog → "Make it walk": switch between Walk and Trot.
+5. Rocket → "Fire the engine". Motor → "Run the motor".
+6. Atoms: add protons, neutrons and electrons (bins or +/−); go through the orbitals (n, l, m); press "n=…" in Light; run the double slit with and without "Watch which slit"; try the spin setups.
+
+## v1 status (built 2026-10-27, tested by the owner)
 
 | Phase | Status | Notes |
 |---|---|---|

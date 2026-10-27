@@ -33,15 +33,15 @@ interface PartSpec {
 
 // Our 18 parts. Node names are the atlas's own.
 const PARTS: PartSpec[] = [
-  { id: 'right_atrium', source: 'heart', nodes: ['VH_M_right_cardiac_atrium'], maxTriangles: 9000 },
-  { id: 'left_atrium', source: 'heart', nodes: ['VH_M_left_cardiac_atrium'], maxTriangles: 8000 },
-  { id: 'right_ventricle', source: 'heart', nodes: ['VH_M_heart_right_ventricle'], maxTriangles: 9000 },
-  { id: 'left_ventricle', source: 'heart', nodes: ['VH_M_heart_left_ventricle'], maxTriangles: 7000 },
-  { id: 'septum', source: 'heart', nodes: ['VH_M_interventricular_septum'], maxTriangles: 4000 },
-  { id: 'tricuspid_valve', source: 'heart', nodes: ['VH_M_tricuspid_valve'], maxTriangles: 3500 },
-  { id: 'mitral_valve', source: 'heart', nodes: ['VH_M_mitral_valve'], maxTriangles: 3000 },
-  { id: 'pulmonary_valve', source: 'heart', nodes: ['VH_M_pulmonary_valve'], maxTriangles: 3000 },
-  { id: 'aortic_valve', source: 'heart', nodes: ['VH_M_aortic_valve'], maxTriangles: 2500 },
+  { id: 'right_atrium', source: 'heart', nodes: ['VH_M_right_cardiac_atrium'], maxTriangles: 17100 },
+  { id: 'left_atrium', source: 'heart', nodes: ['VH_M_left_cardiac_atrium'], maxTriangles: 15200 },
+  { id: 'right_ventricle', source: 'heart', nodes: ['VH_M_heart_right_ventricle'], maxTriangles: 17100 },
+  { id: 'left_ventricle', source: 'heart', nodes: ['VH_M_heart_left_ventricle'], maxTriangles: 13300 },
+  { id: 'septum', source: 'heart', nodes: ['VH_M_interventricular_septum'], maxTriangles: 7600 },
+  { id: 'tricuspid_valve', source: 'heart', nodes: ['VH_M_tricuspid_valve'], maxTriangles: 6600 },
+  { id: 'mitral_valve', source: 'heart', nodes: ['VH_M_mitral_valve'], maxTriangles: 5700 },
+  { id: 'pulmonary_valve', source: 'heart', nodes: ['VH_M_pulmonary_valve'], maxTriangles: 5700 },
+  { id: 'aortic_valve', source: 'heart', nodes: ['VH_M_aortic_valve'], maxTriangles: 4800 },
   {
     id: 'papillary_muscles',
     source: 'heart',
@@ -52,7 +52,7 @@ const PARTS: PartSpec[] = [
       'VH_M_papillary_muscle_of_heart_posterior',
       'VH_M_papillary_muscle_of_heart_posteromedial',
     ],
-    maxTriangles: 2000,
+    maxTriangles: 3800,
   },
   {
     id: 'aorta',
@@ -66,22 +66,22 @@ const PARTS: PartSpec[] = [
       'VH_M_left_subclavian_artery_a',
     ],
     minY: 0.445,
-    maxTriangles: 7000,
+    maxTriangles: 13300,
   },
   {
     id: 'pulmonary_trunk',
     source: 'vessels',
     nodes: ['VH_M_pulmonary_trunk', 'VH_M_pulmonary_artery_L', 'VH_M_pulmonary_artery_R'],
-    maxTriangles: 6000,
+    maxTriangles: 11400,
   },
   {
     id: 'pulmonary_veins',
     source: 'vessels',
     nodes: ['VH_M_pulmonary_vein_R_inf', 'VH_M_pulmonary_vein_R_sup', 'VH_M_pulmonary_vein_L_inf', 'VH_M_pulmonary_vein_L_sup'],
-    maxTriangles: 4000,
+    maxTriangles: 7600,
   },
-  { id: 'superior_vena_cava', source: 'vessels', nodes: ['VH_M_superior_vena_cava'], maxTriangles: 3500 },
-  { id: 'inferior_vena_cava', source: 'vessels', nodes: ['VH_M_inferior_vena_cava_a'], minY: 0.412, maxTriangles: 2500 },
+  { id: 'superior_vena_cava', source: 'vessels', nodes: ['VH_M_superior_vena_cava'], maxTriangles: 6600 },
+  { id: 'inferior_vena_cava', source: 'vessels', nodes: ['VH_M_inferior_vena_cava_a'], minY: 0.412, maxTriangles: 4800 },
   {
     id: 'left_coronary_artery',
     source: 'vessels',
@@ -90,9 +90,9 @@ const PARTS: PartSpec[] = [
       'VH_M_diagonal_branch_of_left_anterior_descending_artery',
       'VH_M_diagonal_branch_of_anterior_descending_branch_of_left_coronary_artery',
     ],
-    maxTriangles: 4000,
+    maxTriangles: 7600,
   },
-  { id: 'right_coronary_artery', source: 'vessels', nodes: ['VH_M_right_coronary_artery'], maxTriangles: 3500 },
+  { id: 'right_coronary_artery', source: 'vessels', nodes: ['VH_M_right_coronary_artery'], maxTriangles: 6600 },
   {
     id: 'cardiac_veins',
     source: 'vessels',
@@ -103,7 +103,7 @@ const PARTS: PartSpec[] = [
       'VH_M_anterior_cardiac_vein',
       'VH_M_coronary_sinus',
     ],
-    maxTriangles: 3500,
+    maxTriangles: 6600,
   },
 ]
 
