@@ -1,0 +1,6 @@
+dist
+node_modules
+
+.plans
+public/models
+public/licenses
