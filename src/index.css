@@ -342,9 +342,8 @@ a {
   --accent: var(--cyan);
   position: relative;
   display: grid;
-  grid-template-columns: 160px 1fr;
+  grid-template-columns: clamp(96px, 32%, 160px) minmax(0, 1fr);
   gap: 20px;
-  align-items: center;
   padding: 24px;
   border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
   border-radius: 18px;
@@ -363,7 +362,23 @@ a {
 }
 
 .library-visual {
+  align-self: center;
   aspect-ratio: 1;
+}
+
+/* Top-aligned text with the button pinned to the bottom, so cards in a row line up. */
+.library-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.library-body .progress-line {
+  align-self: stretch;
+}
+
+.library-body > :nth-last-child(2) {
+  margin-bottom: 18px;
 }
 
 .glyph {
@@ -426,7 +441,7 @@ a {
 }
 
 .library-body .start-button {
-  margin-top: 18px;
+  margin-top: auto;
   padding: 0.75em 1.6em;
   font-size: 0.85rem;
   border-color: var(--accent);
@@ -435,7 +450,7 @@ a {
 .library-gate {
   display: grid;
   gap: 10px;
-  margin-top: 16px;
+  margin-top: auto;
   color: var(--cyan);
   font-size: 0.9rem;
 }
