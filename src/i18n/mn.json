@@ -758,5 +758,8 @@
   "atoms.element.Cl": "Хлор",
   "atoms.element.Ar": "Аргон",
   "atoms.element.K": "Кали",
-  "atoms.element.Ca": "Кальци"
+  "atoms.element.Ca": "Кальци",
+  "view.title": "Харагдац",
+  "view.hologram": "Голограмм",
+  "view.realistic": "Бодит"
 }

@@ -50,6 +50,16 @@ export const muscles: ModelDefinition = {
       url: 'https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html',
     },
   ],
+  looks: {
+    default: 'muscle',
+    skeleton_base: 'boneFaint',
+    intercostals: 'muscleDeep',
+    diaphragm: 'muscleDeep',
+    back_muscles: 'muscleDeep',
+    pelvic_floor: 'muscleDeep',
+    rotator_cuff: 'muscleDeep',
+    hip_flexors: 'muscleDeep',
+  },
   parts: [
     { id: 'skeleton_base', group: 'skeleton', color: BONE, dependsOn: [], explodeScale: 0 },
     { id: 'intercostals', group: 'trunk', color: DEEP, dependsOn: ['skeleton_base'] },

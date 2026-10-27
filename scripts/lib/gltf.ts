@@ -240,3 +240,27 @@ export function cylinderMesh(center: Vec3, radius: number, length: number, axis:
   }
   return { positions: new Float32Array(positions), normals: new Float32Array(normals), indices: new Uint32Array(indices) }
 }
+
+/** Replaces normals with smooth, area-weighted vertex normals (for sources with missing/zero normals). */
+export function recomputeNormals(data: MeshData): MeshData {
+  const { positions, indices } = data
+  const normals = new Float32Array(positions.length)
+  for (let i = 0; i < indices.length; i += 3) {
+    const [a, b, c] = [indices[i] * 3, indices[i + 1] * 3, indices[i + 2] * 3]
+    const ux = positions[b] - positions[a], uy = positions[b + 1] - positions[a + 1], uz = positions[b + 2] - positions[a + 2]
+    const vx = positions[c] - positions[a], vy = positions[c + 1] - positions[a + 1], vz = positions[c + 2] - positions[a + 2]
+    const nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx
+    for (const k of [a, b, c]) {
+      normals[k] += nx
+      normals[k + 1] += ny
+      normals[k + 2] += nz
+    }
+  }
+  for (let i = 0; i < normals.length; i += 3) {
+    const l = Math.hypot(normals[i], normals[i + 1], normals[i + 2]) || 1
+    normals[i] /= l
+    normals[i + 1] /= l
+    normals[i + 2] /= l
+  }
+  return { ...data, normals }
+}

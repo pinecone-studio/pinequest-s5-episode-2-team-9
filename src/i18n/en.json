@@ -758,5 +758,8 @@
   "atoms.element.Cl": "Chlorine",
   "atoms.element.Ar": "Argon",
   "atoms.element.K": "Potassium",
-  "atoms.element.Ca": "Calcium"
+  "atoms.element.Ca": "Calcium",
+  "view.title": "View",
+  "view.hologram": "Hologram",
+  "view.realistic": "Realistic"
 }

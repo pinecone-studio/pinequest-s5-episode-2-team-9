@@ -45,6 +45,26 @@ export async function writePartsGlb(file: string, rootName: string, parts: Outpu
     }
   }
   await doc.transform(dedup(), prune(), reorder({ encoder: MeshoptEncoder }))
+
+  // Zero-length normals turn into NaN in lit shaders, and bloom smears NaN
+  // pixels across the screen. Give them a valid direction.
+  let fixed = 0
+  for (const node of root.listChildren()) {
+    for (const prim of node.getMesh()!.listPrimitives()) {
+      const normal = prim.getAttribute('NORMAL')
+      if (!normal) continue
+      const v: number[] = [0, 0, 0]
+      for (let i = 0; i < normal.getCount(); i++) {
+        normal.getElement(i, v)
+        const l = Math.hypot(v[0], v[1], v[2])
+        if (!(l > 1e-4)) {
+          normal.setElement(i, [0, 1, 0])
+          fixed++
+        } else if (Math.abs(l - 1) > 1e-3) normal.setElement(i, [v[0] / l, v[1] / l, v[2] / l])
+      }
+    }
+  }
+  if (fixed) console.log(`fixed ${fixed} zero-length normals`)
   doc.createExtension(KHRMeshQuantization).setRequired(true)
   doc
     .createExtension(EXTMeshoptCompression)

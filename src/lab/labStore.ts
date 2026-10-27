@@ -20,6 +20,8 @@ interface LabState {
   headParallax: boolean
   /** The gesture tips were shown once already. */
   tipsSeen: boolean
+  /** Hologram glow or physically based materials. */
+  viewStyle: 'hologram' | 'realistic'
 
   set: (patch: Partial<Omit<LabState, 'set'>>) => void
 }
@@ -37,11 +39,12 @@ export const useLab = create<LabState>()(
       tipsOpen: false,
       headParallax: false,
       tipsSeen: false,
+      viewStyle: 'hologram',
       set: (patch) => set(patch),
     }),
     {
       name: 'hololemma.lab',
-      partialize: (s) => ({ headParallax: s.headParallax, tipsSeen: s.tipsSeen }),
+      partialize: (s) => ({ headParallax: s.headParallax, tipsSeen: s.tipsSeen, viewStyle: s.viewStyle }),
     },
   ),
 )

@@ -31,6 +31,18 @@ export const robotDog: ModelDefinition = {
     { text: 'Apache License 2.0', url: '/licenses/mini-pupper-apache-2.0.txt' },
     { text: 'NOTICE', url: '/licenses/mini-pupper-NOTICE.txt' },
   ],
+  looks: {
+    default: 'plasticGrey',
+    frame: 'plasticBlack',
+    battery: 'battery',
+    controller_board: 'pcb',
+    lidar: 'plasticBlack',
+    front_plate: 'plasticWhite',
+    side_shells: 'plasticWhite',
+    servos: 'servo',
+    upper_leg: 'aluminium',
+    lower_leg: 'plasticBlack',
+  },
   parts: [
     { id: 'frame', group: 'body', color: CYAN, dependsOn: [], explodeScale: 0.2 },
     { id: 'battery', group: 'body', color: AMBER, dependsOn: ['frame'], explodeDir: [0, -1, 0] },

@@ -8,7 +8,7 @@
 import { NodeIO, type Document, type Node } from '@gltf-transform/core'
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions'
 import { mkdir, stat, writeFile } from 'node:fs/promises'
-import { boundsOf, mergeMeshData, worldMeshData, type Vec3 } from './lib/gltf'
+import { boundsOf, mergeMeshData, recomputeNormals, worldMeshData, type Vec3 } from './lib/gltf'
 import { writePartsGlb, type OutputPart } from './lib/output'
 
 const CACHE = 'scripts/.cache'
@@ -274,7 +274,8 @@ const parts: OutputPart[] = PARTS.map((spec) => {
     })
     .filter((m) => m !== null)
   if (!meshes.length) throw new Error(`No meshes for ${spec.id}`)
-  return { id: spec.id, data: mergeMeshData(meshes), maxTriangles: spec.maxTriangles }
+  // The atlas meshes carry unusable normals; rebuild smooth ones for lit rendering.
+  return { id: spec.id, data: recomputeNormals(mergeMeshData(meshes)), maxTriangles: spec.maxTriangles }
 })
 
 const unused = [...byName.values()].filter((n) => n.getMesh() && !used.has(n.getName())).map((n) => n.getName())

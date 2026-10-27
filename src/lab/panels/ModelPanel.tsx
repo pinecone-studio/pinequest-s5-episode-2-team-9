@@ -1,6 +1,7 @@
 import { play } from '../../audio/sfx'
 import { useT, useTx } from '../../i18n'
 import { keys } from '../../models/ModelDefinition'
+import { useLab } from '../labStore'
 import { useModel } from '../modelStore'
 import { AssemblyPanel } from './AssemblyPanel'
 import { StudyCard } from './StudyCard'
@@ -10,6 +11,8 @@ export function ModelPanel() {
   const t = useT()
   const tx = useTx()
   const { def, mode, explode, cutaway, scale, selected, set, openStudy, startAssembly, resetView } = useModel()
+  const viewStyle = useLab((s) => s.viewStyle)
+  const setLab = useLab((s) => s.set)
   if (!def) return null
 
   return (
@@ -19,6 +22,23 @@ export function ModelPanel() {
           {tx(keys.title(def.id))}
         </span>
         <span className="mode-chip">{t(mode === 'assembly' ? 'mode.assembly' : mode === 'study' ? 'mode.study' : 'mode.explore')}</span>
+      </div>
+
+      <div className="view-switch" role="group" aria-label={t('view.title')}>
+        {(['hologram', 'realistic'] as const).map((style) => (
+          <button
+            key={style}
+            type="button"
+            className="hud-button"
+            data-active={viewStyle === style}
+            onClick={() => {
+              play('click')
+              setLab({ viewStyle: style })
+            }}
+          >
+            {t(style === 'hologram' ? 'view.hologram' : 'view.realistic')}
+          </button>
+        ))}
       </div>
 
       {mode === 'study' && <StudyCard />}

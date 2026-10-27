@@ -1,5 +1,6 @@
 import { Bloom, ChromaticAberration, EffectComposer, Vignette } from '@react-three/postprocessing'
 import { Vector2 } from 'three'
+import { useLab } from '../lab/labStore'
 import { useQuality } from './quality'
 
 const aberrationOffset = new Vector2(0.0006, 0.0004)
@@ -15,7 +16,17 @@ const enabled = (() => {
 // bloom spreads alpha. Scanlines and flicker live in HoloMaterial instead.
 export function PostFX() {
   const level = useQuality((s) => s.level)
+  const realistic = useLab((s) => s.viewStyle === 'realistic')
   if (level === 0) return null
+  if (realistic) {
+    // Real objects: only a faint bloom on highlights, no hologram fringing.
+    return (
+      <EffectComposer multisampling={0}>
+        <Bloom mipmapBlur intensity={0.3} luminanceThreshold={0.95} luminanceSmoothing={0.1} radius={0.5} />
+        <Vignette offset={0.35} darkness={0.35} />
+      </EffectComposer>
+    )
+  }
   return (
     <EffectComposer multisampling={0}>
       <>{enabled.bloom && <Bloom mipmapBlur intensity={1.1} luminanceThreshold={0.15} luminanceSmoothing={0.3} radius={0.7} />}</>

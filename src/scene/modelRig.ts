@@ -7,6 +7,7 @@ import {
   Box3,
   BufferAttribute,
   BufferGeometry,
+  Color,
   EdgesGeometry,
   Euler,
   Group,
@@ -23,11 +24,15 @@ import {
   type Camera,
   type Object3D,
   type PerspectiveCamera,
+  type Material,
+  type MeshPhysicalMaterial,
   type ShaderMaterial,
 } from 'three'
 import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from 'three-mesh-bvh'
 import type { ModelDefinition, PartDef } from '../models/ModelDefinition'
+import { lookFor, type ModelDefinition as Def } from '../models/ModelDefinition'
 import { createHoloMaterial } from './HoloMaterial'
+import { createRealisticMaterial } from './realisticLooks'
 
 Object.assign(BufferGeometry.prototype, { computeBoundsTree, disposeBoundsTree })
 Mesh.prototype.raycast = acceleratedRaycast
@@ -36,7 +41,11 @@ export type PartLocation = 'model' | 'bench' | 'carry'
 
 export interface PartRig {
   def: PartDef
-  mesh: Mesh<BufferGeometry, ShaderMaterial>
+  mesh: Mesh<BufferGeometry, Material>
+  /** Hologram material. */
+  holo: ShaderMaterial
+  /** Realistic (physically based) material. */
+  real: MeshPhysicalMaterial
   edges: LineSegments | null
   ghost: Mesh<BufferGeometry, ShaderMaterial>
   /** Assembled position in model (inner) space. */
@@ -72,6 +81,7 @@ export interface RigState {
 const tmpV = new Vector3()
 const tmpV2 = new Vector3()
 const tmpQ = new Quaternion()
+const tmpColor = new Color()
 
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3)
 
@@ -100,6 +110,17 @@ export class ModelRig {
   /** Horizontal shift so the model sits left of the side panel. */
   private layoutShift = 0
   private benchSlots = new Map<string, { pos: Vector3; scale: number }>()
+  /** Realistic (PBR) look instead of the hologram. */
+  realistic = false
+
+  setRealistic(on: boolean): void {
+    if (this.realistic === on) return
+    this.realistic = on
+    for (const part of this.parts.values()) {
+      part.mesh.material = on ? part.real : part.holo
+      part.mesh.renderOrder = on && (part.real.userData.baseOpacity as number) < 1 ? 1 : 0
+    }
+  }
 
   constructor(def: ModelDefinition, scene: Object3D) {
     this.def = def
@@ -120,7 +141,9 @@ export class ModelRig {
       const home = new Vector3().setFromMatrixPosition(src!.matrixWorld)
       box.expandByObject(srcMesh)
 
-      const mesh = new Mesh(geometry, createHoloMaterial({ color: partDef.color }))
+      const holo = createHoloMaterial({ color: partDef.color })
+      const real = createRealisticMaterial(lookFor(def as Def, partDef))
+      const mesh = new Mesh<BufferGeometry, Material>(geometry, holo)
       mesh.name = partDef.id
       mesh.position.copy(home)
       mesh.userData.partId = partDef.id
@@ -150,7 +173,9 @@ export class ModelRig {
 
       this.parts.set(partDef.id, {
         def: partDef,
-        mesh: mesh as Mesh<BufferGeometry, ShaderMaterial>,
+        mesh,
+        holo,
+        real,
         edges,
         ghost: ghost as Mesh<BufferGeometry, ShaderMaterial>,
         home,
@@ -377,13 +402,26 @@ export class ModelRig {
       part.flash = Math.max(0, part.flash - dt * 1.8)
       mesh.visible = part.opacity > 0.01
 
-      const u = mesh.material.uniforms
+      const dimmed = dimOthers && s.selected !== id && s.carried !== id && part.highlight < 0.5
+      if (this.realistic) {
+        const m = part.real
+        const base = m.userData.baseOpacity as number
+        m.opacity = base * part.opacity
+        m.depthWrite = base >= 1 && part.opacity > 0.98
+        m.color.copy(m.userData.baseColor as Color).multiplyScalar(dimmed ? 0.45 : 1)
+        m.emissive
+          .copy(m.userData.baseEmissive as Color)
+          .add(tmpColor.set(part.def.color).multiplyScalar(0.28 * (part.highlight + part.flash * 2)))
+      }
+      const u = part.holo.uniforms
       u.uTime.value = this.time
       u.uOpacity.value = part.opacity
       u.uHighlight.value = part.highlight + part.flash * 2
-      const dimmed = dimOthers && s.selected !== id && s.carried !== id && part.highlight < 0.5
       u.uIntensity.value = this.def.glow * (dimmed ? 0.5 : 1)
-      if (part.edges) (part.edges.material as LineBasicMaterial).opacity = (dimmed ? 0.12 : 0.3) * part.opacity
+      if (part.edges) {
+        part.edges.visible = !this.realistic
+        ;(part.edges.material as LineBasicMaterial).opacity = (dimmed ? 0.12 : 0.3) * part.opacity
+      }
 
       // Ghost outline at the slot of every unplaced part during assembly.
       const showGhost = assembling && !s.placed.has(id)
@@ -446,8 +484,10 @@ export class ModelRig {
     for (const part of this.parts.values()) {
       const planes = active && part.location === 'model' ? [this.clipPlane] : []
       if (part.mesh.material.clippingPlanes?.length !== planes.length) {
-        part.mesh.material.clippingPlanes = planes
-        part.mesh.material.needsUpdate = true
+        for (const m of [part.holo, part.real]) {
+          m.clippingPlanes = planes
+          m.needsUpdate = true
+        }
         if (part.edges) {
           ;(part.edges.material as LineBasicMaterial).clippingPlanes = planes
           ;(part.edges.material as LineBasicMaterial).needsUpdate = true
@@ -458,7 +498,8 @@ export class ModelRig {
 
   dispose(): void {
     for (const part of this.parts.values()) {
-      part.mesh.material.dispose()
+      part.holo.dispose()
+      part.real.dispose()
       part.ghost.material.dispose()
       if (part.edges) {
         part.edges.geometry.dispose()

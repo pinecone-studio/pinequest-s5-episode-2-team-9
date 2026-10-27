@@ -57,6 +57,15 @@ export const brain: ModelDefinition = {
       url: 'https://doi.org/10.48539/HBM929.XKCL.339',
     },
   ],
+  looks: {
+    default: 'greyMatter',
+    deep: 'deepNucleus',
+    corpus_callosum: 'whiteMatter',
+    brainstem: 'whiteMatter',
+    ventricles: 'csf',
+    olfactory_pathway: 'nerve',
+    visual_pathway: 'nerve',
+  },
   parts: [
     { id: 'brainstem', group: 'hindbrain', color: '#fcd34d', dependsOn: [], explodeScale: 0.4 },
     { id: 'cerebellum', group: 'hindbrain', color: '#86efac', dependsOn: ['brainstem'] },

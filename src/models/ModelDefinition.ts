@@ -1,6 +1,8 @@
 // Shared schema: every mode (explore, explode, study, assembly) works from this
 // data alone, so a new model is a GLB plus one definition file.
 
+import type { LookId } from '../scene/realisticLooks'
+
 export type ModelId = 'heart' | 'robotDog' | 'brain' | 'rocketEngine' | 'electricMotor' | 'skeleton' | 'muscles'
 
 export interface PartDef {
@@ -43,6 +45,12 @@ export interface ModelDefinition {
   accent: string
   /** Citations shown in the credits panel. */
   sources: { text: string; url: string }[]
+  /** Realistic-view materials, looked up by part id, then info id, then group, then 'default'. */
+  looks: Record<string, LookId> & { default: LookId }
+}
+
+export function lookFor(def: ModelDefinition, part: PartDef): LookId {
+  return def.looks[part.id] ?? (part.info ? def.looks[part.info] : undefined) ?? def.looks[part.group] ?? def.looks.default
 }
 
 // i18n key conventions (checked by tests for every part of every model).

@@ -1550,3 +1550,13 @@ a {
   border-radius: 8px;
   font: 600 0.95rem/1 var(--font-mono);
 }
+
+.view-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.view-switch .hud-button {
+  justify-content: center;
+}

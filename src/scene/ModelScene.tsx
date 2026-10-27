@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import { Vector3, type PerspectiveCamera } from 'three'
 import { InteractionController } from '../interaction/controller'
 import { useLabServices } from '../lab/LabContext'
+import { useLab } from '../lab/labStore'
 import { useModel } from '../lab/modelStore'
 import type { ModelDefinition } from '../models/ModelDefinition'
 import { ModelRig } from './modelRig'
@@ -72,6 +73,7 @@ export function ModelScene({ def }: { def: ModelDefinition }) {
       rig.layout(camera, size, PANEL_PX, unplaced)
     }
 
+    rig.setRealistic(useLab.getState().viewStyle === 'realistic')
     controller.update(dt)
     rig.update(
       dt,

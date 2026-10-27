@@ -39,6 +39,7 @@ export const skeleton: ModelDefinition = {
       url: 'https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html',
     },
   ],
+  looks: { default: 'bone' },
   parts: [
     { id: 'sacrum', group: 'spine', color: SPINE, dependsOn: [], explodeScale: 0.3 },
     { id: 'lumbar_spine', group: 'spine', color: SPINE, dependsOn: ['sacrum'] },

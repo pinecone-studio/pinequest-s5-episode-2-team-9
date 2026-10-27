@@ -2,6 +2,7 @@ import { Canvas } from '@react-three/fiber'
 import type { ReactNode } from 'react'
 import { AutoQuality } from './AutoQuality'
 import { PostFX } from './PostFX'
+import { StudioLights } from './StudioLights'
 
 // Debug switch: ?fx=0 disables post effects.
 const postFx = typeof location === 'undefined' || new URLSearchParams(location.search).get('fx') !== '0'
@@ -19,6 +20,7 @@ export function HoloCanvas({ children }: { children: ReactNode }) {
         gl.localClippingEnabled = true
       }}
     >
+      <StudioLights />
       {children}
       {postFx && <PostFX />}
       <AutoQuality />
