@@ -7,5 +7,8 @@ const tmp = new Color()
 export function glowPart(part: PartRig, amount: number): void {
   if (amount <= 0) return
   if (part.mesh.material === part.holo) part.holo.uniforms.uHighlight.value += amount
-  else part.real.emissive.add(tmp.set(part.def.color).multiplyScalar(0.3 * amount))
+  else {
+    tmp.set(part.def.color).multiplyScalar(0.3 * amount)
+    for (const m of part.reals) m.emissive.add(tmp)
+  }
 }

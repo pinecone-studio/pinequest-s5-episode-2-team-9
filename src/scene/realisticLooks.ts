@@ -54,6 +54,20 @@ export const LOOKS = {
   oxygenLine: { color: '#9cc9e8', metalness: 0.9, roughness: 0.32 },
   servo: { color: '#2a2c31', roughness: 0.5, clearcoat: 0.3 },
   battery: { color: '#2f5fb0', roughness: 0.4, clearcoat: 0.4 },
+  chassisSteel: { color: '#2b2f36', metalness: 0.55, roughness: 0.42, clearcoat: 0.3, clearcoatRoughness: 0.35 },
+  glass: { color: '#cfe6f2', roughness: 0.04, clearcoat: 0.4, clearcoatRoughness: 0.02, opacity: 0.08 },
+  nickel: { color: '#cfc9c0', metalness: 1, roughness: 0.2 },
+  dimmBlack: { color: '#15171c', roughness: 0.35, clearcoat: 0.5, clearcoatRoughness: 0.2 },
+  pcbDark: { color: '#1a1e1c', metalness: 0.15, roughness: 0.5, clearcoat: 0.5, clearcoatRoughness: 0.3 },
+  substrate: { color: '#2c5b3c', roughness: 0.45, clearcoat: 0.6, clearcoatRoughness: 0.25 },
+  chip: { color: '#121316', roughness: 0.62 },
+  brushedSteel: { color: '#a9aeb3', metalness: 1, roughness: 0.45 },
+  sleeve: { color: '#16181b', roughness: 0.82, sheen: 0.7, sheenColor: '#5a6068' },
+  label: { color: '#c4c8cc', roughness: 0.75 },
+  labelDark: { color: '#2a2d33', roughness: 0.6 },
+  ledWhite: { color: '#bfe6f5', roughness: 0.3, emissive: '#2a6f8c' },
+  jackGreen: { color: '#3fae5a', roughness: 0.45, clearcoat: 0.3 },
+  jackPink: { color: '#e07aa7', roughness: 0.45, clearcoat: 0.3 },
 } satisfies Record<string, LookPreset>
 
 export type LookId = keyof typeof LOOKS

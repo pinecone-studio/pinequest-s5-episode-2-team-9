@@ -2,21 +2,36 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import en from '../i18n/en.json'
 import mn from '../i18n/mn.json'
+import { LOOKS } from '../scene/realisticLooks'
 import { assemblyOrder, keys, placeable } from './ModelDefinition'
 import { library } from './registry'
 
-/** Node names from a GLB's JSON chunk. */
-function glbNodeNames(url: string): string[] {
+interface GltfJson {
+  nodes: { name?: string }[]
+  materials?: { name?: string }[]
+}
+
+/** The JSON chunk of a GLB. */
+function glbJson(url: string): GltfJson {
   const buf = readFileSync(`public${url}`)
   const length = buf.readUInt32LE(12)
-  const json = JSON.parse(buf.subarray(20, 20 + length).toString('utf8')) as { nodes: { name?: string }[] }
-  return json.nodes.map((n) => n.name ?? '')
+  return JSON.parse(buf.subarray(20, 20 + length).toString('utf8')) as GltfJson
+}
+
+/** Node names from a GLB's JSON chunk. */
+function glbNodeNames(url: string): string[] {
+  return glbJson(url).nodes.map((n) => n.name ?? '')
 }
 
 describe.each(library)('$id model', (def) => {
   it('has every part in its GLB', () => {
     const names = new Set(glbNodeNames(def.url))
     for (const part of def.parts) expect(names.has(part.id), part.id).toBe(true)
+  })
+
+  it('names only known realistic looks in its GLB materials', () => {
+    // Multi-material parts carry one material per look, named by its look id.
+    for (const m of glbJson(def.url).materials ?? []) if (m.name && m.name !== 'holo') expect(LOOKS, m.name).toHaveProperty([m.name])
   })
 
   it('has unique part ids and valid dependencies', () => {

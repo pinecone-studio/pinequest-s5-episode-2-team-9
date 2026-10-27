@@ -3,6 +3,17 @@
 Live: **https://hololemma.vercel.app** · Repo: `brkh1222-byte/Hololemma` (private; every push to `main` deploys).
 Spec: `.plans/hololemma-v1-spec.md` · Design: `PLAN.md`.
 
+## v3: computer hardware (realistic only)
+
+| Item | Status | Notes |
+|---|---|---|
+| Computer hardware | ✅ | Original mid-tower PC built in code from ATX, PCIe, DIMM and drive sizes (`scripts/build-computer.ts`), ~160k triangles. 20 assembly parts, realistic view only (no hologram switch), assembly chain from case to side panel. Mongolian text needs review. |
+| Multi-material parts | ✅ | A part can carry several looks (GLB primitives named by look id); the rig merges them into one geometry with a material per group. Used for gold contacts, chips, labels, LEDs, copper, sleeved wires |
+
+Details: LGA socket with contact field, load plate and lever; CPU with heat spreader and land pads; tower cooler with U heat pipes and 48 fins; DDR5 modules with edge contacts and light bars; GPU with stepped PCB, gold fingers, backplate, fin stack, three fans and output bracket; modular PSU with grille and honeycomb rear; individually modelled 24-pin, 8-pin CPU, 8-pin PCIe and SATA power wires routed behind the tray through grommets.
+
+Known limits: no textures (no printed text or silkscreen), and the model is procedural, not scanned. SATA data cables are not modelled.
+
 ## v2 (2026-10-27): new models, realism, motion
 
 | Item | Status | Notes |
