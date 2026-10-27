@@ -58,6 +58,13 @@ export function ModelScene({ def }: { def: ModelDefinition }) {
   const tmp = useMemo(() => new Vector3(), [])
 
   useEffect(() => controller.attach(), [controller])
+
+  // Realistic-only models keep PBR on while open, and the saved view style is left alone.
+  useEffect(() => {
+    if (!def.realisticOnly) return
+    useLab.getState().set({ forcedRealistic: true })
+    return () => useLab.getState().set({ forcedRealistic: false })
+  }, [def])
   useEffect(() => useModel.getState().set({ loaded: true }), [rig])
   useEffect(() => () => rig.dispose(), [rig])
 
@@ -97,7 +104,8 @@ export function ModelScene({ def }: { def: ModelDefinition }) {
       rig.layout(camera, size, PANEL_PX, unplaced)
     }
 
-    rig.setRealistic(useLab.getState().viewStyle === 'realistic')
+    const lab = useLab.getState()
+    rig.setRealistic(lab.viewStyle === 'realistic' || lab.forcedRealistic)
     controller.update(dt)
     rig.update(
       dt,

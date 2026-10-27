@@ -3,7 +3,7 @@
 
 import type { LookId } from '../scene/realisticLooks'
 
-export type ModelId = 'heart' | 'robotDog' | 'brain' | 'rocketEngine' | 'electricMotor' | 'skeleton' | 'muscles'
+export type ModelId = 'heart' | 'robotDog' | 'brain' | 'rocketEngine' | 'electricMotor' | 'skeleton' | 'muscles' | 'computer'
 
 export interface PartDef {
   /** Node name in the GLB. */
@@ -49,6 +49,8 @@ export interface ModelDefinition {
   motion?: 'heart' | 'motor' | 'rocket' | 'dog'
   /** Realistic-view materials, looked up by part id, then info id, then group, then 'default'. */
   looks: Record<string, LookId> & { default: LookId }
+  /** Physical model with no hologram look: the view switch is hidden and PBR is always on. */
+  realisticOnly?: boolean
 }
 
 export function lookFor(def: ModelDefinition, part: PartDef): LookId {

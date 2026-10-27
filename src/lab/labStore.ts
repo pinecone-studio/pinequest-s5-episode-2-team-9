@@ -22,6 +22,8 @@ interface LabState {
   tipsSeen: boolean
   /** Hologram glow or physically based materials. */
   viewStyle: 'hologram' | 'realistic'
+  /** Set while a realistic-only model is open. Not persisted, so the saved view style is kept. */
+  forcedRealistic: boolean
 
   set: (patch: Partial<Omit<LabState, 'set'>>) => void
 }
@@ -40,6 +42,7 @@ export const useLab = create<LabState>()(
       headParallax: false,
       tipsSeen: false,
       viewStyle: 'hologram',
+      forcedRealistic: false,
       set: (patch) => set(patch),
     }),
     {

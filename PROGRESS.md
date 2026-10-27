@@ -3,6 +3,14 @@
 Live: **https://hololemma.vercel.app** · Repo: `brkh1222-byte/Hololemma` (private; every push to `main` deploys).
 Spec: `.plans/hololemma-v1-spec.md` · Design: `PLAN.md`.
 
+## v3: computer hardware (realistic only)
+
+| Item | Status | Notes |
+|---|---|---|
+| Computer hardware | ✅ | Original mid-tower PC built in code from ATX, PCIe and DIMM sizes (`scripts/build-computer.ts`). 20 assembly parts, realistic view only (no hologram switch), assembly chain from case to side panel. Mongolian text needs review. |
+
+Known limits: each part has one material, so a board's capacitors share the PCB colour. The model is procedural, not scanned, so fine detail is simpler than a real product photo.
+
 ## v2 (2026-10-27): new models, realism, motion
 
 | Item | Status | Notes |

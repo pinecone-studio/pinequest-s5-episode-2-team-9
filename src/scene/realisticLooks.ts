@@ -54,6 +54,10 @@ export const LOOKS = {
   oxygenLine: { color: '#9cc9e8', metalness: 0.9, roughness: 0.32 },
   servo: { color: '#2a2c31', roughness: 0.5, clearcoat: 0.3 },
   battery: { color: '#2f5fb0', roughness: 0.4, clearcoat: 0.4 },
+  chassisSteel: { color: '#2b2f36', metalness: 0.55, roughness: 0.42, clearcoat: 0.3, clearcoatRoughness: 0.35 },
+  glass: { color: '#cfe6f2', roughness: 0.04, clearcoat: 0.4, clearcoatRoughness: 0.02, opacity: 0.08 },
+  nickel: { color: '#cfc9c0', metalness: 1, roughness: 0.2 },
+  dimmBlack: { color: '#15171c', roughness: 0.35, clearcoat: 0.5, clearcoatRoughness: 0.2 },
 } satisfies Record<string, LookPreset>
 
 export type LookId = keyof typeof LOOKS
