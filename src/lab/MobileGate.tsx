@@ -7,22 +7,22 @@ export function MobileGate() {
   const t = useT()
   const [copied, setCopied] = useState(false)
   return (
-    <main className="mobile-gate">
+    <main className="site mobile-gate">
       <div>
-        <span className="brand">
-          <span className="brand-mark" aria-hidden="true" />
+        <Link to="/" className="site-mark">
+          <i aria-hidden="true" />
           {t('app.name')}
-        </span>
+        </Link>
         <h1>{t('landing.needsLaptop')}</h1>
         <p>{t('landing.needsLaptopText')}</p>
         <button
           type="button"
-          className="ghost-button"
+          className="btn"
           onClick={() => void navigator.clipboard?.writeText(window.location.href).then(() => setCopied(true))}
         >
           {copied ? t('landing.copied') : t('landing.copyLink')}
         </button>
-        <Link to="/" className="hud-button">
+        <Link to="/" className="text-link">
           ← {t('lab.back')}
         </Link>
       </div>
