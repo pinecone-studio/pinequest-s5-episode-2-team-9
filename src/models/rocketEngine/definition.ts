@@ -19,6 +19,7 @@ export const rocketEngine: ModelDefinition = {
   initialRotation: [0.2, 0.6, 0],
   accent: HOT,
   sources: [],
+  motion: 'rocket',
   looks: {
     default: 'steel',
     combustion_chamber: 'hotCopper',

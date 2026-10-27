@@ -25,6 +25,7 @@ export const heart: ModelDefinition = {
     },
     { text: 'Creative Commons Attribution 4.0', url: 'https://creativecommons.org/licenses/by/4.0/' },
   ],
+  motion: 'heart',
   looks: {
     default: 'myocardium',
     septum: 'septum',

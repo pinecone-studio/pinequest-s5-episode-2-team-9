@@ -19,6 +19,7 @@ export const electricMotor: ModelDefinition = {
   initialRotation: [0.35, -0.7, 0],
   accent: COPPER,
   sources: [],
+  motion: 'motor',
   looks: {
     default: 'steel',
     north_magnet: 'magnetNorth',

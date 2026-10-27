@@ -8,6 +8,9 @@ import { useLab } from '../lab/labStore'
 import { useModel } from '../lab/modelStore'
 import type { ModelDefinition } from '../models/ModelDefinition'
 import { ModelRig } from './modelRig'
+import { createHeartMotion } from './motion/heartMotion'
+import { createMotorMotion } from './motion/motorMotion'
+import { createRocketMotion } from './motion/rocketMotion'
 import { PANEL_PX, labelAnchor } from './sceneShared'
 
 
@@ -24,6 +27,24 @@ export function ModelScene({ def }: { def: ModelDefinition }) {
   const size = useThree((s) => s.size)
   const get = useThree((s) => s.get)
   const rig = useMemo(() => new ModelRig(def, scene), [def, scene])
+
+  // Motion objects (particles, flame) are created per mount so StrictMode's
+  // mount → unmount → mount cycle can't leave them disposed.
+  useEffect(() => {
+    const motion =
+      def.motion === 'heart'
+        ? createHeartMotion(rig)
+        : def.motion === 'motor'
+          ? createMotorMotion(rig)
+          : def.motion === 'rocket'
+            ? createRocketMotion(rig)
+            : null
+    rig.attachMotion(motion)
+    return () => {
+      rig.attachMotion(null)
+      motion?.dispose()
+    }
+  }, [rig, def])
   const controller = useMemo(
     () => new InteractionController(rig, hub, camera, () => get().size),
     [rig, hub, camera, get],

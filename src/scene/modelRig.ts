@@ -39,6 +39,12 @@ Mesh.prototype.raycast = acceleratedRaycast
 
 export type PartLocation = 'model' | 'bench' | 'carry'
 
+export interface RigMotion {
+  /** Called every frame after the parts have their base pose. `active` is false outside explore mode. */
+  update(dt: number, rig: ModelRig, active: boolean): void
+  dispose(): void
+}
+
 export interface PartRig {
   def: PartDef
   mesh: Mesh<BufferGeometry, Material>
@@ -63,6 +69,9 @@ export interface PartRig {
   highlight: number
   highlightTarget: number
   flash: number
+  /** Animated pose without motion (motion is layered on top of it each frame). */
+  pose: Vector3
+  poseScale: number
 }
 
 export interface RigState {
@@ -112,6 +121,12 @@ export class ModelRig {
   private benchSlots = new Map<string, { pos: Vector3; scale: number }>()
   /** Realistic (PBR) look instead of the hologram. */
   realistic = false
+  /** Optional animation layered on the parts (heartbeat, spinning rotor...). */
+  private motion: RigMotion | null = null
+
+  attachMotion(motion: RigMotion | null): void {
+    this.motion = motion
+  }
 
   setRealistic(on: boolean): void {
     if (this.realistic === on) return
@@ -191,6 +206,8 @@ export class ModelRig {
         highlight: 0,
         highlightTarget: 0,
         flash: 0,
+        pose: home.clone(),
+        poseScale: 1,
       })
     }
 
@@ -286,6 +303,8 @@ export class ModelRig {
     const parent = location === 'model' ? this.inner : location === 'bench' ? this.benchInner : this.root
     parent.attach(part.mesh)
     part.location = location
+    part.pose.copy(part.mesh.position)
+    part.poseScale = part.mesh.scale.x
   }
 
   /** Sends every non-base part to the bench (assembly start). */
@@ -394,9 +413,11 @@ export class ModelRig {
       part.highlightTarget =
         s.hovered === id || s.selected === id || s.carried === id ? 1 : hinted ? 0.6 + 0.4 * Math.sin(this.time * 6) : 0
 
-      mesh.position.lerp(part.targetPos, part.location === 'carry' ? kFast : k)
-      const scale = mesh.scale.x + (part.targetScale - mesh.scale.x) * k
-      mesh.scale.setScalar(scale)
+      part.pose.lerp(part.targetPos, part.location === 'carry' ? kFast : k)
+      part.poseScale += (part.targetScale - part.poseScale) * k
+      mesh.position.copy(part.pose)
+      mesh.scale.setScalar(part.poseScale)
+      mesh.quaternion.identity()
       part.opacity += (part.opacityTarget - part.opacity) * k
       part.highlight += (part.highlightTarget - part.highlight) * kFast
       part.flash = Math.max(0, part.flash - dt * 1.8)
@@ -433,6 +454,7 @@ export class ModelRig {
       }
     }
 
+    if (this.motion) this.motion.update(dt, this, s.mode === 'explore' && !s.carried)
     this.updateLeaderLines(s.mode === 'explore' ? explode : 0, assembling)
     this.updateCarryLine(s.carried)
     this.updateClipping(s, camera)

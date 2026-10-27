@@ -4,6 +4,7 @@ import { keys } from '../../models/ModelDefinition'
 import { useLab } from '../labStore'
 import { useModel } from '../modelStore'
 import { AssemblyPanel } from './AssemblyPanel'
+import { MotionControls } from './MotionControls'
 import { StudyCard } from './StudyCard'
 
 // Right-docked HUD: explore controls + parts list, the study card, or assembly.
@@ -46,6 +47,7 @@ export function ModelPanel() {
 
       {mode === 'explore' && (
         <>
+          <MotionControls />
           <label className="slider-row">
             <span>{t('panel.explode')}</span>
             <input

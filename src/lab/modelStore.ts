@@ -28,6 +28,10 @@ interface ModelState {
   message: AssemblyMessage | null
   /** Incremented to ask the scene to reset the view rotation. */
   resetToken: number
+  /** Motion playing (heartbeat, spinning rotor, firing engine). */
+  running: boolean
+  /** Heart: beats per minute. Machines: speed in %. */
+  tempo: number
 
   load: (def: ModelDefinition) => void
   set: (patch: Partial<ModelState>) => void
@@ -56,6 +60,8 @@ const initial = {
   carried: null,
   hintPart: null,
   message: null,
+  running: false,
+  tempo: 72,
 }
 
 export const useModel = create<ModelState>()((set, get) => ({

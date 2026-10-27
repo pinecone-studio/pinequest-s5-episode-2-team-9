@@ -761,5 +761,19 @@
   "atoms.element.Ca": "Calcium",
   "view.title": "View",
   "view.hologram": "Hologram",
-  "view.realistic": "Realistic"
+  "view.realistic": "Realistic",
+  "motion.play.heart": "▶ Make it beat",
+  "motion.play.motor": "▶ Run the motor",
+  "motion.play.rocket": "▶ Fire the engine",
+  "motion.stop": "■ Stop",
+  "motion.bpm": "Beats per minute",
+  "motion.speed": "Speed",
+  "motion.phase.atrial": "Atrial systole",
+  "motion.phase.ventricular": "Ventricular systole",
+  "motion.phase.diastole": "Diastole",
+  "motion.phaseHint.atrial": "The atria squeeze and top up the ventricles. The tricuspid and mitral valves are open.",
+  "motion.phaseHint.ventricular": "The ventricles squeeze. The tricuspid and mitral valves snap shut (\"lub\") and blood is pushed out through the pulmonary and aortic valves.",
+  "motion.phaseHint.diastole": "The heart relaxes and fills with blood. The pulmonary and aortic valves have closed (\"dub\").",
+  "motion.hint.motor": "Current flows through the brushes into one coil at a time. The commutator keeps switching coils, so the magnets keep pushing the rotor round.",
+  "motion.hint.rocket": "The turbopump spins and forces oxygen (blue) and kerosene (gold) into the chamber, where they burn and blast out of the nozzle."
 }

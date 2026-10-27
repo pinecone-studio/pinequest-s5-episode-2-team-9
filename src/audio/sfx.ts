@@ -2,7 +2,7 @@
 // browser's tab mute is the off switch. The context is unlocked by the first
 // user gesture (the Start button or any click).
 
-type SoundName = 'click' | 'hover' | 'pick' | 'snap' | 'wrong' | 'success' | 'open'
+type SoundName = 'click' | 'hover' | 'pick' | 'snap' | 'wrong' | 'success' | 'open' | 'lub' | 'dub'
 
 let ctx: AudioContext | null = null
 let master: GainNode | null = null
@@ -74,6 +74,13 @@ export function play(name: SoundName): void {
       break
     case 'success':
       ;[523, 659, 784, 1047].forEach((f, i) => tone(f, t + i * 0.09, 0.35, { type: 'triangle', gain: 0.28 }))
+      break
+    case 'lub':
+      tone(62, t, 0.16, { gain: 0.9, to: 48, attack: 0.012 })
+      tone(110, t, 0.08, { type: 'triangle', gain: 0.25, to: 70 })
+      break
+    case 'dub':
+      tone(78, t, 0.11, { gain: 0.7, to: 58, attack: 0.01 })
       break
     case 'open':
       tone(400, t, 0.22, { gain: 0.22, to: 1100, attack: 0.03 })
