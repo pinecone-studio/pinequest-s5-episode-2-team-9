@@ -19,6 +19,7 @@ import { GestureTips } from './GestureTips'
 import { HandLayer } from './HandLayer'
 import { LabContext, type LabServices } from './LabContext'
 import { CreditsPanel } from './CreditsPanel'
+import { trackProgress } from '../progress/trackProgress'
 import { trackLab } from './labAnalytics'
 import { useLab } from './labStore'
 import { useModel } from './modelStore'
@@ -56,6 +57,7 @@ export default function LabPage() {
 
   useEffect(() => () => services.face.close(), [services])
   useEffect(() => trackLab(), [])
+  useEffect(() => trackProgress(), [])
   const def = modelBySlug(modelId)
   const experience = def ? undefined : experienceBySlug(modelId)
   const loaded = useModel((s) => s.loaded)

@@ -21,9 +21,17 @@ describe('authErrorKey', () => {
   })
 
   it('only returns keys that exist', () => {
-    const codes = ['auth/invalid-credential', 'auth/email-already-in-use', 'auth/invalid-email', 'auth/weak-password',
-      'auth/too-many-requests', 'auth/network-request-failed', 'auth/popup-blocked',
-      'auth/account-exists-with-different-credential', 'x']
+    const codes = [
+      'auth/invalid-credential',
+      'auth/email-already-in-use',
+      'auth/invalid-email',
+      'auth/weak-password',
+      'auth/too-many-requests',
+      'auth/network-request-failed',
+      'auth/popup-blocked',
+      'auth/account-exists-with-different-credential',
+      'x',
+    ]
     for (const code of codes) expect(Object.keys(en)).toContain(authErrorKey({ code }))
   })
 })

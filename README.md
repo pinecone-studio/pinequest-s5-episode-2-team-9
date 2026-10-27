@@ -30,6 +30,8 @@ The lab requires an account (Google or email + password). The landing page stays
 
 Without the config, `/login` shows a "not set up" notice and the lab stays locked. Code: `src/auth/`.
 
+**Saved progress (Firestore).** Signed-in users get a profile (`users/{uid}`) and per-model progress (`users/{uid}/progress/{modelId}`: parts studied, assemblies completed, best assembly time). It shows on the library cards, as checkmarks in the lab's part list, and on `/profile`. Create the Firestore database in the Firebase console, then paste [`firestore.rules`](firestore.rules) into Firestore → Rules and publish (each user can only read and write their own documents). Code: `src/progress/`.
+
 ## Models
 
 Built once with the asset scripts and committed to `public/models/`:

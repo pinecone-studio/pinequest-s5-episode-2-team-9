@@ -911,5 +911,19 @@
   "auth.error.popupBlocked": "Хөтөч Google-ийн цонхыг хаалаа. Pop-up зөвшөөрөөд дахин оролдоно уу.",
   "auth.error.otherMethod": "Энэ имэйл өөр аргаар нэвтэрдэг. Тэр аргаа ашиглана уу.",
   "auth.error.emailFirst": "Эхлээд имэйлээ бичээд “Нууц үгээ мартсан уу?”-г дарна уу.",
-  "auth.error.generic": "Алдаа гарлаа. Дахин оролдоно уу."
+  "auth.error.generic": "Алдаа гарлаа. Дахин оролдоно уу.",
+  "progress.studied": "Судалсан",
+  "progress.studiedPart": "Судалсан",
+  "progress.assembled": "Угсарсан",
+  "progress.best": "Шилдэг",
+  "profile.title": "Таны ахиц",
+  "profile.memberSince": "Бүртгүүлсэн:",
+  "profile.loading": "Ахицыг ачаалж байна…",
+  "profile.error": "Ахицыг ачаалж чадсангүй. Интернэтээ шалгаад хуудсаа дахин ачаална уу.",
+  "profile.models": "Үзсэн загвар",
+  "profile.parts": "Судалсан хэсэг",
+  "profile.assemblies": "Угсарсан удаа",
+  "profile.empty": "Одоогоор хоосон байна. Загвар нээж, хэсгүүдийг нь судлаад буцааж угсраарай. Таны ахиц энд хадгалагдана.",
+  "profile.notStarted": "Эхлээгүй",
+  "profile.open": "Нээх"
 }

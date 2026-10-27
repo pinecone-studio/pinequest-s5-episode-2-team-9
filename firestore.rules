@@ -1,0 +1,27 @@
+rules_version = '2';
+
+// Each user can read and write only their own documents.
+// Publish in the Firebase console: Firestore Database → Rules.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    match /users/{uid} {
+      allow read, delete: if isOwner(uid);
+      allow create, update: if isOwner(uid)
+        && request.resource.data.keys().hasOnly(['name', 'email', 'createdAt', 'lastSeenAt']);
+
+      match /progress/{modelId} {
+        allow read, delete: if isOwner(uid);
+        allow create, update: if isOwner(uid)
+          && modelId.size() <= 40
+          && request.resource.data.keys().hasOnly(['studied', 'assemblies', 'bestAssemblyMs', 'lastOpenedAt', 'updatedAt'])
+          && (!('studied' in request.resource.data) || (request.resource.data.studied is list && request.resource.data.studied.size() <= 200))
+          && (!('assemblies' in request.resource.data) || request.resource.data.assemblies is int)
+          && (!('bestAssemblyMs' in request.resource.data) || request.resource.data.bestAssemblyMs is number);
+      }
+    }
+  }
+}
