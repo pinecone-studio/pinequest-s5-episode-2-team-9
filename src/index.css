@@ -1324,3 +1324,229 @@ a {
   font-size: 0.84rem;
   line-height: 1.45;
 }
+
+/* Atoms lab */
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.tabs .hud-button,
+.qn-row .hud-button {
+  justify-content: center;
+}
+
+.hud-button[data-active='true'] {
+  border-color: var(--cyan);
+  background: rgba(94, 231, 255, 0.18);
+  box-shadow: 0 0 12px rgba(94, 231, 255, 0.3);
+}
+
+.hud-button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.element-card {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(94, 231, 255, 0.05);
+}
+
+.element-card h2 {
+  margin: 0 0 4px;
+  font-size: 1.2rem;
+}
+
+.element-card p {
+  margin: 0 0 6px;
+  color: var(--ink-dim);
+  font-size: 0.85rem;
+}
+
+.element-symbol {
+  display: grid;
+  place-items: center;
+  width: 74px;
+  height: 74px;
+  border: 1px solid var(--cyan);
+  border-radius: 8px;
+  box-shadow: inset 0 0 14px rgba(94, 231, 255, 0.25);
+  font-family: var(--font-mono);
+}
+
+.element-symbol strong {
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.element-symbol small {
+  color: var(--ink-dim);
+  font-size: 0.7rem;
+}
+
+.badge {
+  padding: 3px 8px;
+  border-radius: 999px;
+  font: 600 0.7rem/1 var(--font-mono);
+  letter-spacing: 0.06em;
+}
+
+.badge--stable {
+  background: rgba(77, 255, 195, 0.15);
+  color: #4dffc3;
+}
+
+.badge--unstable {
+  background: rgba(255, 180, 77, 0.15);
+  color: #ffb44d;
+}
+
+.counter {
+  display: grid;
+  grid-template-columns: 1fr 40px 40px 40px;
+  gap: 6px;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.counter b {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+}
+
+.counter .hud-button {
+  justify-content: center;
+  padding: 0.4em 0;
+  font-size: 1rem;
+}
+
+.counter--proton span {
+  color: #ff8a96;
+}
+
+.counter--neutron span {
+  color: #cdd7e2;
+}
+
+.counter--electron span {
+  color: var(--cyan);
+}
+
+.mini-table {
+  display: grid;
+  grid-template-columns: repeat(18, 1fr);
+  gap: 2px;
+}
+
+.mini-table span {
+  padding: 3px 0;
+  border-radius: 3px;
+  background: rgba(94, 231, 255, 0.06);
+  color: var(--ink-dim);
+  font: 600 0.55rem/1 var(--font-mono);
+  text-align: center;
+}
+
+.mini-table span[data-active='true'] {
+  background: var(--cyan);
+  color: var(--bg);
+}
+
+.orbital-name {
+  margin: 0;
+  font: 700 1.6rem/1.1 var(--font-mono);
+  color: var(--cyan);
+}
+
+.qn-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.qn-row > span {
+  width: 18px;
+  color: var(--ink-dim);
+  font: 600 0.85rem/1 var(--font-mono);
+}
+
+.qn-row .hud-button {
+  min-width: 40px;
+  text-transform: none;
+}
+
+.spectrum {
+  position: relative;
+  height: 46px;
+  margin: 4px 14px;
+}
+
+.spectrum-band {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #4b0082, #0000ff, #00ffff, #00ff00, #ffff00, #ff7f00, #ff0000);
+  opacity: 0.18;
+}
+
+.spectrum i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  margin-left: -1.5px;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.spectrum i[data-band='ultraviolet'],
+.spectrum i[data-band='infrared'] {
+  opacity: 0.6;
+}
+
+.spectrum-label {
+  position: absolute;
+  bottom: -16px;
+  color: var(--ink-dim);
+  font: 600 0.6rem/1 var(--font-mono);
+}
+
+.spectrum-label--left {
+  left: -10px;
+}
+
+.spectrum-label--right {
+  right: -10px;
+}
+
+.photon-card {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 0.82rem;
+}
+
+.photon-card i {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.spin-stats {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: 600 0.95rem/1 var(--font-mono);
+}

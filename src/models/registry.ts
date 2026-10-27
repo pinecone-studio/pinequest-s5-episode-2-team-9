@@ -13,3 +13,20 @@ export const library: ModelDefinition[] = [heart, brain, skeleton, muscles, robo
 export function modelBySlug(slug: string): ModelDefinition | undefined {
   return library.find((m) => m.slug === slug)
 }
+
+/** Labs that are not take-apart models (own scene and panel). */
+export interface Experience {
+  id: 'atoms'
+  slug: string
+  accent: string
+  titleKey: string
+  summaryKey: string
+}
+
+export const experiences: Experience[] = [
+  { id: 'atoms', slug: 'atoms', accent: '#5ee7ff', titleKey: 'atoms.title', summaryKey: 'atoms.summary' },
+]
+
+export function experienceBySlug(slug: string): Experience | undefined {
+  return experiences.find((e) => e.slug === slug)
+}

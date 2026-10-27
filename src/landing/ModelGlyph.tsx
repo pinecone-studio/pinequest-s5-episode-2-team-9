@@ -1,7 +1,16 @@
-import type { ModelId } from '../models/ModelDefinition'
 
 // Line-art emblems for the library cards (drawn, not rendered, so cards stay light).
-export function ModelGlyph({ id }: { id: ModelId }) {
+export function ModelGlyph({ id }: { id: string }) {
+  if (id === 'atoms') {
+    return (
+      <svg viewBox="0 0 200 200" className="glyph">
+        <ellipse className="glyph-main" cx="100" cy="100" rx="78" ry="28" />
+        <ellipse className="glyph-main" cx="100" cy="100" rx="78" ry="28" transform="rotate(60 100 100)" />
+        <ellipse className="glyph-accent" cx="100" cy="100" rx="78" ry="28" transform="rotate(-60 100 100)" />
+        <circle className="glyph-dot" cx="100" cy="100" r="9" />
+      </svg>
+    )
+  }
   if (id === 'heart') {
     return (
       <svg viewBox="0 0 200 200" className="glyph">

@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 import { unlockAudio } from '../audio/sfx'
 import { useT, useTx } from '../i18n'
 import { keys, type ModelDefinition } from '../models/ModelDefinition'
-import { library } from '../models/registry'
+import { experiences, library, type Experience } from '../models/registry'
 import { isMobileDevice } from '../ui/device'
 import { LangToggle } from '../ui/LangToggle'
 import { ModelGlyph } from './ModelGlyph'
@@ -59,6 +59,34 @@ function LibraryCard({ def, startWord, mobile }: { def: ModelDefinition; startWo
           </div>
         ) : (
           <Link to={`/lab/${def.slug}`} className="start-button" onClick={unlockAudio}>
+            {startWord}
+            <span aria-hidden="true">→</span>
+          </Link>
+        )}
+      </div>
+    </motion.article>
+  )
+}
+
+function ExperienceCard({ exp, startWord, mobile }: { exp: Experience; startWord: string; mobile: boolean }) {
+  const t = useT()
+  const tx = useTx()
+  return (
+    <motion.article className="library-card" style={{ '--accent': exp.accent } as React.CSSProperties} {...reveal}>
+      <div className="library-visual">
+        <ModelGlyph id={exp.id} />
+      </div>
+      <div className="library-body">
+        <span className="library-meta">{t('atoms.tab.build')} · {t('atoms.tab.orbitals')} · {t('atoms.tab.light')}</span>
+        <h3>{tx(exp.titleKey)}</h3>
+        <p>{tx(exp.summaryKey)}</p>
+        {mobile ? (
+          <div className="library-gate">
+            <strong>{t('landing.needsLaptop')}</strong>
+            <CopyLink />
+          </div>
+        ) : (
+          <Link to={`/lab/${exp.slug}`} className="start-button" onClick={unlockAudio}>
             {startWord}
             <span aria-hidden="true">→</span>
           </Link>
@@ -167,6 +195,9 @@ export default function LandingPage() {
         <div className="library-grid">
           {library.map((def) => (
             <LibraryCard key={def.id} def={def} startWord={startWord} mobile={mobile} />
+          ))}
+          {experiences.map((exp) => (
+            <ExperienceCard key={exp.id} exp={exp} startWord={startWord} mobile={mobile} />
           ))}
         </div>
         {!mobile && <p className="library-note">{t('landing.mouseNote')}</p>}

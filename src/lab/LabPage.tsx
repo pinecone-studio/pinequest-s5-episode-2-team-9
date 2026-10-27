@@ -8,7 +8,9 @@ import { PointerHub } from '../interaction/pointerHub'
 import { useT, type I18nKey } from '../i18n'
 import { HeadParallax } from '../scene/HeadParallax'
 import { HoloCanvas } from '../scene/HoloCanvas'
-import { modelBySlug } from '../models/registry'
+import { AtomPanel } from '../atoms/AtomPanel'
+import { AtomScene } from '../atoms/scenes/AtomScene'
+import { experienceBySlug, modelBySlug } from '../models/registry'
 import { ModelScene } from '../scene/ModelScene'
 import { CalibrationOverlay } from './CalibrationOverlay'
 import { DebugPanel } from './DebugPanel'
@@ -55,6 +57,7 @@ export default function LabPage() {
   useEffect(() => () => services.face.close(), [services])
   useEffect(() => trackLab(), [])
   const def = modelBySlug(modelId)
+  const experience = def ? undefined : experienceBySlug(modelId)
   const loaded = useModel((s) => s.loaded)
 
   useEffect(() => {
@@ -135,11 +138,9 @@ export default function LabPage() {
     <LabContext.Provider value={services}>
       <main ref={rootRef} className="lab">
         <video ref={videoRef} className="lab-video" data-live={camera.state === 'live'} />
-        {def ? (
+        {def || experience ? (
           <HoloCanvas>
-            <Suspense fallback={null}>
-              <ModelScene def={def} />
-            </Suspense>
+            <Suspense fallback={null}>{def ? <ModelScene def={def} /> : <AtomScene />}</Suspense>
             {parallaxOn && <HeadParallax head={() => services.face.latest} />}
           </HoloCanvas>
         ) : (
@@ -188,6 +189,7 @@ export default function LabPage() {
         )}
 
         {def && loaded && <ModelPanel />}
+        {experience && <AtomPanel />}
         <CalibrationOverlay />
         {settingsOpen && <SettingsPanel />}
         {creditsOpen && <CreditsPanel />}
