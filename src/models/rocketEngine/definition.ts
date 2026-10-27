@@ -1,4 +1,5 @@
 import type { ModelDefinition } from '../ModelDefinition'
+import { rocketEngineTour } from './tour'
 
 const HOT = '#ff8a4c'
 const COPPER = '#ffb36b'
@@ -17,6 +18,7 @@ export const rocketEngine: ModelDefinition = {
   edges: false,
   glow: 0.85,
   initialRotation: [0.2, 0.6, 0],
+  tour: rocketEngineTour,
   accent: HOT,
   sources: [],
   motion: 'rocket',

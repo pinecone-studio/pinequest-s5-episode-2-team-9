@@ -7,13 +7,26 @@ import { useModel } from '../modelStore'
 import { AssemblyPanel } from './AssemblyPanel'
 import { MotionControls } from './MotionControls'
 import { StudyCard } from './StudyCard'
+import { TourCard } from './TourCard'
 
 // Right-docked HUD: explore controls + parts list, the study card, or assembly.
 export function ModelPanel() {
   const t = useT()
   const tx = useTx()
-  const { def, mode, explode, cutaway, scale, selected, set, openStudy, startAssembly, resetView } =
-    useModel()
+  const {
+    def,
+    mode,
+    explode,
+    cutaway,
+    scale,
+    selected,
+    tourStep,
+    set,
+    openStudy,
+    startAssembly,
+    startTour,
+    resetView,
+  } = useModel()
   const viewStyle = useLab((s) => s.viewStyle)
   const setLab = useLab((s) => s.set)
   const studied = useProgress((s) => (def && s.status === 'ready' ? s.byModel[def.id]?.studied : undefined))
@@ -54,8 +67,22 @@ export function ModelPanel() {
       {mode === 'study' && <StudyCard />}
       {mode === 'assembly' && <AssemblyPanel />}
 
-      {mode === 'explore' && (
+      {mode === 'explore' && tourStep !== null && <TourCard />}
+
+      {mode === 'explore' && tourStep === null && (
         <>
+          {def.tour && (
+            <button
+              type="button"
+              className="hud-button hud-button--primary hud-button--wide tour-start"
+              onClick={() => {
+                play('open')
+                startTour()
+              }}
+            >
+              {t('tour.start')}
+            </button>
+          )}
           <MotionControls />
           <label className="slider-row">
             <span>{t('panel.explode')}</span>

@@ -1,4 +1,5 @@
 import type { ModelDefinition, PartDef } from '../ModelDefinition'
+import { robotDogTour } from './tour'
 
 const CYAN = '#5ee7ff'
 const TEAL = '#4dffc3'
@@ -25,6 +26,7 @@ export const robotDog: ModelDefinition = {
   edges: true,
   glow: 0.42,
   initialRotation: [0.35, -0.55, 0],
+  tour: robotDogTour,
   accent: CYAN,
   sources: [
     { text: 'mangdangroboticsclub/mini_pupper_ros', url: 'https://github.com/mangdangroboticsclub/mini_pupper_ros' },

@@ -23,6 +23,22 @@ export interface PartDef {
   explodeDir?: [number, number, number]
 }
 
+/** One step of a guided tour. Text lives in i18n under keys.tourTitle / keys.tourText. */
+export interface TourStep {
+  /** Unique within the tour; part of the i18n key. */
+  id: string
+  /** Part to highlight and turn towards the viewer. */
+  part?: string
+  /** Explode amount for this step (default 0). */
+  explode?: number
+  /** Cut-away amount for this step (default 0; models with `cutaway` only). */
+  cutaway?: number
+  /** Play the model's motion during this step. */
+  motion?: boolean
+  /** Explicit view (radians, XYZ euler). Without it the view faces `part`, or the initial rotation. */
+  view?: [number, number, number]
+}
+
 export interface ModelDefinition {
   id: ModelId
   /** URL segment: /lab/<slug>. */
@@ -51,6 +67,8 @@ export interface ModelDefinition {
   looks: Record<string, LookId> & { default: LookId }
   /** Physical model with no hologram look: the view switch is hidden and PBR is always on. */
   realisticOnly?: boolean
+  /** Optional guided tour, in order. */
+  tour?: TourStep[]
 }
 
 export function lookFor(def: ModelDefinition, part: PartDef): LookId {
@@ -67,6 +85,8 @@ export const keys = {
   partDesc: (m: ModelId, p: PartDef) => `${m}.info.${p.info ?? p.id}.desc`,
   partFact: (m: ModelId, p: PartDef) => `${m}.info.${p.info ?? p.id}.fact`,
   partHint: (m: ModelId, p: PartDef) => `${m}.hint.${p.hint ?? p.id}`,
+  tourTitle: (m: ModelId, step: string) => `${m}.tour.${step}.title`,
+  tourText: (m: ModelId, step: string) => `${m}.tour.${step}.text`,
 }
 
 /** Assembly order: a topological sort of dependsOn, keeping definition order among peers. */

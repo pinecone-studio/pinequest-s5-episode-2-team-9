@@ -55,6 +55,7 @@ export function ModelScene({ def }: { def: ModelDefinition }) {
   const layoutKey = useRef('')
   const lastMode = useRef(useModel.getState().mode)
   const lastReset = useRef(useModel.getState().resetToken)
+  const lastView = useRef(useModel.getState().viewToken)
   const tmp = useMemo(() => new Vector3(), [])
 
   useEffect(() => controller.attach(), [controller])
@@ -76,6 +77,15 @@ export function ModelScene({ def }: { def: ModelDefinition }) {
     if (s.resetToken !== lastReset.current) {
       lastReset.current = s.resetToken
       rig.resetRotation()
+      controller.stopMomentum()
+    }
+
+    // Guided tour: turn to the step's part or view.
+    if (s.viewToken !== lastView.current) {
+      lastView.current = s.viewToken
+      const view = s.viewTarget
+      if (view && 'part' in view) rig.facePart(view.part, s.explode)
+      else if (view) rig.setRotation(view.rotation)
       controller.stopMomentum()
     }
 

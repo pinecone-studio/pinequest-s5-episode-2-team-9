@@ -42,7 +42,7 @@ npx tsx scripts/build-dog.ts     # Mini Pupper 2 CAD (Apache-2.0) + modelled ser
 npx tsx scripts/inspect-glb.ts public/models/heart.glb
 ```
 
-A new model = a GLB, a definition in `src/models/<name>/definition.ts`, an entry in `src/models/registry.ts`, and its texts in `src/i18n/*.json` (a test checks every key).
+A new model = a GLB, a definition in `src/models/<name>/definition.ts`, an entry in `src/models/registry.ts`, and its texts in `src/i18n/*.json` (a test checks every key). Its guided tour is a step list in `src/models/<name>/tour.ts` (each step can pick a part to face and highlight, an explode or cut-away amount, or the model's motion) plus `<model>.tour.<step>.title` / `.text` texts.
 
 ## Layout
 

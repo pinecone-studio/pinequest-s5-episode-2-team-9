@@ -1,4 +1,5 @@
 import type { ModelDefinition } from '../ModelDefinition'
+import { electricMotorTour } from './tour'
 
 const COPPER = '#ffa95e'
 const STEEL = '#cfe9ff'
@@ -17,6 +18,7 @@ export const electricMotor: ModelDefinition = {
   edges: true,
   glow: 0.42,
   initialRotation: [0.35, -0.7, 0],
+  tour: electricMotorTour,
   accent: COPPER,
   sources: [],
   motion: 'motor',

@@ -1,4 +1,5 @@
 import type { ModelDefinition } from '../ModelDefinition'
+import { heartTour } from './tour'
 
 // Oxygen-poor side blue, oxygen-rich side red, valves gold, muscle violet.
 const BLUE = '#5aa8ff'
@@ -16,6 +17,7 @@ export const heart: ModelDefinition = {
   edges: false,
   glow: 1,
   initialRotation: [0.1, -0.35, 0],
+  tour: heartTour,
   accent: RED,
   sources: [
     { text: 'Browne, K. (2024). 3D Reference Organ for Heart, Male, v1.3. HuBMAP.', url: 'https://doi.org/10.48539/HBM564.WKNG.249' },

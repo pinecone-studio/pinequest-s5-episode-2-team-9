@@ -125,10 +125,16 @@ export default function LabPage() {
     }
   }, [services])
 
-  // Keyboard: D = debug overlay, ` = gesture tuning.
+  // Keyboard: D = debug overlay, ` = gesture tuning; during a tour ← → step and Esc exits.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement) return
+      const model = useModel.getState()
+      if (model.tourStep !== null) {
+        if (e.key === 'ArrowRight') model.stepTour(1)
+        if (e.key === 'ArrowLeft') model.stepTour(-1)
+        if (e.key === 'Escape') model.endTour()
+      }
       if (e.key === 'd' || e.key === 'D') set({ debug: !useLab.getState().debug })
       if (e.key === '`') set({ devPanel: !useLab.getState().devPanel })
     }

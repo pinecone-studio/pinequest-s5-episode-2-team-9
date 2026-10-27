@@ -1,4 +1,5 @@
 import type { ModelDefinition, PartDef } from '../ModelDefinition'
+import { computerTour } from './tour'
 
 // Realistic-only model: the parts are shown with physically based materials.
 const ACCENT = '#5ee7ff'
@@ -25,6 +26,7 @@ export const computer: ModelDefinition = {
   edges: false,
   glow: 0.5,
   initialRotation: [0.15, -0.5, 0],
+  tour: computerTour,
   accent: ACCENT,
   realisticOnly: true,
   sources: [

@@ -1,4 +1,5 @@
 import type { ModelDefinition, PartDef } from '../ModelDefinition'
+import { musclesTour } from './tour'
 
 const BONE = '#3f5266'
 const TRUNK = '#ff6b7f'
@@ -44,6 +45,7 @@ export const muscles: ModelDefinition = {
   edges: false,
   glow: 0.6,
   initialRotation: [0.05, -0.45, 0],
+  tour: musclesTour,
   accent: TRUNK,
   sources: [
     {
