@@ -1,4 +1,5 @@
 import type { ModelDefinition, PartDef } from '../ModelDefinition'
+import { skeletonTour } from './tour'
 
 const SKULL = '#cfe9ff'
 const SPINE = '#ffd27a'
@@ -32,6 +33,7 @@ export const skeleton: ModelDefinition = {
   edges: false,
   glow: 0.75,
   initialRotation: [0.05, -0.45, 0],
+  tour: skeletonTour,
   accent: SKULL,
   sources: [
     {

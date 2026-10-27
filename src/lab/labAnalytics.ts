@@ -21,6 +21,8 @@ export function trackLab(): () => void {
     if (s.mode === 'study' && s.studyPart && s.studyPart !== prev.studyPart) event('study_open', { model, part: s.studyPart })
     if (s.mode === 'assembly' && prev.mode !== 'assembly') event('assembly_start', { model })
     if (s.message?.kind === 'complete' && prev.message?.kind !== 'complete') event('assembly_complete', { model })
+    if (s.tourStep !== null && prev.tourStep === null) event('tour_start', { model })
+    if (s.toursCompleted > prev.toursCompleted) event('tour_complete', { model })
     if (s.explode > 0.5 && !exploded.has(model)) {
       exploded.add(model)
       event('explode', { model })

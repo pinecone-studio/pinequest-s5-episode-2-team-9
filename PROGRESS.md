@@ -28,6 +28,7 @@ Known limits: no textures (no printed text or silkscreen), and the model is proc
 | More detail | ✅ | Heart 148k triangles, robot dog 87k |
 | Accounts | 🚧 | Firebase Auth (Google + email/password); the lab requires login. Needs the Firebase config and console setup. Mongolian auth text needs review |
 | Saved progress | 🚧 | Firestore: profile + per-model progress (studied parts, assemblies, best time) on library cards, lab part list and /profile. Needs the database created and `firestore.rules` published |
+| Guided tours | ✅ | "Take the tour" in every library model (77 steps): turns to each part, highlights it, explodes or cuts away where needed, plays motion. ← → / Esc, fist exits. Mongolian tour text needs review |
 | Motion | ✅ | Heart beat (BPM, valves, blood flow, ECG, sounds), motor spin, rocket firing, dog walk/trot with IK |
 
 ### v2 test checklist

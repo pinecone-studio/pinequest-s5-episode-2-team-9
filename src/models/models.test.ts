@@ -64,4 +64,21 @@ describe.each(library)('$id model', (def) => {
       expect(mn, key).toHaveProperty([key])
     }
   })
+
+  it('has a valid guided tour', () => {
+    const tour = def.tour ?? []
+    expect(tour.length).toBeGreaterThan(0)
+    const stepIds = tour.map((s) => s.id)
+    expect(new Set(stepIds).size, 'unique step ids').toBe(stepIds.length)
+    const partIds = def.parts.map((p) => p.id)
+    for (const step of tour) {
+      if (step.part) expect(partIds, `${step.id} → ${step.part}`).toContain(step.part)
+      if (step.motion) expect(def.motion, `${step.id} plays motion`).toBeDefined()
+      if (step.cutaway) expect(def.cutaway, `${step.id} uses the cut-away`).toBe(true)
+      for (const key of [keys.tourTitle(def.id, step.id), keys.tourText(def.id, step.id)]) {
+        expect(en, key).toHaveProperty([key])
+        expect(mn, key).toHaveProperty([key])
+      }
+    }
+  })
 })

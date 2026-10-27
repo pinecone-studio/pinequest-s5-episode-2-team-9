@@ -34,6 +34,7 @@ import type { ModelDefinition, PartDef } from '../models/ModelDefinition'
 import { lookFor, type ModelDefinition as Def } from '../models/ModelDefinition'
 import { createHoloMaterial } from './HoloMaterial'
 import { createRealisticMaterial, LOOKS, type LookId } from './realisticLooks'
+import { faceAngles } from './tourView'
 
 Object.assign(BufferGeometry.prototype, { computeBoundsTree, disposeBoundsTree })
 Mesh.prototype.raycast = acceleratedRaycast
@@ -273,8 +274,23 @@ export class ModelRig {
   }
 
   resetRotation(): void {
-    const [x, y, z] = this.def.initialRotation
+    this.setRotation(this.def.initialRotation)
+  }
+
+  /** Sets the target view; update() eases the model there. */
+  setRotation([x, y, z]: [number, number, number]): void {
     this.rotation.setFromEuler(new Euler(x, y, z))
+  }
+
+  /** Turns the model so a part (at the given explode amount) faces the viewer. */
+  facePart(id: string, explode: number): void {
+    const part = this.parts.get(id)
+    if (!part) return
+    const amount = easeOut(Math.min(1, Math.max(0, explode)))
+    tmpV.copy(part.home).addScaledVector(part.explodeOffset, amount).sub(this.center)
+    const angles = faceAngles(tmpV.x, tmpV.y, tmpV.z, this.rawRadius)
+    if (angles) this.setRotation(angles)
+    else this.resetRotation()
   }
 
   /** Rotates the model by screen-space drag angles (radians) around the camera axes. */

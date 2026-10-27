@@ -34,6 +34,15 @@ interface ModelState {
   tempo: number
   /** Robot dog gait. */
   gait: 'walk' | 'trot'
+  /** Guided tour: current step index, or null when no tour is running. */
+  tourStep: number | null
+  /** The tour turned the motion on, so ending the tour turns it off again. */
+  tourMotion: boolean
+  /** Incremented when a tour finishes (for analytics). */
+  toursCompleted: number
+  /** Where the scene should turn the model; applied when viewToken changes. */
+  viewTarget: { part: string } | { rotation: [number, number, number] } | null
+  viewToken: number
 
   load: (def: ModelDefinition) => void
   set: (patch: Partial<ModelState>) => void
@@ -46,6 +55,10 @@ interface ModelState {
   tryPlace: (partId: string) => 'placed' | 'wrong'
   hint: () => void
   resetView: () => void
+  startTour: () => void
+  /** Next / previous step; stepping past the last step finishes the tour. */
+  stepTour: (delta: 1 | -1) => void
+  endTour: () => void
 }
 
 let messageId = 0
@@ -65,6 +78,40 @@ const initial = {
   running: false,
   tempo: 72,
   gait: 'trot' as const,
+  tourStep: null,
+  tourMotion: false,
+  viewTarget: null,
+}
+
+/** Leaving a tour (for any reason) stops the motion it started. */
+function leaveTour(s: ModelState): Partial<ModelState> {
+  if (s.tourStep === null) return {}
+  return { tourStep: null, tourMotion: false, ...(s.tourMotion && { running: false }) }
+}
+
+/** Store patch that shows tour step `i`: highlight, explode, cut-away, motion and view. */
+function tourPatch(s: ModelState, i: number): Partial<ModelState> {
+  const def = s.def!
+  const step = def.tour![i]
+  const motion = !!step.motion && !!def.motion
+  return {
+    tourStep: i,
+    selected: step.part ?? null,
+    hovered: null,
+    explode: step.explode ?? 0,
+    cutaway: def.cutaway ? (step.cutaway ?? 0) : 0,
+    ...(motion
+      ? { running: true, tourMotion: s.tourMotion || !s.running }
+      : s.tourMotion
+        ? { running: false, tourMotion: false }
+        : {}),
+    viewTarget: step.view
+      ? { rotation: step.view }
+      : step.part
+        ? { part: step.part }
+        : { rotation: def.initialRotation },
+    viewToken: s.viewToken + 1,
+  }
 }
 
 export const useModel = create<ModelState>()((set, get) => ({
@@ -72,11 +119,14 @@ export const useModel = create<ModelState>()((set, get) => ({
   loaded: false,
   ...initial,
   resetToken: 0,
+  toursCompleted: 0,
+  viewToken: 0,
 
   load: (def) => set({ def, loaded: false, ...initial, resetToken: get().resetToken + 1 }),
   set: (patch) => set(patch),
 
-  openStudy: (partId) => set({ mode: 'study', studyPart: partId, selected: partId, hovered: null }),
+  openStudy: (partId) =>
+    set({ ...leaveTour(get()), mode: 'study', studyPart: partId, selected: partId, hovered: null }),
   closeStudy: () => set({ mode: 'explore', studyPart: null }),
   stepStudy: (delta) => {
     const { def, studyPart } = get()
@@ -90,6 +140,7 @@ export const useModel = create<ModelState>()((set, get) => ({
     const { def } = get()
     if (!def) return
     set({
+      ...leaveTour(get()),
       mode: 'assembly',
       placed: [...def.baseParts],
       explode: 0,
@@ -136,4 +187,26 @@ export const useModel = create<ModelState>()((set, get) => ({
   },
 
   resetView: () => set({ resetToken: get().resetToken + 1, scale: 1, explode: 0, cutaway: 0 }),
+
+  startTour: () => {
+    const s = get()
+    if (!s.def?.tour?.length || s.mode !== 'explore') return
+    set(tourPatch(s, 0))
+  },
+  stepTour: (delta) => {
+    const s = get()
+    if (s.tourStep === null || !s.def?.tour) return
+    const next = s.tourStep + delta
+    if (next < 0) return
+    if (next >= s.def.tour.length) {
+      set({ ...leaveTour(s), selected: null, toursCompleted: s.toursCompleted + 1 })
+      return
+    }
+    set(tourPatch(s, next))
+  },
+  endTour: () => {
+    const s = get()
+    if (s.tourStep === null) return
+    set({ ...leaveTour(s), selected: null })
+  },
 }))

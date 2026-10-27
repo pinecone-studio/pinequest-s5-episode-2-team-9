@@ -1885,3 +1885,47 @@ a.account-name:hover {
   margin: 0 0 6px;
   font-size: 1rem;
 }
+
+/* Guided tour */
+/* A direct child of the scrolling panel: don't let flex squash it. */
+.tour-start {
+  flex: none;
+  margin-bottom: 10px;
+}
+
+.tour-progress {
+  height: 3px;
+  margin: 10px 0 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(94, 231, 255, 0.12);
+}
+
+.tour-progress i {
+  display: block;
+  height: 100%;
+  transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tour-part {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border: 1px solid;
+  border-radius: 999px;
+  font: 500 0.8rem/1.2 var(--font-sans);
+}
+
+.tour-part i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tour-progress i {
+    transition: none;
+  }
+}

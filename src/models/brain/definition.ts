@@ -1,4 +1,5 @@
 import type { ModelDefinition, PartDef } from '../ModelDefinition'
+import { brainTour } from './tour'
 
 const FRONTAL = '#5ec8ff'
 const PARIETAL = '#a78bff'
@@ -50,6 +51,7 @@ export const brain: ModelDefinition = {
   edges: false,
   glow: 0.42,
   initialRotation: [0.15, -0.6, 0],
+  tour: brainTour,
   accent: '#a78bff',
   sources: [
     {
