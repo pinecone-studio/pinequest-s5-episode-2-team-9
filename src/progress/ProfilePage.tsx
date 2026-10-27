@@ -3,8 +3,7 @@ import { useAuth } from '../auth/authStore'
 import { useLang, useT, useTx } from '../i18n'
 import { keys } from '../models/ModelDefinition'
 import { library } from '../models/registry'
-import { AccountButton } from '../ui/AccountButton'
-import { LangToggle } from '../ui/LangToggle'
+import { SiteBar } from '../ui/SiteBar'
 import { totals } from './progress'
 import { ProgressLine } from './ProgressLine'
 import { useProgress } from './progressStore'
@@ -21,21 +20,10 @@ export function ProfilePage() {
     : null
 
   return (
-    <main className="landing profile">
-      <div className="landing-grid" aria-hidden="true" />
-      <header className="landing-bar">
-        <Link to="/" className="brand">
-          <span className="brand-mark" aria-hidden="true" />
-          {t('app.name')}
-        </Link>
-        <span className="landing-bar-actions">
-          <AccountButton />
-          <LangToggle />
-        </span>
-      </header>
+    <main className="site profile">
+      <SiteBar />
 
-      <section className="profile-body">
-        <span className="hud-tag">{t('profile.title')}</span>
+      <section className="profile-body" aria-label={t('profile.title')}>
         <h1>{user?.name || user?.email}</h1>
         <p className="profile-meta">
           {user?.name && user.email}
@@ -72,7 +60,7 @@ export function ProfilePage() {
                     <ProgressLine def={def} />
                     {!byModel[def.id] && <span className="profile-note">{t('profile.notStarted')}</span>}
                   </div>
-                  <Link to={`/lab/${def.slug}`} className="hud-button">
+                  <Link to={`/lab/${def.slug}`} className="btn btn--quiet">
                     {t('profile.open')}
                   </Link>
                 </li>
