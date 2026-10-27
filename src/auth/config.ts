@@ -7,4 +7,6 @@ export const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 }
 
-export const isFirebaseConfigured = Object.values(firebaseConfig).every((v) => typeof v === 'string' && v !== '')
+export const isFirebaseConfigured = Object.values(firebaseConfig).every(
+  (v) => typeof v === 'string' && v !== '',
+)

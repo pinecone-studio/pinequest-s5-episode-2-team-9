@@ -911,5 +911,19 @@
   "auth.error.popupBlocked": "The browser blocked the Google window. Allow pop-ups and try again.",
   "auth.error.otherMethod": "This email already signs in another way. Use that method.",
   "auth.error.emailFirst": "Type your email first, then press “Forgot password?”.",
-  "auth.error.generic": "Something went wrong. Please try again."
+  "auth.error.generic": "Something went wrong. Please try again.",
+  "progress.studied": "Studied",
+  "progress.studiedPart": "Studied",
+  "progress.assembled": "Assembled",
+  "progress.best": "Best",
+  "profile.title": "Your progress",
+  "profile.memberSince": "Member since",
+  "profile.loading": "Loading your progress…",
+  "profile.error": "Couldn't load your progress. Check your connection and reload the page.",
+  "profile.models": "Models explored",
+  "profile.parts": "Parts studied",
+  "profile.assemblies": "Assemblies completed",
+  "profile.empty": "Nothing yet. Open a model, study its parts and put it back together. Your progress is saved here.",
+  "profile.notStarted": "Not started",
+  "profile.open": "Open"
 }

@@ -6,6 +6,7 @@ import { useT, useTx } from '../i18n'
 import { keys, type ModelDefinition } from '../models/ModelDefinition'
 import { experiences, library, type Experience } from '../models/registry'
 import { AccountButton } from '../ui/AccountButton'
+import { ProgressLine } from '../progress/ProgressLine'
 import { isMobileDevice } from '../ui/device'
 import { LangToggle } from '../ui/LangToggle'
 import { ModelGlyph } from './ModelGlyph'
@@ -53,6 +54,7 @@ function LibraryCard({ def, startWord, mobile }: { def: ModelDefinition; startWo
         </span>
         <h3>{tx(keys.title(def.id))}</h3>
         <p>{tx(keys.summary(def.id))}</p>
+        <ProgressLine def={def} />
         {mobile ? (
           <div className="library-gate">
             <strong>{t('landing.needsLaptop')}</strong>

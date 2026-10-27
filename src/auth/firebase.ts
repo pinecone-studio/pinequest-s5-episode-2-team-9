@@ -14,7 +14,8 @@ import {
 } from 'firebase/auth'
 import { firebaseConfig } from './config'
 
-export const auth = getAuth(initializeApp(firebaseConfig))
+export const app = initializeApp(firebaseConfig)
+export const auth = getAuth(app)
 
 export type AuthUser = { uid: string; name: string | null; email: string | null }
 

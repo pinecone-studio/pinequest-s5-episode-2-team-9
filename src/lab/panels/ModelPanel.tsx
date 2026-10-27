@@ -1,6 +1,7 @@
 import { play } from '../../audio/sfx'
 import { useT, useTx } from '../../i18n'
 import { keys } from '../../models/ModelDefinition'
+import { useProgress } from '../../progress/progressStore'
 import { useLab } from '../labStore'
 import { useModel } from '../modelStore'
 import { AssemblyPanel } from './AssemblyPanel'
@@ -15,7 +16,10 @@ export function ModelPanel() {
     useModel()
   const viewStyle = useLab((s) => s.viewStyle)
   const setLab = useLab((s) => s.set)
+  const studied = useProgress((s) => (def && s.status === 'ready' ? s.byModel[def.id]?.studied : undefined))
   if (!def) return null
+  const studiedSet = new Set(studied)
+  const studiedCount = def.parts.filter((p) => studiedSet.has(p.id)).length
 
   return (
     <aside className="model-panel hud-panel" data-hud>
@@ -109,7 +113,15 @@ export function ModelPanel() {
           </div>
 
           <div className="parts-list">
-            <span className="hud-tag">{t('panel.parts')}</span>
+            <span className="hud-tag">
+              {t('panel.parts')}
+              {studied && (
+                <span className="parts-progress">
+                  {' · '}
+                  {t('progress.studied')} {studiedCount}/{def.parts.length}
+                </span>
+              )}
+            </span>
             {def.groups.map((g) => (
               <div key={g} className="parts-group">
                 <span className="parts-group-name">{tx(keys.group(def.id, g))}</span>
@@ -128,6 +140,11 @@ export function ModelPanel() {
                     >
                       <i style={{ background: p.color }} />
                       {tx(keys.partName(def.id, p))}
+                      {studiedSet.has(p.id) && (
+                        <span className="part-check" aria-label={t('progress.studiedPart')}>
+                          ✓
+                        </span>
+                      )}
                     </button>
                   ))}
               </div>

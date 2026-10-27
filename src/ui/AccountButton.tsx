@@ -16,9 +16,9 @@ export function AccountButton() {
   }
   return (
     <span className="account">
-      <span className="account-name" title={user.email ?? undefined}>
+      <Link to="/profile" className="account-name" title={user.email ?? undefined}>
         {user.name || user.email}
-      </span>
+      </Link>
       <button type="button" className="hud-button" onClick={() => void logOut()}>
         {t('auth.logout')}
       </button>
