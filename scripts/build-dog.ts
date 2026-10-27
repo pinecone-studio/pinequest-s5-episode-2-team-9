@@ -138,4 +138,12 @@ for (const spec of PARTS) {
 
 const b = boundsOf(mergeMeshData(parts.map((p) => p.data)).positions)
 const origin: Vec3 = [(b.min[0] + b.max[0]) / 2, (b.min[1] + b.max[1]) / 2, (b.min[2] + b.max[2]) / 2]
-await writePartsGlb('public/models/robot-dog.glb', 'robotDog', parts, origin)
+// Joint positions (app space, relative to the model origin) for the walking animation.
+const jointAt = (link: string): Vec3 => {
+  const m = world.get(link)!
+  const p = toApp([m[12], m[13], m[14]])
+  return [p[0] - origin[0], p[1] - origin[1], p[2] - origin[2]]
+}
+const joints = Object.fromEntries(LEGS.map((leg) => [leg, { hip: jointAt(`${leg}2`), knee: jointAt(`${leg}3`) }]))
+const extras = { joints, thigh: 0.05, shin: 0.056, hipPitch: HIP_PITCH, knee: KNEE }
+await writePartsGlb('public/models/robot-dog.glb', 'robotDog', parts, origin, extras)

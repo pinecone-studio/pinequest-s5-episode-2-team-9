@@ -31,6 +31,7 @@ export const robotDog: ModelDefinition = {
     { text: 'Apache License 2.0', url: '/licenses/mini-pupper-apache-2.0.txt' },
     { text: 'NOTICE', url: '/licenses/mini-pupper-NOTICE.txt' },
   ],
+  motion: 'dog',
   looks: {
     default: 'plasticGrey',
     frame: 'plasticBlack',

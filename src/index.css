@@ -1583,3 +1583,27 @@ a {
   width: 100%;
   height: 70px;
 }
+
+.gait-monitor {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.gait-monitor span {
+  display: grid;
+  gap: 3px;
+  padding: 6px 4px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink-dim);
+  font: 600 0.68rem/1.1 var(--font-mono);
+  text-align: center;
+  transition: background 0.1s ease;
+}
+
+.gait-monitor span[data-swing='true'] {
+  border-color: var(--cyan);
+  background: rgba(94, 231, 255, 0.18);
+  color: var(--ink);
+}

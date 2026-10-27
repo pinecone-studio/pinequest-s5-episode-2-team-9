@@ -775,5 +775,15 @@
   "motion.phaseHint.ventricular": "The ventricles squeeze. The tricuspid and mitral valves snap shut (\"lub\") and blood is pushed out through the pulmonary and aortic valves.",
   "motion.phaseHint.diastole": "The heart relaxes and fills with blood. The pulmonary and aortic valves have closed (\"dub\").",
   "motion.hint.motor": "Current flows through the brushes into one coil at a time. The commutator keeps switching coils, so the magnets keep pushing the rotor round.",
-  "motion.hint.rocket": "The turbopump spins and forces oxygen (blue) and kerosene (gold) into the chamber, where they burn and blast out of the nozzle."
+  "motion.hint.rocket": "The turbopump spins and forces oxygen (blue) and kerosene (gold) into the chamber, where they burn and blast out of the nozzle.",
+  "motion.play.dog": "▶ Make it walk",
+  "motion.gait.walk": "Walk",
+  "motion.gait.trot": "Trot",
+  "motion.swing": "swing",
+  "motion.stance": "stance",
+  "motion.leg.lf": "Front L",
+  "motion.leg.rf": "Front R",
+  "motion.leg.lb": "Back L",
+  "motion.leg.rb": "Back R",
+  "motion.hint.dog": "Each leg lifts and swings forward (swing), then pushes back on the ground (stance). Trot moves diagonal legs together; walk lifts one leg at a time so three always stay down. The computer solves the hip and knee angles for every foot position — this is inverse kinematics."
 }

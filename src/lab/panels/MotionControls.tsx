@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { play } from '../../audio/sfx'
 import { useT, type I18nKey } from '../../i18n'
+import { dogClock, LEGS } from '../../scene/motion/dogMotion'
 import { ecg, heartClock, phaseAt } from '../../scene/motion/heartClock'
 import { useModel } from '../modelStore'
 
@@ -65,9 +66,34 @@ function HeartMonitor() {
   )
 }
 
+/** Which legs are lifted (swing) or planted (stance), live. */
+function GaitMonitor() {
+  const t = useT()
+  const [swing, setSwing] = useState({ ...dogClock.swing })
+  useEffect(() => {
+    let raf = 0
+    const tick = () => {
+      setSwing((prev) => (LEGS.some((l) => prev[l] !== dogClock.swing[l]) ? { ...dogClock.swing } : prev))
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [])
+  return (
+    <div className="gait-monitor">
+      {LEGS.map((leg) => (
+        <span key={leg} data-swing={swing[leg]}>
+          <b>{t(`motion.leg.${leg}` as I18nKey)}</b>
+          {swing[leg] ? t('motion.swing') : t('motion.stance')}
+        </span>
+      ))}
+    </div>
+  )
+}
+
 export function MotionControls() {
   const t = useT()
-  const { def, running, tempo, set } = useModel()
+  const { def, running, tempo, gait, set } = useModel()
   if (!def?.motion) return null
   const heart = def.motion === 'heart'
   return (
@@ -100,6 +126,18 @@ export function MotionControls() {
         </label>
       )}
       {running && heart && <HeartMonitor />}
+      {running && def.motion === 'dog' && (
+        <>
+          <div className="qn-row">
+            {(['walk', 'trot'] as const).map((g) => (
+              <button key={g} type="button" className="hud-button" data-active={gait === g} onClick={() => set({ gait: g })}>
+                {t(`motion.gait.${g}` as I18nKey)}
+              </button>
+            ))}
+          </div>
+          <GaitMonitor />
+        </>
+      )}
       {running && !heart && <p className="panel-hint">{t(`motion.hint.${def.motion}` as I18nKey)}</p>}
     </div>
   )

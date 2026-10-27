@@ -14,13 +14,20 @@ export interface OutputPart {
 }
 
 /** Writes parts as child nodes of one root, centered on `origin`, each pivoted at its centroid. */
-export async function writePartsGlb(file: string, rootName: string, parts: OutputPart[], origin: Vec3): Promise<void> {
+export async function writePartsGlb(
+  file: string,
+  rootName: string,
+  parts: OutputPart[],
+  origin: Vec3,
+  extras?: Record<string, unknown>,
+): Promise<void> {
   await MeshoptSimplifier.ready
   await MeshoptEncoder.ready
   const doc = new Document()
   doc.createBuffer()
   doc.createMaterial('holo').setDoubleSided(true)
   const root = doc.createNode(rootName)
+  if (extras) root.setExtras(extras)
   doc.createScene(rootName).addChild(root)
 
   for (const part of parts) {

@@ -32,6 +32,8 @@ interface ModelState {
   running: boolean
   /** Heart: beats per minute. Machines: speed in %. */
   tempo: number
+  /** Robot dog gait. */
+  gait: 'walk' | 'trot'
 
   load: (def: ModelDefinition) => void
   set: (patch: Partial<ModelState>) => void
@@ -62,6 +64,7 @@ const initial = {
   message: null,
   running: false,
   tempo: 72,
+  gait: 'trot' as const,
 }
 
 export const useModel = create<ModelState>()((set, get) => ({

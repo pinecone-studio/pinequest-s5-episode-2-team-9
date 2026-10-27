@@ -8,6 +8,7 @@ import { useLab } from '../lab/labStore'
 import { useModel } from '../lab/modelStore'
 import type { ModelDefinition } from '../models/ModelDefinition'
 import { ModelRig } from './modelRig'
+import { createDogMotion } from './motion/dogMotion'
 import { createHeartMotion } from './motion/heartMotion'
 import { createMotorMotion } from './motion/motorMotion'
 import { createRocketMotion } from './motion/rocketMotion'
@@ -38,7 +39,9 @@ export function ModelScene({ def }: { def: ModelDefinition }) {
           ? createMotorMotion(rig)
           : def.motion === 'rocket'
             ? createRocketMotion(rig)
-            : null
+            : def.motion === 'dog'
+              ? createDogMotion(rig)
+              : null
     rig.attachMotion(motion)
     return () => {
       rig.attachMotion(null)

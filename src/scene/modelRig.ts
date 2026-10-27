@@ -121,6 +121,8 @@ export class ModelRig {
   private benchSlots = new Map<string, { pos: Vector3; scale: number }>()
   /** Realistic (PBR) look instead of the hologram. */
   realistic = false
+  /** Extra data stored on the GLB root (e.g. the robot dog's joint positions). */
+  extras: Record<string, unknown> = {}
   /** Optional animation layered on the parts (heartbeat, spinning rotor...). */
   private motion: RigMotion | null = null
 
@@ -211,6 +213,9 @@ export class ModelRig {
       })
     }
 
+    scene.traverse((o) => {
+      if (Object.keys(o.userData ?? {}).length && !Object.keys(this.extras).length) this.extras = o.userData
+    })
     box.getBoundingSphere(sphere)
     this.center.copy(box.getCenter(new Vector3()))
     this.rawRadius = sphere.radius
