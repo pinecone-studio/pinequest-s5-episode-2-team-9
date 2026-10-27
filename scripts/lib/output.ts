@@ -1,16 +1,26 @@
 // Builds an optimized GLB from named parts (world-space triangle data).
-import { Document, NodeIO } from '@gltf-transform/core'
+import { Document, NodeIO, PropertyType } from '@gltf-transform/core'
 import { EXTMeshoptCompression, KHRMeshQuantization } from '@gltf-transform/extensions'
 import { dedup, prune, reorder, simplifyPrimitive, weld } from '@gltf-transform/functions'
 import { MeshoptEncoder, MeshoptSimplifier } from 'meshoptimizer'
 import { stat } from 'node:fs/promises'
-import { addMeshNode, centroid, type MeshData, type Vec3 } from './gltf'
+import { addMeshNode, centroid, mergeMeshData, type MeshData, type Vec3 } from './gltf'
 
 export interface OutputPart {
   id: string
   data: MeshData
-  /** Max triangles after simplification. */
+  /** Max triangles after simplification (per primitive). */
   maxTriangles: number
+  /**
+   * Optional sub-meshes with their own realistic look (a material named after
+   * the look id), e.g. gold contacts on a memory module. `data` is then ignored.
+   */
+  layers?: { look: string; data: MeshData }[]
+}
+
+/** All geometry of a part, layers included. */
+export function partData(part: OutputPart): MeshData {
+  return part.layers ? mergeMeshData(part.layers.map((l) => l.data)) : part.data
 }
 
 /** Writes parts as child nodes of one root, centered on `origin`, each pivoted at its centroid. */
@@ -30,15 +40,31 @@ export async function writePartsGlb(
   if (extras) root.setExtras(extras)
   doc.createScene(rootName).addChild(root)
 
-  for (const part of parts) {
-    const shifted = new Float32Array(part.data.positions.length)
-    for (let i = 0; i < shifted.length; i += 3) {
-      shifted[i] = part.data.positions[i] - origin[0]
-      shifted[i + 1] = part.data.positions[i + 1] - origin[1]
-      shifted[i + 2] = part.data.positions[i + 2] - origin[2]
+  const shift = (d: MeshData): MeshData => {
+    const positions = new Float32Array(d.positions.length)
+    for (let i = 0; i < positions.length; i += 3) {
+      positions[i] = d.positions[i] - origin[0]
+      positions[i + 1] = d.positions[i + 1] - origin[1]
+      positions[i + 2] = d.positions[i + 2] - origin[2]
     }
-    const data = { ...part.data, positions: shifted }
-    root.addChild(addMeshNode(doc, part.id, data, centroid(shifted)))
+    return { ...d, positions }
+  }
+  for (const part of parts) {
+    const pivot = centroid(shift(partData(part)).positions)
+    if (!part.layers) {
+      root.addChild(addMeshNode(doc, part.id, shift(part.data), pivot))
+      continue
+    }
+    // One primitive per layer, each with a material named after its look.
+    const [first, ...rest] = part.layers
+    const node = addMeshNode(doc, part.id, shift(first.data), pivot, lookMaterial(doc, first.look))
+    rest.forEach((layer, i) => {
+      const extra = addMeshNode(doc, `${part.id}_${i + 1}`, shift(layer.data), pivot, lookMaterial(doc, layer.look))
+      for (const prim of extra.getMesh()!.listPrimitives()) node.getMesh()!.addPrimitive(prim)
+      extra.getMesh()!.dispose()
+      extra.dispose()
+    })
+    root.addChild(node)
   }
 
   await doc.transform(weld())
@@ -51,7 +77,12 @@ export async function writePartsGlb(
       }
     }
   }
-  await doc.transform(dedup(), prune(), reorder({ encoder: MeshoptEncoder }))
+  // Materials differ only by name (the look id), so dedup must leave them alone.
+  await doc.transform(
+    dedup({ propertyTypes: [PropertyType.ACCESSOR, PropertyType.MESH] }),
+    prune(),
+    reorder({ encoder: MeshoptEncoder }),
+  )
 
   // Zero-length normals turn into NaN in lit shaders, and bloom smears NaN
   // pixels across the screen. Give them a valid direction.
@@ -88,4 +119,8 @@ export async function writePartsGlb(
     .reduce((s, n) => s + n.getMesh()!.listPrimitives().reduce((a, p) => a + p.getIndices()!.getCount() / 3, 0), 0)
   const { size } = await stat(file)
   console.log(`${file}: ${parts.length} parts, ${tris} triangles, ${(size / 1024 / 1024).toFixed(2)} MB`)
+}
+
+function lookMaterial(doc: Document, look: string) {
+  return doc.getRoot().listMaterials().find((m) => m.getName() === look) ?? doc.createMaterial(look).setDoubleSided(true)
 }

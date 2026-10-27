@@ -824,7 +824,7 @@
   "computer.part.psu_cables": "Power cables",
   "computer.info.psu_cables.desc": "The 24-pin cable powers the motherboard, the 8-pin cable powers the processor, and more cables feed the graphics card and drives. Each plug is keyed, so it fits only one way.",
   "computer.info.psu_cables.fact": "The keyed plugs stop you pushing a connector in the wrong way round, which could damage the parts.",
-  "computer.hint.psu_cables": "Route the cables once the power supply and the motherboard are in place.",
+  "computer.hint.psu_cables": "Route the cables once the power supply, the motherboard and the drives are in place.",
   "computer.part.motherboard": "Motherboard",
   "computer.info.motherboard.desc": "The motherboard is the main circuit board. It connects everything: the processor socket, memory slots, expansion slots, storage ports and the rear ports. Copper traces carry the signals between them.",
   "computer.info.motherboard.fact": "A modern board has many layers of copper inside, routed like a city map so that fast signals do not interfere with each other.",
