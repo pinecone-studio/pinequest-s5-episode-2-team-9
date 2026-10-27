@@ -1,4 +1,5 @@
 import { useT } from '../i18n'
+import { AccountButton } from '../ui/AccountButton'
 import { LangToggle } from '../ui/LangToggle'
 import { useLabServices } from './LabContext'
 import { useLab } from './labStore'
@@ -58,6 +59,11 @@ export function SettingsPanel() {
       <div className="settings-row settings-row--static">
         <strong>{t('settings.language')}</strong>
         <LangToggle />
+      </div>
+
+      <div className="settings-row settings-row--static">
+        <strong>{t('settings.account')}</strong>
+        <AccountButton />
       </div>
     </div>
   )

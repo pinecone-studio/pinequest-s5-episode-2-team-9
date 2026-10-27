@@ -5,8 +5,10 @@ import '@fontsource-variable/jetbrains-mono'
 import './index.css'
 import { startAnalytics } from './analytics'
 import { AppRoutes } from './app/routes'
+import { startAuth } from './auth/authStore'
 
 startAnalytics()
+startAuth()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

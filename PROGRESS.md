@@ -15,6 +15,7 @@ Spec: `.plans/hololemma-v1-spec.md` · Design: `PLAN.md`.
 | Atoms & quantum lab | ✅ | Build atoms (Z ≤ 20), hydrogen orbitals (real ψ), energy levels and photons, double slit, Stern–Gerlach |
 | Realistic view | ✅ | PBR presets, studio lighting, Hologram/Realistic switch |
 | More detail | ✅ | Heart 148k triangles, robot dog 87k |
+| Accounts | 🚧 | Firebase Auth (Google + email/password); the lab requires login. Needs the Firebase config and console setup. Mongolian auth text needs review |
 | Motion | ✅ | Heart beat (BPM, valves, blood flow, ECG, sounds), motor spin, rocket firing, dog walk/trot with IK |
 
 ### v2 test checklist

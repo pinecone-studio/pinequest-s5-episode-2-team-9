@@ -20,6 +20,16 @@ Desktop Chrome or Edge with a webcam. Without a camera the lab falls back to mou
 
 Debug: `D` toggles the hand-tracking overlay, `` ` `` the gesture tuning panel, `?fx=0` disables post effects.
 
+## Accounts (Firebase Auth)
+
+The lab requires an account (Google or email + password). The landing page stays public.
+
+1. Copy `.env.example` to `.env.local` and fill in the Firebase web app config (Firebase console → Project settings → Your apps).
+2. In the Firebase console, enable the **Google** and **Email/Password** sign-in providers, and add the deploy domain (`hololemma.vercel.app`) under Authentication → Settings → Authorized domains.
+3. On Vercel, add the same `VITE_FIREBASE_*` variables (Production and Preview).
+
+Without the config, `/login` shows a "not set up" notice and the lab stays locked. Code: `src/auth/`.
+
 ## Models
 
 Built once with the asset scripts and committed to `public/models/`:

@@ -5,6 +5,7 @@ import { unlockAudio } from '../audio/sfx'
 import { useT, useTx } from '../i18n'
 import { keys, type ModelDefinition } from '../models/ModelDefinition'
 import { experiences, library, type Experience } from '../models/registry'
+import { AccountButton } from '../ui/AccountButton'
 import { isMobileDevice } from '../ui/device'
 import { LangToggle } from '../ui/LangToggle'
 import { ModelGlyph } from './ModelGlyph'
@@ -126,7 +127,10 @@ export default function LandingPage() {
           <span className="brand-mark" aria-hidden="true" />
           {t('app.name')}
         </span>
-        <LangToggle />
+        <span className="landing-bar-actions">
+          <AccountButton />
+          <LangToggle />
+        </span>
       </header>
 
       <section className="hero">

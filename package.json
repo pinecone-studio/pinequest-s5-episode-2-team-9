@@ -24,6 +24,7 @@
     "@react-three/fiber": "^9.8.2",
     "@react-three/postprocessing": "^3.2.2",
     "@vercel/analytics": "^2.0.1",
+    "firebase": "^13.1.0",
     "motion": "^14.6.0",
     "postprocessing": "^6.39.5",
     "react": "^19.3.1",
