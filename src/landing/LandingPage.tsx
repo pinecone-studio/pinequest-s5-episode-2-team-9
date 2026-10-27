@@ -223,7 +223,7 @@ export default function LandingPage() {
       </motion.section>
 
       <footer className="landing-footer">
-        <span>© {YEAR} Hololemma</span>
+        <span>© {YEAR} Hologemma</span>
         <span>
           {library.map((m) => (
             <span key={m.id} className="footer-credit">

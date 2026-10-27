@@ -53,7 +53,7 @@ export const DEFAULT_TUNING: Tuning = {
   cursorLerp: 0.45,
 }
 
-const STORAGE_KEY = 'hololemma.tuning'
+const STORAGE_KEY = 'hologemma.tuning'
 
 type Listener = (tuning: Tuning) => void
 

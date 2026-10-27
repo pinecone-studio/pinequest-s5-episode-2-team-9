@@ -1,8 +1,8 @@
-# Hololemma
+# Hologemma
 
 A holographic 3D lab you control with your bare hands through an ordinary webcam. Take a human heart and a robot dog apart in mid-air, study every piece, then put them back together.
 
-- Spec: [`.plans/hololemma-v1-spec.md`](.plans/hololemma-v1-spec.md) · detailed design: [`PLAN.md`](PLAN.md) · status: [`PROGRESS.md`](PROGRESS.md) · licences: [`CREDITS.md`](CREDITS.md)
+- Spec: [`.plans/hologemma-v1-spec.md`](.plans/hologemma-v1-spec.md) · detailed design: [`PLAN.md`](PLAN.md) · status: [`PROGRESS.md`](PROGRESS.md) · licences: [`CREDITS.md`](CREDITS.md)
 - Privacy: all camera processing happens in the browser. Video is never uploaded, stored or logged.
 
 ## Develop
@@ -25,7 +25,7 @@ Debug: `D` toggles the hand-tracking overlay, `` ` `` the gesture tuning panel, 
 The lab requires an account (Google or email + password). The landing page stays public.
 
 1. Copy `.env.example` to `.env.local` and fill in the Firebase web app config (Firebase console → Project settings → Your apps).
-2. In the Firebase console, enable the **Google** and **Email/Password** sign-in providers, and add the deploy domain (`hololemma.vercel.app`) under Authentication → Settings → Authorized domains.
+2. In the Firebase console, enable the **Google** and **Email/Password** sign-in providers, and add the deploy domain (`hologemma.vercel.app`) under Authentication → Settings → Authorized domains.
 3. On Vercel, add the same `VITE_FIREBASE_*` variables (Production and Preview).
 
 Without the config, `/login` shows a "not set up" notice and the lab stays locked. Code: `src/auth/`.

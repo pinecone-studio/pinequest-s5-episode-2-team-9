@@ -46,7 +46,7 @@ export const useLab = create<LabState>()(
       set: (patch) => set(patch),
     }),
     {
-      name: 'hololemma.lab',
+      name: 'hologemma.lab',
       partialize: (s) => ({ headParallax: s.headParallax, tipsSeen: s.tipsSeen, viewStyle: s.viewStyle }),
     },
   ),

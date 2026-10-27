@@ -1,7 +1,7 @@
 # Progress
 
-Live: **https://hololemma.vercel.app** · Repo: `brkh1222-byte/Hololemma` (private; every push to `main` deploys).
-Spec: `.plans/hololemma-v1-spec.md` · Design: `PLAN.md`.
+Live: **https://hologemma.vercel.app** · Repo: `brkh1222-byte/Hologemma` (private; every push to `main` deploys).
+Spec: `.plans/hologemma-v1-spec.md` · Design: `PLAN.md`.
 
 ## v3: computer hardware (realistic only)
 
@@ -55,7 +55,7 @@ Known limits: no textures (no printed text or silkscreen), and the model is proc
 Tests: 49 unit tests (filters, hand geometry, gestures, calibration, coordinates, i18n parity, model data vs GLBs).
 
 ## Webcam test checklist (for the owner)
-1. Open https://hololemma.vercel.app in Chrome on a laptop, press the Start word, choose the heart, allow the camera.
+1. Open https://hologemma.vercel.app in Chrome on a laptop, press the Start word, choose the heart, allow the camera.
 2. **Hand setup:** show both open palms. The ring fills, then the gesture tips appear once.
 3. **Pinch** (thumb + index) on the heart and move: it turns, and keeps spinning a little when you let go.
 4. **Pinch with both hands near the heart and pull apart:** it comes to pieces. Push your hands together: it closes.

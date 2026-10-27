@@ -1,10 +1,10 @@
 #!/bin/sh
-# Deploys the team's code to https://hololemma.vercel.app.
+# Deploys the team's code to https://hologemma.vercel.app.
 #
 # The team works in pinecone-studio/pinequest-s5-episode-2-team-9 (remote "team9").
 # This script:
 #   1. pulls team9/main into the local main (fast-forward only),
-#   2. mirrors it to the personal repo (remote "origin", brkh1222-byte/Hololemma),
+#   2. mirrors it to the personal repo (remote "origin", brkh1222-byte/Hologemma),
 #   3. deploys to production with the Vercel CLI under your account.
 # Usage: npm run deploy            (production)
 #        npm run deploy -- preview (preview URL only)
