@@ -1,14 +1,15 @@
-// Builds public/models/muscles.glb from BodyParts3D (CC BY 4.0): the major
-// muscle groups on a faint skeleton base. BodyParts3D 4.0 has no meshes for
-// latissimus dorsi, rectus abdominis, the internal oblique, the jaw or the face
-// muscles, so those are not in this model.
+// Builds public/models/muscles.glb: the major muscle groups on a faint skeleton
+// base. Most meshes come from BodyParts3D (CC BY 4.0); latissimus dorsi, the
+// deep abdominal muscles, quadratus lumborum, and the jaw and face muscles come
+// from Z-Anatomy (CC BY-SA 4.0), so the resulting model is CC BY-SA 4.0.
 //
 // Usage: npx tsx scripts/build-muscles.ts
 import { mkdir } from 'node:fs/promises'
 import { buildGroups, listElements, type GroupRule } from './lib/bp3d'
-import { boundsOf, mergeMeshData, type Vec3 } from './lib/gltf'
+import { boundsOf, mergeMeshData, recomputeNormals, type MeshData, type Vec3 } from './lib/gltf'
 import { writePartsGlb } from './lib/output'
 import { SKELETON_RULES } from './lib/skeletonRules'
+import { loadZanatomy, type Region } from './lib/zanatomy'
 
 const NOT_MUSCLE = /(artery|vein|nerve|ligament|membrane|tendon|fascia|bursa|raphe|retinac|aponeurosis|tract|sheath|branch|ring|disk)/
 
@@ -66,6 +67,66 @@ const RULES: GroupRule[] = [
 await mkdir('public/models', { recursive: true })
 const elements = await listElements()
 const muscles = await buildGroups(RULES, elements)
+
+// Z-Anatomy additions: [part id, region, object base names] (each name has .l and .r).
+const sides = (base: string) => [`${base}.l`, `${base}.r`]
+const ZA: [string, Region, string[]][] = [
+  ['latissimus_dorsi_left', 'trunk', ['Latissimus dorsi muscle.l']],
+  ['latissimus_dorsi_right', 'trunk', ['Latissimus dorsi muscle.r']],
+  ['abdominal_wall', 'trunk', ['Rectus abdominis muscle', 'Internal abdominal oblique muscle', 'Transversus abdominis muscle'].flatMap(sides)],
+  ['back_muscles', 'trunk', sides('Quadratus lumborum muscle')],
+  [
+    'jaw_muscles',
+    'head',
+    [
+      'Superficial part of masseter',
+      'Deep part of masseter',
+      'Temporalis muscle',
+      'Medial pterygoid muscle',
+      'Inferior head of lateral pterygoid muscle',
+      'Superior head of lateral pterygoid muscle',
+    ].flatMap(sides),
+  ],
+  [
+    'face_muscles',
+    'head',
+    [
+      'Frontalis muscle',
+      'Occipitalis muscle',
+      'Temporoparietalis muscle',
+      'Orbital part of orbicularis oculi',
+      'Palpebral part of orbicularis oculi',
+      'Corrugator supercilii',
+      'Procerus muscle',
+      'Nasalis muscle',
+      'Depressor septi nasi',
+      'Levator labii superioris',
+      'Levator nasolabialis',
+      'Levator anguli oris',
+      'Zygomaticus major muscle',
+      'Zygomaticus minor muscle',
+      'Risorius muscle',
+      'Orbicularis oris muscle',
+      'Depressor labii inferioris',
+      'Bucinator',
+      'Depressor anguli oris',
+      'Mentalis muscle',
+    ].flatMap(sides),
+  ],
+]
+const BUDGET: Record<string, number> = { jaw_muscles: 4000, face_muscles: 6000 }
+for (const [id, region, names] of ZA) {
+  const meshes: MeshData[] = await Promise.all(names.map((n) => loadZanatomy(n, region)))
+  const extra = recomputeNormals(mergeMeshData(meshes))
+  const existing = muscles.find((m) => m.id === id)
+  if (existing) {
+    existing.data = mergeMeshData([existing.data, extra])
+    existing.maxTriangles += 4000
+    existing.names.push(...names)
+  } else {
+    muscles.push({ id, data: extra, maxTriangles: BUDGET[id] ?? 4000, names })
+  }
+}
 for (const g of muscles) console.log(g.id.padEnd(22), String(g.names.length).padStart(3), g.names.slice(0, 3).join(', '))
 const bones = await buildGroups(SKELETON_RULES, elements)
 const skeleton = { id: 'skeleton_base', data: mergeMeshData(bones.map((b) => b.data)), maxTriangles: 30000, names: [] }

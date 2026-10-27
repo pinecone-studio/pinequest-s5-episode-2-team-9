@@ -9,7 +9,7 @@ Spec: `.plans/hololemma-v1-spec.md` · Design: `PLAN.md`.
 |---|---|---|
 | Human brain | ✅ | HRA brain (Allen structures), CC BY 4.0, 22 parts |
 | Skeleton | ✅ | BodyParts3D (CC BY 4.0), 34 bone groups |
-| Muscles | ✅ | BodyParts3D, 38 muscle groups on a skeleton base. **Missing from the source:** latissimus dorsi, rectus abdominis, internal oblique, jaw and face muscles. Z-Anatomy has them, but opening its .blend in Blender needs the owner's permission (a .blend can run embedded scripts) |
+| Muscles | ✅ | 43 groups on a skeleton base: BodyParts3D, plus latissimus dorsi, the abdominal muscles, quadratus lumborum and the jaw and face muscles from Z-Anatomy (exported with embedded scripts disabled). The model is CC BY-SA 4.0 |
 | Rocket engine | ✅ | Original, modelled in code (gas-generator cycle), 18 parts |
 | Electric motor | ✅ | Original brushed DC motor, 14 parts |
 | Atoms & quantum lab | ✅ | Build atoms (Z ≤ 20), hydrogen orbitals (real ψ), energy levels and photons, double slit, Stern–Gerlach |

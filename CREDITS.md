@@ -43,6 +43,18 @@ The OBJ file headers still mention the older CC BY-SA 2.1 Japan licence. The dat
 - Converted from millimetres to metres and to a y-up frame.
 - Simplified and compressed the meshes.
 
+### Muscles: additional meshes from Z-Anatomy, CC BY-SA 4.0
+`public/models/muscles.glb` also contains the following muscles from **Z-Anatomy**: latissimus dorsi, rectus abdominis, internal oblique, transversus abdominis, quadratus lumborum, the jaw muscles (masseter, temporalis, pterygoids) and the face muscles.
+
+- Z-Anatomy, https://www.z-anatomy.com (models based on BodyParts3D, The Database Center for Life Science).
+- Licence: [Creative Commons Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+
+**Changes made:**
+- Exported with Blender (`scripts/export-zanatomy.sh`, with embedded scripts disabled).
+- Aligned to BodyParts3D with per-region fits, and grouped.
+
+**Because of ShareAlike, `muscles.glb` is shared under CC BY-SA 4.0.** The app code is not affected.
+
 ### Robot dog: Mini Pupper 2 by MangDang, Apache License 2.0
 `public/models/robot-dog.glb` is built by `scripts/build-dog.ts` from the Mini Pupper 2 robot description (URDF and STL meshes) in [mangdangroboticsclub/mini_pupper_ros](https://github.com/mangdangroboticsclub/mini_pupper_ros). Copyright MangDang. Licensed under the Apache License, Version 2.0; the full text is in `public/licenses/mini-pupper-apache-2.0.txt` and its NOTICE in `public/licenses/mini-pupper-NOTICE.txt`.
 

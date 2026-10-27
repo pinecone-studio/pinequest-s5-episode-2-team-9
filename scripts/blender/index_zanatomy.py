@@ -20,7 +20,9 @@ items = []
 for obj in bpy.data.objects:
     if obj.type != "MESH":
         continue
-    bb = [obj.matrix_world @ v.co for v in obj.data.vertices[:: max(1, len(obj.data.vertices) // 200)]]
+    verts = obj.data.vertices
+    step = max(1, len(verts) // 200)
+    bb = [obj.matrix_world @ verts[i].co for i in range(0, len(verts), step)]
     if not bb:
         continue
     mn = [min(p[i] for p in bb) for i in range(3)]

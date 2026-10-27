@@ -17,6 +17,7 @@ const limbs: PartDef[] = (['left', 'right'] as const).flatMap((s) => {
   })
   return [
     p('rotator_cuff', 'arm', DEEP, ['skeleton_base']),
+    p('latissimus_dorsi', 'trunk', TRUNK, ['back_muscles']),
     p('pectoral', 'trunk', TRUNK, ['intercostals']),
     p('deltoid', 'arm', ARM, [`rotator_cuff_${s}`]),
     p('biceps_brachii', 'arm', ARM, [`rotator_cuff_${s}`]),
@@ -49,6 +50,8 @@ export const muscles: ModelDefinition = {
       text: 'BodyParts3D, © The Database Center for Life Science, licensed under CC Attribution 4.0 International',
       url: 'https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html',
     },
+    { text: 'Z-Anatomy (CC BY-SA 4.0) — latissimus dorsi, abdominal, jaw and face muscles', url: 'https://www.z-anatomy.com' },
+    { text: 'This muscle model is shared under CC BY-SA 4.0', url: 'https://creativecommons.org/licenses/by-sa/4.0/' },
   ],
   looks: {
     default: 'muscle',
@@ -57,6 +60,7 @@ export const muscles: ModelDefinition = {
     diaphragm: 'muscleDeep',
     back_muscles: 'muscleDeep',
     pelvic_floor: 'muscleDeep',
+    jaw_muscles: 'muscle',
     rotator_cuff: 'muscleDeep',
     hip_flexors: 'muscleDeep',
   },
@@ -70,6 +74,8 @@ export const muscles: ModelDefinition = {
     { id: 'rhomboids', group: 'trunk', color: TRUNK, dependsOn: ['back_muscles'] },
     { id: 'trapezius', group: 'trunk', color: TRUNK, dependsOn: ['rhomboids', 'neck_muscles'] },
     { id: 'abdominal_wall', group: 'trunk', color: TRUNK, dependsOn: ['intercostals'] },
+    { id: 'jaw_muscles', group: 'trunk', color: TRUNK, dependsOn: ['skeleton_base'] },
+    { id: 'face_muscles', group: 'trunk', color: ARM, dependsOn: ['jaw_muscles'] },
     ...limbs,
     { id: 'hand_muscles', group: 'arm', color: ARM, dependsOn: ['forearm_flexors_left', 'forearm_flexors_right'] },
     { id: 'foot_muscles', group: 'leg', color: LEG, dependsOn: ['calf_left', 'calf_right', 'shin_left', 'shin_right'] },
