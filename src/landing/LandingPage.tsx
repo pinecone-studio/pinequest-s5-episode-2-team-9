@@ -1,40 +1,28 @@
-import { AnimatePresence, motion, MotionConfig } from 'motion/react'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link, useLocation } from 'react-router'
+import { motion } from 'motion/react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Link } from 'react-router'
 import { unlockAudio } from '../audio/sfx'
 import { useT, useTx } from '../i18n'
 import { keys, type ModelDefinition } from '../models/ModelDefinition'
-import { experiences, library } from '../models/registry'
+import { experiences, library, type Experience } from '../models/registry'
+import { AccountButton } from '../ui/AccountButton'
 import { ProgressLine } from '../progress/ProgressLine'
 import { isMobileDevice } from '../ui/device'
-import { SiteBar } from '../ui/SiteBar'
-import './landing.css'
-import { PullApart } from './PullApart'
+import { LangToggle } from '../ui/LangToggle'
+import { ModelGlyph } from './ModelGlyph'
+import { pickStartWord } from './startWord'
 
 const YEAR = new Date().getFullYear()
 
-// Stills captured from the lab itself (public/landing), one per model.
-const STILL: Record<string, string> = {
-  heart: 'heart',
-  brain: 'brain',
-  skeleton: 'skeleton',
-  muscles: 'muscles',
-  robotDog: 'robot-dog',
-  rocketEngine: 'rocket-engine',
-  electricMotor: 'electric-motor',
-  computer: 'computer',
-  atoms: 'atoms',
-}
+// The 3D hero loads after first paint so the page itself stays light.
+const HeroScene = lazy(() => import('./HeroScene'))
 
-const spring = { type: 'spring', bounce: 0, duration: 0.8 } as const
-
-/** Section parts rise into place one after another as the section enters. */
-const rise = (i = 0) => ({
-  initial: { opacity: 0, y: 24 },
+const reveal = {
+  initial: { opacity: 0, y: 28 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '0px 0px -10% 0px' },
-  transition: { ...spring, delay: i * 0.075 },
-})
+  viewport: { once: true, margin: '-80px' },
+  transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const },
+}
 
 function CopyLink() {
   const t = useT()
@@ -42,331 +30,213 @@ function CopyLink() {
   return (
     <button
       type="button"
-      className="btn btn--quiet"
-      onClick={() => void navigator.clipboard?.writeText(window.location.origin).then(() => setCopied(true))}
+      className="ghost-button"
+      onClick={() => {
+        void navigator.clipboard?.writeText(window.location.origin).then(() => setCopied(true))
+      }}
     >
       {copied ? t('landing.copied') : t('landing.copyLink')}
     </button>
   )
 }
 
-function Masthead() {
-  const t = useT()
-  const tx = useTx()
-  const title = (id: string) => tx(keys.title(id as ModelDefinition['id']))
-  const apart = (id: string) => `${title(id)}, ${t('landing.pullApart').toLowerCase()}`
-  return (
-    <section className="masthead" aria-labelledby="title">
-      {/* A gutterless mosaic of real stills from the lab and flat colour tiles. */}
-      <div className="mosaic">
-        <img className="m-a" src="/landing/heart.webp" alt={title('heart')} width={1200} height={1500} />
-        <img className="m-b" src="/landing/brain.webp" alt={title('brain')} width={1200} height={1200} />
-        <span className="m-c tile tile--accent" aria-hidden="true" />
-        <img className="m-d" src="/landing/computer-apart.webp" alt={apart('computer')} width={1200} height={1500} />
-        <span className="m-e tile tile--3" aria-hidden="true" />
-        <img className="m-f" src="/landing/rocket-apart.webp" alt={apart('rocketEngine')} width={900} height={1500} />
-        <span className="m-g tile tile--deep" aria-hidden="true" />
-        <img className="m-h" src="/landing/electric-motor.webp" alt={title('electricMotor')} width={1200} height={1200} />
-        <span className="m-i tile tile--ink" aria-hidden="true" />
-      </div>
-
-      <div className="masthead-copy">
-        <h1 id="title" className="masthead-title">
-          {[t('landing.title1'), t('landing.title2')].map((line, i) => (
-            <span className="line" key={i}>
-              <motion.span
-                initial={{ y: '108%' }}
-                animate={{ y: '0%' }}
-                transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.12 + i * 0.11 }}
-              >
-                {line}
-              </motion.span>
-            </span>
-          ))}
-        </h1>
-        <motion.div
-          className="masthead-stand"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ ...spring, delay: 0.45 }}
-        >
-          <p>{t('landing.subtitle')}</p>
-          <a className="btn" href="#library" onClick={unlockAudio}>
-            {t('landing.cta')}
-            <span aria-hidden="true">↓</span>
-          </a>
-        </motion.div>
-      </div>
-    </section>
-  )
-}
-
-function HowItWorks() {
-  const t = useT()
-  const steps = [
-    ['landing.step1Title', 'landing.step1Text', 'step-camera', 'landing.shotCamera'],
-    ['landing.step2Title', 'landing.step2Text', 'step-hands', 'landing.shotHands'],
-    ['landing.step3Title', 'landing.step3Text', 'step-assemble', 'landing.shotAssemble'],
-  ] as const
-  return (
-    <section className="how" id="how" aria-labelledby="how-title">
-      <motion.h2 id="how-title" className="section-title how-title" {...rise()}>
-        {t('landing.howTitle')}
-      </motion.h2>
-      <div className="how-column">
-        {steps.map(([lead, text, shot, alt]) => (
-          <div className="how-stage" key={shot}>
-            <motion.h3 className="how-lead" {...rise(0)}>
-              {t(lead)}
-            </motion.h3>
-            <div>
-              <motion.p {...rise(1)}>{t(text)}</motion.p>
-              <motion.figure {...rise(2)}>
-                <img src={`/landing/${shot}.webp`} alt={t(alt)} width={1280} height={800} loading="lazy" />
-              </motion.figure>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  )
-}
-
-interface Entry {
-  id: string
-  slug: string
-  title: string
-  summary: string
-  meta: string
-  def?: ModelDefinition
-}
-
-function Library({ mobile }: { mobile: boolean }) {
-  const t = useT()
-  const tx = useTx()
-  const entries: Entry[] = useMemo(
-    () => [
-      ...library.map((def) => ({
-        id: def.id,
-        slug: def.slug,
-        title: tx(keys.title(def.id)),
-        summary: tx(keys.summary(def.id)),
-        meta: `${def.parts.length} ${t('landing.parts')}`,
-        def,
-      })),
-      ...experiences.map((exp) => ({
-        id: exp.id,
-        slug: exp.slug,
-        title: tx(exp.titleKey),
-        summary: tx(exp.summaryKey),
-        meta: t('landing.interactive'),
-      })),
-    ],
-    [t, tx],
-  )
-  const [active, setActive] = useState(0)
-  const rows = useRef<(HTMLLIElement | null)[]>([])
-
-  // The row crossing the middle of the screen becomes the active one as you scroll.
-  useEffect(() => {
-    const io = new IntersectionObserver(
-      (seen) => {
-        for (const s of seen) if (s.isIntersecting) setActive(Number((s.target as HTMLElement).dataset.index))
-      },
-      { rootMargin: '-48% 0px -48% 0px' },
-    )
-    rows.current.forEach((el) => el && io.observe(el))
-    return () => io.disconnect()
-  }, [entries.length])
-
-  return (
-    <section className="library" id="library" aria-labelledby="library-title">
-      <div className="library-photo" aria-live="polite">
-        {entries.map((e, i) => (
-          <img
-            key={e.id}
-            src={`/landing/${STILL[e.id]}.webp`}
-            alt={i === active ? e.title : ''}
-            aria-hidden={i !== active}
-            data-active={i === active}
-            width={1200}
-            height={1500}
-            loading={i < 2 ? 'eager' : 'lazy'}
-          />
-        ))}
-      </div>
-
-      <div className="library-list">
-        <motion.h2 id="library-title" className="section-title" {...rise()}>
-          {t('landing.libraryTitle')}
-        </motion.h2>
-        <ol>
-          {entries.map((e, i) => {
-            const open = i === active
-            return (
-              <li
-                key={e.id}
-                ref={(el) => {
-                  rows.current[i] = el
-                }}
-                data-index={i}
-                data-active={open}
-                onPointerEnter={(ev) => ev.pointerType === 'mouse' && setActive(i)}
-              >
-                <button
-                  type="button"
-                  className="lib-row"
-                  aria-expanded={open}
-                  aria-controls={`lib-${e.id}`}
-                  onClick={() => setActive(i)}
-                  onFocus={() => setActive(i)}
-                >
-                  <span className="lib-name">{e.title}</span>
-                  <span className="lib-meta">{e.meta}</span>
-                </button>
-                <AnimatePresence initial={false}>
-                  {open && (
-                    <motion.div
-                      id={`lib-${e.id}`}
-                      className="lib-detail"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ type: 'spring', bounce: 0, duration: 0.45 }}
-                    >
-                      <div className="lib-detail-inner">
-                        <p>{e.summary}</p>
-                        {e.def && <ProgressLine def={e.def} />}
-                        {mobile ? (
-                          <div className="lib-gate">
-                            <strong>{t('landing.needsLaptop')}</strong>
-                            <CopyLink />
-                          </div>
-                        ) : (
-                          <Link to={`/lab/${e.slug}`} className="btn" onClick={unlockAudio}>
-                            {t('landing.open')}
-                            <span className="visually-hidden">: {e.title}</span>
-                            <span aria-hidden="true">→</span>
-                          </Link>
-                        )}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </li>
-            )
-          })}
-        </ol>
-        <motion.p className="library-note" {...rise()}>
-          {mobile ? t('landing.needsLaptopText') : t('landing.mouseNote')}
-        </motion.p>
-      </div>
-    </section>
-  )
-}
-
-function Privacy() {
-  const t = useT()
-  const facts = [
-    ['landing.factRuns', 'landing.factRunsValue'],
-    ['landing.factVideo', 'landing.factVideoValue'],
-    ['landing.factNeeds', 'landing.factNeedsValue'],
-    ['landing.factLang', 'landing.factLangValue'],
-  ] as const
-  return (
-    <section className="privacy" id="privacy" aria-labelledby="privacy-title">
-      <motion.h2 id="privacy-title" className="section-title" {...rise()}>
-        {t('landing.privacyTitle')}
-      </motion.h2>
-      <motion.p className="privacy-lead" {...rise(1)}>
-        {t('landing.privacyText')}
-      </motion.p>
-      <div className="privacy-tiles">
-        <motion.figure className="privacy-photo" {...rise(0)}>
-          <img src="/landing/heart-apart.webp" alt={t('landing.privacyAlt')} width={1200} height={1500} loading="lazy" />
-          <figcaption>{t('landing.privacyNote')}</figcaption>
-        </motion.figure>
-        <div className="privacy-side">
-          <motion.div className="privacy-tile" {...rise(1)} aria-hidden="true">
-            {/* A laptop, drawn as one filled shape, with its camera marked. */}
-            <svg viewBox="0 0 240 160">
-              <path d="M40 18h160a8 8 0 0 1 8 8v100H32V26a8 8 0 0 1 8-8Zm6 14v86h148V32Z" fill="currentColor" fillRule="evenodd" />
-              <path d="M8 130h224l-10 14a8 8 0 0 1-6.5 3.3H24.5A8 8 0 0 1 18 144Z" fill="currentColor" />
-              <circle cx="120" cy="25" r="4.5" className="privacy-dot" />
-            </svg>
-          </motion.div>
-          <dl className="privacy-facts">
-            {facts.map(([label, value], i) => (
-              <motion.div key={label} {...rise(i)}>
-                <dt>{t(label)}</dt>
-                <dd>{t(value)}</dd>
-              </motion.div>
-            ))}
-          </dl>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function Footer() {
+function LibraryCard({ def, startWord, mobile }: { def: ModelDefinition; startWord: string; mobile: boolean }) {
   const t = useT()
   const tx = useTx()
   return (
-    <footer className="site-footer">
-      <p className="footer-name" aria-hidden="true">
-        {t('app.name')}
-      </p>
-      <div className="footer-row">
-        <nav className="footer-links" aria-label={t('nav.label')}>
-          <a href="#library">{t('nav.library')}</a>
-          <a href="#how">{t('nav.how')}</a>
-          <a href="#privacy">{t('nav.privacy')}</a>
-          <Link to="/login">{t('auth.login')}</Link>
-        </nav>
-        <div className="footer-credits">
-          <h2>{t('landing.credits')}</h2>
-          <ul>
-            {library.map((m) => (
-              <li key={m.id}>{tx(keys.credit(m.id))}</li>
-            ))}
-          </ul>
-        </div>
+    <motion.article className="library-card" style={{ '--accent': def.accent } as React.CSSProperties} {...reveal}>
+      <div className="library-visual">
+        <ModelGlyph id={def.id} />
       </div>
-      <div className="footer-legal">
-        <span>
-          © {YEAR} {t('app.name')}
+      <div className="library-body">
+        <span className="library-meta">
+          {def.parts.length} {t('landing.parts')}
         </span>
-        <a href="#title">{t('landing.backToTop')}</a>
+        <h3>{tx(keys.title(def.id))}</h3>
+        <p>{tx(keys.summary(def.id))}</p>
+        <ProgressLine def={def} />
+        {mobile ? (
+          <div className="library-gate">
+            <strong>{t('landing.needsLaptop')}</strong>
+            <CopyLink />
+          </div>
+        ) : (
+          <Link to={`/lab/${def.slug}`} className="start-button" onClick={unlockAudio}>
+            {startWord}
+            <span aria-hidden="true">→</span>
+          </Link>
+        )}
       </div>
-    </footer>
+    </motion.article>
+  )
+}
+
+function ExperienceCard({ exp, startWord, mobile }: { exp: Experience; startWord: string; mobile: boolean }) {
+  const t = useT()
+  const tx = useTx()
+  return (
+    <motion.article className="library-card" style={{ '--accent': exp.accent } as React.CSSProperties} {...reveal}>
+      <div className="library-visual">
+        <ModelGlyph id={exp.id} />
+      </div>
+      <div className="library-body">
+        <span className="library-meta">{t('atoms.tab.build')} · {t('atoms.tab.orbitals')} · {t('atoms.tab.light')}</span>
+        <h3>{tx(exp.titleKey)}</h3>
+        <p>{tx(exp.summaryKey)}</p>
+        {mobile ? (
+          <div className="library-gate">
+            <strong>{t('landing.needsLaptop')}</strong>
+            <CopyLink />
+          </div>
+        ) : (
+          <Link to={`/lab/${exp.slug}`} className="start-button" onClick={unlockAudio}>
+            {startWord}
+            <span aria-hidden="true">→</span>
+          </Link>
+        )}
+      </div>
+    </motion.article>
   )
 }
 
 export default function LandingPage() {
+  const t = useT()
+  const words = t('start.words')
+  // One random word per visit (and per language switch).
+  const startWord = useMemo(() => pickStartWord(words), [words])
   const mobile = useMemo(() => isMobileDevice(), [])
-  // The 3D heart only on laptops and desktops wide enough to show it.
-  const [live] = useState(() => !mobile && typeof window !== 'undefined' && window.innerWidth >= 760)
-  const location = useLocation()
+  const libraryRef = useRef<HTMLElement>(null)
+  const [showHero, setShowHero] = useState(false)
 
-  // Arriving from another page with #library etc.: scroll there once the page is laid out.
   useEffect(() => {
-    if (!location.hash) return
-    const id = window.setTimeout(() => document.getElementById(location.hash.slice(1))?.scrollIntoView(), 60)
-    return () => window.clearTimeout(id)
-  }, [location.hash])
+    // Phones and narrow screens get the light hero: the lab needs a laptop anyway.
+    if (mobile || window.innerWidth < 760) return
+    const id = window.requestIdleCallback?.(() => setShowHero(true)) ?? window.setTimeout(() => setShowHero(true), 300)
+    return () => {
+      if (window.cancelIdleCallback) window.cancelIdleCallback(id)
+      else window.clearTimeout(id)
+    }
+  }, [mobile])
+
+  // Hero assembles as you scroll: 0.25 at the top, whole after ~70% of a screen.
+  const progress = useCallback(() => Math.min(1, 0.25 + window.scrollY / (window.innerHeight * 0.7)), [])
 
   return (
-    <MotionConfig reducedMotion="user">
-      <main className="site landing-page">
-        <SiteBar home />
-        <Masthead />
-        <PullApart live={live} />
-        <HowItWorks />
-        <Library mobile={mobile} />
-        <Privacy />
-        <Footer />
-      </main>
-    </MotionConfig>
+    <main className="landing">
+      <div className="landing-grid" aria-hidden="true" />
+      <header className="landing-bar">
+        <span className="brand">
+          <span className="brand-mark" aria-hidden="true" />
+          {t('app.name')}
+        </span>
+        <span className="landing-bar-actions">
+          <AccountButton />
+          <LangToggle />
+        </span>
+      </header>
+
+      <section className="hero">
+        <div className="hero-visual" aria-hidden="true">
+          {showHero ? (
+            <Suspense fallback={null}>
+              <HeroScene def={library[0]} progress={progress} />
+            </Suspense>
+          ) : (
+            <div className="hero-static">
+              <ModelGlyph id="heart" />
+            </div>
+          )}
+        </div>
+        <motion.div
+          className="hero-copy"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <span className="eyebrow">{t('landing.eyebrow')}</span>
+          <h1>{t('landing.tagline')}</h1>
+          <p>{t('landing.subtitle')}</p>
+          <button
+            type="button"
+            className="start-button start-button--hero"
+            onClick={() => {
+              unlockAudio()
+              libraryRef.current?.scrollIntoView({ behavior: 'smooth' })
+            }}
+          >
+            {startWord}
+            <span aria-hidden="true">↓</span>
+          </button>
+          {mobile && <p className="hero-mobile">{t('landing.needsLaptopText')}</p>}
+        </motion.div>
+        <span className="scroll-cue" aria-hidden="true">
+          {t('landing.scroll')}
+        </span>
+      </section>
+
+      <section className="how">
+        <motion.h2 {...reveal}>{t('landing.howTitle')}</motion.h2>
+        <div className="how-steps">
+          {(
+            [
+              ['landing.step1Title', 'landing.step1Text'],
+              ['landing.step2Title', 'landing.step2Text'],
+              ['landing.step3Title', 'landing.step3Text'],
+            ] as const
+          ).map(([title, text], i) => (
+            <motion.div key={title} className="how-step" {...reveal} transition={{ ...reveal.transition, delay: i * 0.12 }}>
+              <span className="how-index">0{i + 1}</span>
+              <h3>{t(title)}</h3>
+              <p>{t(text)}</p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      <section className="library" ref={libraryRef}>
+        <motion.div className="library-head" {...reveal}>
+          <h2>{t('landing.libraryTitle')}</h2>
+          <p>{t('landing.librarySubtitle')}</p>
+        </motion.div>
+        <div className="library-grid">
+          {library.map((def) => (
+            <LibraryCard key={def.id} def={def} startWord={startWord} mobile={mobile} />
+          ))}
+          {experiences.map((exp) => (
+            <ExperienceCard key={exp.id} exp={exp} startWord={startWord} mobile={mobile} />
+          ))}
+        </div>
+        {!mobile && <p className="library-note">{t('landing.mouseNote')}</p>}
+      </section>
+
+      <motion.section className="privacy" {...reveal}>
+        <div className="privacy-icon" aria-hidden="true">
+          <svg viewBox="0 0 48 48">
+            <path d="M24 5 9 11v11c0 10 6.5 17.5 15 21 8.5-3.5 15-11 15-21V11z" />
+            <path d="m17 24 5 5 9-10" />
+          </svg>
+        </div>
+        <div>
+          <h2>{t('landing.privacyTitle')}</h2>
+          <p>{t('landing.privacyText')}</p>
+        </div>
+      </motion.section>
+
+      <footer className="landing-footer">
+        <span>© {YEAR} Hologemma</span>
+        <span>
+          {library.map((m) => (
+            <span key={m.id} className="footer-credit">
+              <CreditLine def={m} />
+            </span>
+          ))}
+        </span>
+      </footer>
+    </main>
   )
+}
+
+function CreditLine({ def }: { def: ModelDefinition }) {
+  const tx = useTx()
+  return <>{tx(keys.credit(def.id))}</>
 }
