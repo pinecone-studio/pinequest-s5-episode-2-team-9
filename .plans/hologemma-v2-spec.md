@@ -1,4 +1,4 @@
-# Hololemma v2: Spec (user decisions, 2026-10-27)
+# Hologemma v2: Spec (user decisions, 2026-10-27)
 
 After testing v1 ("so nice"), the user asked for more models and more realism. Build in this order, deploying each:
 

@@ -1,4 +1,4 @@
-# Hololemma: Build Plan
+# Hologemma: Build Plan
 
 A public web app: **a holographic 3D lab you control with bare hands through an ordinary webcam.** No headset, no gloves, nothing to install. The user sees their own mirrored webcam feed with glowing 3D objects floating in front of them. They grab, rotate, scale, explode and reassemble those objects with hand gestures. Audience: high-school students.
 
@@ -9,7 +9,7 @@ A public web app: **a holographic 3D lab you control with bare hands through an 
 
 Heartbeat and dog walking are **v2**.
 
-> **The interview decisions live in [`.plans/hololemma-v1-spec.md`](.plans/hololemma-v1-spec.md). Where the two files differ, the spec wins.** This file holds the detailed design. Progress is tracked in `PROGRESS.md`.
+> **The interview decisions live in [`.plans/hologemma-v1-spec.md`](.plans/hologemma-v1-spec.md). Where the two files differ, the spec wins.** This file holds the detailed design. Progress is tracked in `PROGRESS.md`.
 
 ---
 
@@ -314,7 +314,7 @@ Beat cycle (BPM 40–180), valve timing, blood-flow particles, phase labels, ECG
 
 ## 9. Phases, risks and decisions
 
-See **[`.plans/hololemma-v1-spec.md`](.plans/hololemma-v1-spec.md)**: Phases 0–8, acceptance criteria, risks, verification and every interview decision (landing page, routing, onboarding, analytics, deploy).
+See **[`.plans/hologemma-v1-spec.md`](.plans/hologemma-v1-spec.md)**: Phases 0–8, acceptance criteria, risks, verification and every interview decision (landing page, routing, onboarding, analytics, deploy).
 
 After each phase:
 1. Run it and verify it.

@@ -1,15 +1,15 @@
-# Hololemma v1: Spec (from the interview)
+# Hologemma v1: Spec (from the interview)
 
 
 ## Context
 
-Hololemma is a public web app: a holographic 3D lab you control with bare hands through a webcam. It is inspired by m2holo.com, but all of it is our own work. The project folder currently contains only `PLAN.md`. This interview settled the open questions in `PLAN.md` and cut v1 to **structure only**: explore, take apart, study and rebuild **two models, a human heart and a robot dog**. The app is deployed publicly on Vercel. Animations (heartbeat, dog walking) move to v2.
+Hologemma is a public web app: a holographic 3D lab you control with bare hands through a webcam. It is inspired by m2holo.com, but all of it is our own work. The project folder currently contains only `PLAN.md`. This interview settled the open questions in `PLAN.md` and cut v1 to **structure only**: explore, take apart, study and rebuild **two models, a human heart and a robot dog**. The app is deployed publicly on Vercel. Animations (heartbeat, dog walking) move to v2.
 
 ## Decisions from the interview
 
 | Topic | Decision |
 |---|---|
-| Name | **Hololemma** |
+| Name | **Hologemma** |
 | Audience | High-school students (14–18). Cards are clear, 2–4 sentences, plus one fun fact each |
 | v1 scope | **Structure only**: Explore, Explode, Study, Assembly. No heartbeat, no dog walking (v2) |
 | Explode trigger | **Pinch with both hands near the model and pull them apart**: the model opens in proportion to the distance; pushing the hands together closes it. Also available as a button and in mouse mode |

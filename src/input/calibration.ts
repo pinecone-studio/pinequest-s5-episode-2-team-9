@@ -26,7 +26,7 @@ export const DEFAULT_CALIBRATION: Calibration = {
   kind: 'default',
 }
 
-const STORAGE_KEY = 'hololemma.calibration'
+const STORAGE_KEY = 'hologemma.calibration'
 
 export function loadCalibration(): Calibration | null {
   try {

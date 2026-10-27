@@ -16,7 +16,7 @@ interface LangState {
 // English is always the default; a chosen language is remembered.
 export const useLang = create<LangState>()(
   persist((set) => ({ lang: 'en', setLang: (lang) => set({ lang }) }), {
-    name: 'hololemma.lang',
+    name: 'hologemma.lang',
   }),
 )
 

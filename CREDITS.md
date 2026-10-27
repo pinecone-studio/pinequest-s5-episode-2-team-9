@@ -1,6 +1,6 @@
 # Credits
 
-Third-party assets and code used in Hololemma, with their licences. The same information is shown in the app (Settings → Credits).
+Third-party assets and code used in Hologemma, with their licences. The same information is shown in the app (Settings → Credits).
 
 ## 3D models
 
@@ -63,9 +63,9 @@ The OBJ file headers still mention the older CC BY-SA 2.1 Japan licence. The dat
 - Converted the meshes to glTF.
 - Grouped them into assembly parts.
 - Simplified the meshes.
-- **Added 12 servo motors and a battery pack modelled by Hololemma.** The original CAD has no separate meshes for them.
+- **Added 12 servo motors and a battery pack modelled by Hologemma.** The original CAD has no separate meshes for them.
 
-In the app the model is called "Robot Dog". Hololemma is not affiliated with MangDang.
+In the app the model is called "Robot Dog". Hologemma is not affiliated with MangDang.
 
 ## Fonts
 - **Inter**, Rasmus Andersson. SIL Open Font License 1.1 (via @fontsource-variable/inter).

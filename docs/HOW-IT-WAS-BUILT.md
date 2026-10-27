@@ -1,6 +1,6 @@
-# How Hololemma Was Built
+# How Hologemma Was Built
 
-A technical walkthrough of the Hololemma codebase: what each part does, why it is built that way, and how the pieces connect. Written for engineers who need to understand the system well enough to explain it to others, extend it, or debug it.
+A technical walkthrough of the Hologemma codebase: what each part does, why it is built that way, and how the pieces connect. Written for engineers who need to understand the system well enough to explain it to others, extend it, or debug it.
 
 Status of the facts in this document: everything was checked against the repository at `main` (commit `03a7df9`). Test, type-check and build results are from a local run on the same commit. Where a planning document disagrees with the code, the code is treated as the truth and the disagreement is listed in [§13](#13-known-discrepancies-in-the-docs).
 
@@ -29,7 +29,7 @@ Status of the facts in this document: everything was checked against the reposit
 
 ## 1. What it is
 
-Hololemma is a browser app. A user opens it, allows webcam access, and sees their own mirrored video with 3D objects drawn on top. Those objects (a human heart, a robot dog, a brain, a skeleton, muscles, a rocket engine, an electric motor, and an atoms lab) can be controlled with bare hands:
+Hologemma is a browser app. A user opens it, allows webcam access, and sees their own mirrored video with 3D objects drawn on top. Those objects (a human heart, a robot dog, a brain, a skeleton, muscles, a rocket engine, an electric motor, and an atoms lab) can be controlled with bare hands:
 
 - Pinch and rotate the model.
 - Pull two pinched hands apart to explode it into parts.
@@ -204,7 +204,7 @@ Calibration turns the raw pinch ratio into two personal thresholds: **grab** (pi
   - `grab = closed + 0.18 × range`
   - `release = closed + 0.42 × range`
   - It falls back to the defaults if the range is under 0.4 or the closed value is above 0.45 (implausible samples).
-- The result is saved to `localStorage` under `hololemma.calibration`. It is rejected on load if `grab >= release` or the version differs.
+- The result is saved to `localStorage` under `hologemma.calibration`. It is rejected on load if `grab >= release` or the version differs.
 
 ### 5.7 Gesture state machine (`gestures.ts`)
 
@@ -515,12 +515,12 @@ Vite warns that a chunk is over 500 kB. This is a known trade-off: three.js is n
 
 | Store | Library | Persisted to `localStorage` | Purpose |
 |---|---|---|---|
-| `useLab` (`lab/labStore.ts`) | Zustand + `persist` | `hololemma.lab`: head parallax, tips seen, view style | camera status, tracking status, panels, debug flags |
+| `useLab` (`lab/labStore.ts`) | Zustand + `persist` | `hologemma.lab`: head parallax, tips seen, view style | camera status, tracking status, panels, debug flags |
 | `useModel` (`lab/modelStore.ts`) | Zustand | no | current model, mode, explode, study part, assembly progress, motion |
 | `useAtom` (`atoms/atomStore.ts`) | Zustand | no | atoms tab, particles, orbital, photons, experiment |
 | `useQuality` (`scene/quality.ts`) | Zustand | no | the quality level set by the governor |
-| `useLang` (`i18n/index.ts`) | Zustand + `persist` | `hololemma.lang` | language, default English |
-| calibration | plain code | `hololemma.calibration` | grab and release thresholds, palm size |
+| `useLang` (`i18n/index.ts`) | Zustand + `persist` | `hologemma.lang` | language, default English |
+| calibration | plain code | `hologemma.calibration` | grab and release thresholds, palm size |
 
 A design choice worth explaining: the high-frequency data (hand positions, rig positions) is **not** in React state. The hand snapshot is read directly from `HandInput.latest` each frame, and the rig is mutated directly. Putting 60 Hz data in React state would re-render the whole tree and make it stutter. Zustand is used only for the things the UI needs to render when they change.
 
@@ -644,7 +644,7 @@ No mode code changes. That is the point of the schema.
 
 ## 15. Development history
 
-The repository's `main` branch was replaced with the Hololemma codebase (commit `4eb5911`, "Replace main with the Hololemma codebase"). The commits before it belong to an earlier project in the same repository. The Hololemma commits in order:
+The repository's `main` branch was replaced with the Hologemma codebase (commit `4eb5911`, "Replace main with the Hololemma codebase"). The commits before it belong to an earlier project in the same repository. The Hologemma commits in order:
 
 | Commit | Step |
 |---|---|
@@ -670,7 +670,7 @@ The repository's `main` branch was replaced with the Hololemma codebase (commit 
 
 All of these commits carry the same date (2026-10-27) in the repository, so the order is the reliable record.
 
-The development followed the phased plan in `.plans/hololemma-v1-spec.md`: each phase was built, run, committed, pushed to a Vercel preview, and then checked by the owner on a real webcam before the next phase. The v2 spec (`.plans/hololemma-v2-spec.md`) records the later decisions for the brain, skeleton, muscles, engines, atoms, realism and motion.
+The development followed the phased plan in `.plans/hologemma-v1-spec.md`: each phase was built, run, committed, pushed to a Vercel preview, and then checked by the owner on a real webcam before the next phase. The v2 spec (`.plans/hologemma-v2-spec.md`) records the later decisions for the brain, skeleton, muscles, engines, atoms, realism and motion.
 
 The `.agents/skills/` folder holds design and animation guidance that was used during development (animation, UI polish, and frontend-design skills). `skills-lock.json` records their sources and hashes, and `.claude/skills` is a symlink to them. These are reference material for the coding agent and are not part of the app's runtime.
 

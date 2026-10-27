@@ -29,7 +29,7 @@ export const computer: ModelDefinition = {
   realisticOnly: true,
   sources: [
     {
-      text: 'Original model by Hololemma, built from standard ATX, PCIe and DIMM form-factor dimensions. Not a copy of any product.',
+      text: 'Original model by Hologemma, built from standard ATX, PCIe and DIMM form-factor dimensions. Not a copy of any product.',
       url: 'https://en.wikipedia.org/wiki/ATX',
     },
   ],
