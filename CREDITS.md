@@ -31,6 +31,18 @@ Licence: [Creative Commons Attribution 4.0 International](https://creativecommon
 - Labelled the hemispheres by position, consistent with the heart model.
 - Simplified and compressed the meshes.
 
+### Skeleton (and muscles): BodyParts3D, CC BY 4.0
+`public/models/skeleton.glb` is built by `scripts/build-skeleton.ts` (and `muscles.glb` by `scripts/build-muscles.ts`) from:
+
+- "BodyParts3D, © The Database Center for Life Science licensed under CC Attribution 4.0 International". https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html (version 4.0, 99 % reduced OBJ meshes).
+
+The OBJ file headers still mention the older CC BY-SA 2.1 Japan licence. The database's current licence page states CC BY 4.0.
+
+**Changes made:**
+- Grouped individual bones and muscles into student-level parts.
+- Converted from millimetres to metres and to a y-up frame.
+- Simplified and compressed the meshes.
+
 ### Robot dog: Mini Pupper 2 by MangDang, Apache License 2.0
 `public/models/robot-dog.glb` is built by `scripts/build-dog.ts` from the Mini Pupper 2 robot description (URDF and STL meshes) in [mangdangroboticsclub/mini_pupper_ros](https://github.com/mangdangroboticsclub/mini_pupper_ros). Copyright MangDang. Licensed under the Apache License, Version 2.0; the full text is in `public/licenses/mini-pupper-apache-2.0.txt` and its NOTICE in `public/licenses/mini-pupper-NOTICE.txt`.
 
