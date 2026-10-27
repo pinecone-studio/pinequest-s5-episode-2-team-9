@@ -27,6 +27,3 @@ dist-ssr
 public/mediapipe
 scripts/.cache
 !.env.example
-
-# Design inspection output (taste skill)
-.taste-skill/

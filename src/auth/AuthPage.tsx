@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link, Navigate, useSearchParams } from 'react-router'
 import { useLang, useT, type I18nKey } from '../i18n'
-import { SiteBar } from '../ui/SiteBar'
+import { LangToggle } from '../ui/LangToggle'
 import { authErrorKey, safeNext } from './authErrors'
 import { resetPassword, signInWithEmail, signInWithGoogle, signUpWithEmail, useAuth } from './authStore'
 
@@ -54,15 +54,18 @@ export function AuthPage({ mode }: { mode: Mode }) {
   }
 
   return (
-    <main className="site auth-page">
-      <SiteBar account={false} />
+    <main className="landing auth">
+      <div className="landing-grid" aria-hidden="true" />
+      <header className="landing-bar">
+        <Link to="/" className="brand">
+          <span className="brand-mark" aria-hidden="true" />
+          {t('app.name')}
+        </Link>
+        <LangToggle />
+      </header>
 
-      <figure className="auth-art">
-        <img src="/landing/heart-apart.webp" alt="" width={1200} height={1500} />
-        <p>{t('auth.art')}</p>
-      </figure>
-
-      <section className="auth-card" aria-label={t(mode === 'login' ? 'auth.login' : 'auth.signup')}>
+      <section className="auth-card">
+        <span className="hud-tag">{t(mode === 'login' ? 'auth.login' : 'auth.signup')}</span>
         <h1>{t(mode === 'login' ? 'auth.loginTitle' : 'auth.signupTitle')}</h1>
         <p className="auth-lead">{t('auth.lead')}</p>
 
@@ -138,7 +141,7 @@ export function AuthPage({ mode }: { mode: Mode }) {
 
               <button
                 type="submit"
-                className="btn auth-submit"
+                className="start-button auth-submit"
                 disabled={busy || status === 'loading'}
               >
                 {t(mode === 'login' ? 'auth.loginAction' : 'auth.signupAction')}
