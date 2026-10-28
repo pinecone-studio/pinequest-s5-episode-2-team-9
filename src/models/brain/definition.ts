@@ -53,6 +53,7 @@ export const brain: ModelDefinition = {
   initialRotation: [0.15, -0.6, 0],
   tour: brainTour,
   accent: '#a78bff',
+  motion: 'brain',
   sources: [
     {
       text: 'Browne, K. & Schlehlein, H. (2023). 3D Reference Organ for Brain, Male, v1.3. HuBMAP.',

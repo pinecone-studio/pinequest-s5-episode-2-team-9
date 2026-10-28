@@ -1623,6 +1623,136 @@ a {
   color: var(--ink);
 }
 
+/* Run monitors: what the running model is doing right now */
+.run-monitor {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(4, 14, 26, 0.5);
+}
+
+.run-caption {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.run-gauges {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.run-gauge {
+  position: relative;
+  display: grid;
+  gap: 3px;
+  overflow: hidden;
+  padding: 6px 8px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink-dim);
+  font: 500 0.66rem/1.1 var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.run-gauge b {
+  color: var(--ink);
+  font: 600 1rem/1 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.run-gauge small {
+  color: var(--ink-dim);
+  font-size: 0.7rem;
+}
+
+.run-gauge i {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+  transition: width 0.15s linear;
+}
+
+.run-steps {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 1.2em;
+  color: var(--ink-dim);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.run-steps li[data-state='now'] {
+  color: var(--ink);
+}
+
+.run-steps li[data-state='now']::marker {
+  color: var(--cyan);
+}
+
+.run-steps li[data-state='done'] {
+  opacity: 0.6;
+}
+
+.circ-map {
+  width: 100%;
+  height: auto;
+  color: var(--ink-dim);
+}
+
+.circ-organ {
+  fill: rgba(255, 159, 192, 0.08);
+  stroke: rgba(255, 159, 192, 0.5);
+}
+
+.circ-chamber {
+  fill: rgba(255, 255, 255, 0.03);
+  stroke-width: 1.5;
+}
+
+.circ-text {
+  fill: var(--ink);
+  font: 600 10px var(--font-mono);
+  text-anchor: middle;
+}
+
+.circ-vessel {
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.circ-blue {
+  stroke: #3f7dff;
+  color: #3f7dff;
+}
+
+.circ-red {
+  stroke: #ff2d48;
+  color: #ff2d48;
+}
+
+.circ-tracer {
+  stroke: #fff;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 4px #fff);
+  transition:
+    cx 0.6s ease,
+    cy 0.6s ease,
+    fill 0.6s ease;
+}
+
 /* Account + auth pages */
 .landing-bar-actions,
 .account {

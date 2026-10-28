@@ -3,6 +3,9 @@ import { assemblyOrder, placeable, type ModelDefinition } from '../models/ModelD
 
 export type ViewMode = 'explore' | 'study' | 'assembly'
 
+/** What the brain's run shows: seeing and catching, a smell bringing back a memory, touching something hot. */
+export type BrainScenario = 'see' | 'smell' | 'touch'
+
 export type AssemblyMessage =
   | { kind: 'wrong'; partId: string; id: number }
   | { kind: 'placed'; partId: string; id: number }
@@ -32,6 +35,9 @@ interface ModelState {
   running: boolean
   /** Heart: beats per minute. Machines: speed in %. */
   tempo: number
+  /** Motion plays at a quarter of its speed, so it can be followed. */
+  slowMotion: boolean
+  brainScenario: BrainScenario
   /** Robot dog gait. */
   gait: 'walk' | 'trot'
   /** Guided tour: current step index, or null when no tour is running. */
@@ -77,6 +83,8 @@ const initial = {
   message: null,
   running: false,
   tempo: 72,
+  slowMotion: false,
+  brainScenario: 'see' as BrainScenario,
   gait: 'trot' as const,
   tourStep: null,
   tourMotion: false,
