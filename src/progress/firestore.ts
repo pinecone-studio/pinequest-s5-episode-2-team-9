@@ -1,5 +1,5 @@
 // Loaded on demand, only for signed-in users. Layout (see firestore.rules):
-//   users/{uid}                    name, email, createdAt, lastSeenAt
+//   users/{uid}                    name, email, lang, createdAt, lastSeenAt
 //   users/{uid}/progress/{modelId} studied[], assemblies, bestAssemblyMs, lastOpenedAt, updatedAt
 import {
   arrayUnion,
@@ -13,6 +13,7 @@ import {
   setDoc,
 } from 'firebase/firestore'
 import { app } from '../auth/firebase'
+import type { Lang } from '../i18n'
 import { parseProgress, toMillis, type ModelProgress } from './progress'
 
 const db = getFirestore(app)
@@ -21,7 +22,12 @@ const userDoc = (uid: string) => doc(db, 'users', uid)
 const progressDoc = (uid: string, modelId: string) => doc(db, 'users', uid, 'progress', modelId)
 
 /** Creates or refreshes the profile. Returns when the account was created. */
-export async function touchProfile(uid: string, name: string | null, email: string | null): Promise<number> {
+export async function touchProfile(
+  uid: string,
+  name: string | null,
+  email: string | null,
+  lang: Lang,
+): Promise<number> {
   const snap = await getDoc(userDoc(uid))
   const createdAt = snap.exists() ? toMillis(snap.get('createdAt')) : null
   await setDoc(
@@ -29,6 +35,7 @@ export async function touchProfile(uid: string, name: string | null, email: stri
     {
       name,
       email,
+      lang,
       lastSeenAt: serverTimestamp(),
       ...(snap.exists() ? {} : { createdAt: serverTimestamp() }),
     },

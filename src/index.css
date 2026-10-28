@@ -2060,6 +2060,98 @@ a.account-name:hover {
   font-size: 1rem;
 }
 
+/* Admin */
+.admin-body {
+  width: min(1100px, 100%);
+}
+
+.admin-heading {
+  margin: 32px 0 12px;
+  font-size: 1rem;
+}
+
+.admin-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--cyan);
+  font: inherit;
+  cursor: pointer;
+}
+
+.admin-link:hover {
+  text-decoration: underline;
+}
+
+/* Wide tables scroll inside their box, never the page. */
+.admin-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  white-space: nowrap;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.admin-table th {
+  color: var(--ink-dim);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.admin-table td strong,
+.admin-table td span:not(.admin-plan) {
+  display: block;
+}
+
+.admin-table td span:not(.admin-plan) {
+  color: var(--ink-dim);
+  font-size: 0.8rem;
+}
+
+.admin-table .num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.admin-plan {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-dim);
+  font-size: 0.78rem;
+}
+
+.admin-plan[data-state='active'] {
+  border-color: color-mix(in srgb, var(--cyan) 50%, transparent);
+  color: var(--cyan);
+}
+
+.admin-plan[data-state='pending'] {
+  border-color: rgba(255, 196, 92, 0.5);
+  color: #ffc45c;
+}
+
 /* Guided tour */
 /* A direct child of the scrolling panel: don't let flex squash it. */
 .tour-start {
@@ -2102,4 +2194,67 @@ a.account-name:hover {
   .tour-progress i {
     transition: none;
   }
+}
+
+/* Billing (/pricing and the profile's subscription line) */
+.billing-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin: 18px 0 0;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  font-size: 0.9rem;
+}
+
+.billing-status .hud-tag {
+  color: var(--cyan);
+}
+
+.billing-status .hud-button {
+  margin-left: auto;
+}
+
+.billing-per {
+  color: var(--ink-dim);
+  font-size: 0.55em;
+  font-weight: 500;
+}
+
+.billing-actions {
+  margin-top: 28px;
+}
+
+.billing-pay {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+}
+
+.billing-pay p {
+  margin: 0;
+}
+
+.billing-qr {
+  width: 240px;
+  height: 240px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.billing-banks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.billing-banks img {
+  border-radius: 4px;
 }
