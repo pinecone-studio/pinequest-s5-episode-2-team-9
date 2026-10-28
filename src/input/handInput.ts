@@ -1,4 +1,6 @@
 // The hand-input pipeline: tracker → stable tracks → gestures (+ calibration).
+// Per hand: bloom (five-finger scale) runs before the pinch machine so a bud never pinches.
+// Across hands: an open-palm push resets the view.
 // Consumers read `latest` every render frame and subscribe to gesture events.
 
 import {
@@ -9,12 +11,14 @@ import {
   type Calibration,
   type CalibrationProgress,
 } from './calibration'
+import { BloomMachine, type BloomEvent, type BloomState } from './bloom'
 import { coverMapping, videoToScreen } from './coords'
 import { GestureMachine, type GestureEvent, type GestureState } from './gestures'
 import type { HandPose } from './handGeometry'
 import { HandTracker } from './handTracker'
 import { HandTracks } from './handTracks'
 import { tuning } from './tuning'
+import { PalmPush } from './twoHands'
 import { LM, type RawHandFrame, type Vec2, type Vec3 } from './types'
 
 export interface HandState {
@@ -29,6 +33,7 @@ export interface HandState {
   cursor: Vec2
   pose: HandPose
   gesture: GestureState
+  bloom: BloomState
 }
 
 export interface HandsSnapshot {
@@ -36,17 +41,21 @@ export interface HandsSnapshot {
   time: number
   /** Detection rate over the last second. */
   trackingFps: number
+  /** 0..1 while two open palms are being pushed towards the camera. */
+  palmPush: number
 }
+
+export type InputEvent = GestureEvent | BloomEvent | { type: 'palmPush'; time: number }
 
 export type InputStatus = 'idle' | 'loading' | 'running' | 'error'
 
-type Listener = (snapshot: HandsSnapshot, events: GestureEvent[]) => void
+type Listener = (snapshot: HandsSnapshot, events: InputEvent[]) => void
 type StatusListener = (status: InputStatus) => void
 type CalibrationListener = (progress: CalibrationProgress | null, done: Calibration | null) => void
 
 export class HandInput {
   status: InputStatus = 'idle'
-  latest: HandsSnapshot = { hands: [], time: 0, trackingFps: 0 }
+  latest: HandsSnapshot = { hands: [], time: 0, trackingFps: 0, palmPush: 0 }
   calibration: Calibration
   /** True when no saved calibration exists yet (first visit). */
   readonly needsCalibration: boolean
@@ -55,6 +64,8 @@ export class HandInput {
   private tracker = new HandTracker()
   private tracks = new HandTracks()
   private machines = new Map<number, GestureMachine>()
+  private blooms = new Map<number, BloomMachine>()
+  private palmPush = new PalmPush()
   private listeners = new Set<Listener>()
   private statusListeners = new Set<StatusListener>()
   private calibrationListeners = new Set<CalibrationListener>()
@@ -85,6 +96,7 @@ export class HandInput {
     this.tracker.close()
     this.tracks.reset()
     this.machines.clear()
+    this.blooms.clear()
     this.setStatus('idle')
   }
 
@@ -129,13 +141,19 @@ export class HandInput {
 
     const tracks = this.tracks.update(frame, t)
     const mapping = coverMapping(frame.videoWidth, frame.videoHeight, this.viewport.w, this.viewport.h)
-    const events: GestureEvent[] = []
+    const events: InputEvent[] = []
 
     const liveIds = new Set(tracks.map((tr) => tr.id))
     for (const [id, machine] of this.machines) {
       if (!liveIds.has(id)) {
         events.push(...machine.lose(now))
         this.machines.delete(id)
+      }
+    }
+    for (const [id, bloom] of this.blooms) {
+      if (!liveIds.has(id)) {
+        events.push(...bloom.lose(now))
+        this.blooms.delete(id)
       }
     }
 
@@ -145,7 +163,14 @@ export class HandInput {
         machine = new GestureMachine(track.id)
         this.machines.set(track.id, machine)
       }
-      const result = machine.update(track, this.calibration, t, now)
+      let bloom = this.blooms.get(track.id)
+      if (!bloom) {
+        bloom = new BloomMachine(track.id)
+        this.blooms.set(track.id, bloom)
+      }
+      const bloomed = bloom.update(track, machine.isPinched(), now)
+      events.push(...bloomed.events)
+      const result = machine.update(track, this.calibration, t, now, bloomed.blocksPinch)
       events.push(...result.events)
       const screen = track.landmarks.map((p) => videoToScreen(p, mapping))
       const thumb = screen[LM.THUMB_TIP]
@@ -159,8 +184,12 @@ export class HandInput {
         cursor: { x: (thumb.x + index.x) / 2, y: (thumb.y + index.y) / 2 },
         pose: track.pose,
         gesture: result.state,
+        bloom: bloomed.state,
       }
     })
+
+    const push = this.palmPush.update(tracks, now)
+    if (push.fired) events.push({ type: 'palmPush', time: now })
 
     if (this.session) {
       const done = this.session.update(tracks, now)
@@ -174,9 +203,9 @@ export class HandInput {
       }
     }
 
-    this.latest = { hands, time: now, trackingFps: this.frameTimes.length }
+    this.latest = { hands, time: now, trackingFps: this.frameTimes.length, palmPush: push.progress }
     // Gestures are silent during calibration so a calibration pinch never grabs anything.
-    const delivered = this.session ? events.filter((e) => e.type === 'pinchEnd') : events
+    const delivered = this.session ? events.filter((e) => e.type === 'pinchEnd' || e.type === 'bloomEnd') : events
     this.listeners.forEach((l) => l(this.latest, delivered))
   }
 

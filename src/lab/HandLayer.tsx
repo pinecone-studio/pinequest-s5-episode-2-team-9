@@ -1,13 +1,17 @@
 import { useEffect, useRef } from 'react'
 import { HAND_CONNECTIONS, LM } from '../input/types'
+import { gestureHud } from '../interaction/gestureHud'
+import { drawBloom, drawPalmPush, drawTwoHands } from './gestureFeedback'
 import { useLabServices } from './LabContext'
 import { useLab } from './labStore'
+import { useModel } from './modelStore'
 
 const CYAN = '94, 231, 255'
 const VIOLET = '167, 139, 255'
 
 // 2D overlay: fingertip markers and a cursor ring that fills as a pinch registers,
 // so users always see what the system sees. Debug mode adds the full skeleton.
+// Bloom, two-hand and palm-push gestures draw their own feedback (gestureFeedback.ts).
 export function HandLayer() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { input, hub } = useLabServices()
@@ -57,6 +61,11 @@ export function HandLayer() {
             w.x + 10,
             w.y + 18,
           )
+          ctx.fillText(
+            `spread ${hand.pose.spread.toFixed(2)} reach ${hand.pose.reach.toFixed(2)} · bloom ${hand.bloom.phase}`,
+            w.x + 10,
+            w.y + 34,
+          )
         } else {
           // Small glowing markers on thumb and index tips.
           for (const i of [LM.THUMB_TIP, LM.INDEX_TIP]) {
@@ -70,6 +79,14 @@ export function HandLayer() {
           ctx.shadowBlur = 0
         }
       }
+
+      const model = useModel.getState()
+      for (const hand of snapshot.hands) drawBloom(ctx, hand, model.scale)
+      if (snapshot.palmPush > 0.15) for (const hand of snapshot.hands) drawPalmPush(ctx, hand, snapshot.palmPush)
+      const two = gestureHud.two
+      const a = two && hub.pointers.get(two.a)
+      const b = two && hub.pointers.get(two.b)
+      if (two && a && b) drawTwoHands(ctx, a, b, two.kind, two.kind === 'explode' ? model.explode : model.scale)
 
       for (const p of hub.pointers.values()) {
         if (p.kind !== 'hand') continue
