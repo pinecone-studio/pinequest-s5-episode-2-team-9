@@ -44,13 +44,46 @@ export function fingerCurls(lm: Vec3[]): [number, number, number, number] {
   }) as [number, number, number, number]
 }
 
+const FINGER_TIPS = [LM.INDEX_TIP, LM.MIDDLE_TIP, LM.RING_TIP, LM.PINKY_TIP] as const
+
+/**
+ * Farthest fingertip from the thumb tip, in palm sizes. ~0.2 when all five tips touch
+ * (a "bud"), ~1.5 for an open hand. An ordinary thumb-index pinch stays high because
+ * the other fingers are elsewhere, which is what separates a bud from a pinch.
+ */
+export function tipSpread(lm: Vec3[]): number {
+  const palm = palmSize(lm)
+  if (palm <= 0) return Infinity
+  return Math.max(...FINGER_TIPS.map((i) => dist(lm[LM.THUMB_TIP], lm[i]))) / palm
+}
+
+/** Nearest fingertip to the wrist, in palm sizes. Low when fingers are tucked into the palm (fist, curled pinch). */
+export function tipReach(lm: Vec3[]): number {
+  const palm = palmSize(lm)
+  if (palm <= 0) return 0
+  return Math.min(...FINGER_TIPS.map((i) => dist(lm[LM.WRIST], lm[i]))) / palm
+}
+
+/** All five fingertips within this many palm sizes of the thumb tip = a bud. */
+export const BUD_MAX_SPREAD = 0.45
+/** Looser bud, used only to hold off a pinch while a bloom/gather is in progress. */
+export const BUD_LOOSE_SPREAD = 0.8
+/** Bud fingertips point forward; tucked fingertips (fist, curled pinch) sit closer to the wrist. */
+export const BUD_MIN_REACH = 0.9
+
 export interface HandPose {
   palm: number
   pinch: number
   curls: [number, number, number, number]
+  /** See tipSpread. */
+  spread: number
+  /** See tipReach. */
+  reach: number
   openPalm: boolean
   fist: boolean
   pointing: boolean
+  /** All five fingertips gathered to one point, fingers reaching forward (not a fist). */
+  bud: boolean
 }
 
 export interface PoseThresholds {
@@ -66,13 +99,19 @@ export function classifyPose(lm: Vec3[], t: PoseThresholds): HandPose {
   const extended = curls.map((c) => c < t.extendedMaxCurl)
   const curled = curls.map((c) => c > t.curledMinCurl)
   const thumbOut = palm > 0 && dist(lm[LM.THUMB_TIP], lm[LM.INDEX_MCP]) / palm > 0.45
+  const spread = tipSpread(lm)
+  const reach = tipReach(lm)
+  const fist = curls.every((c) => c > t.fistMinCurl)
   return {
     palm,
     pinch,
     curls,
+    spread,
+    reach,
     openPalm: extended.every(Boolean) && thumbOut && pinch > 0.5,
-    fist: curls.every((c) => c > t.fistMinCurl),
+    fist,
     pointing: extended[0] && curled[1] && curled[2] && curled[3],
+    bud: !fist && spread < BUD_MAX_SPREAD && reach > BUD_MIN_REACH,
   }
 }
 
