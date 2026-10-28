@@ -28,3 +28,6 @@ public/mediapipe
 scripts/.cache
 !.env.example
 .taste-skill
+
+# Agent worktrees
+.claude/worktrees

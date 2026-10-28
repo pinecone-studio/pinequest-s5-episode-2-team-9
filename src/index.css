@@ -2128,6 +2128,98 @@ a.account-name:hover {
   font-size: 1rem;
 }
 
+/* Admin */
+.admin-body {
+  width: min(1100px, 100%);
+}
+
+.admin-heading {
+  margin: 32px 0 12px;
+  font-size: 1rem;
+}
+
+.admin-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--cyan);
+  font: inherit;
+  cursor: pointer;
+}
+
+.admin-link:hover {
+  text-decoration: underline;
+}
+
+/* Wide tables scroll inside their box, never the page. */
+.admin-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  white-space: nowrap;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.admin-table th {
+  color: var(--ink-dim);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.admin-table td strong,
+.admin-table td span:not(.admin-plan) {
+  display: block;
+}
+
+.admin-table td span:not(.admin-plan) {
+  color: var(--ink-dim);
+  font-size: 0.8rem;
+}
+
+.admin-table .num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.admin-plan {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-dim);
+  font-size: 0.78rem;
+}
+
+.admin-plan[data-state='active'] {
+  border-color: color-mix(in srgb, var(--cyan) 50%, transparent);
+  color: var(--cyan);
+}
+
+.admin-plan[data-state='pending'] {
+  border-color: rgba(255, 196, 92, 0.5);
+  color: #ffc45c;
+}
+
 /* Guided tour */
 /* A direct child of the scrolling panel: don't let flex squash it. */
 .tour-start {
@@ -2170,4 +2262,218 @@ a.account-name:hover {
   .tour-progress i {
     transition: none;
   }
+}
+
+/* Billing (/pricing and the profile's subscription line) */
+.billing-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin: 18px 0 0;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  font-size: 0.9rem;
+}
+
+.billing-status .hud-tag {
+  color: var(--cyan);
+}
+
+.billing-status .hud-button {
+  margin-left: auto;
+}
+
+.billing-per {
+  color: var(--ink-dim);
+  font-size: 0.55em;
+  font-weight: 500;
+}
+
+.billing-actions {
+  margin-top: 28px;
+}
+
+.billing-pay {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+}
+
+.billing-pay p {
+  margin: 0;
+}
+
+.billing-qr {
+  width: 240px;
+  height: 240px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.billing-banks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.billing-banks img {
+  border-radius: 4px;
+}
+
+/* Solar system lab */
+.solar-panel {
+  overflow-y: auto;
+}
+
+.solar-panel .tabs {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.solar-panel .tabs .hud-button {
+  padding-inline: 6px;
+  font-size: 0.68rem;
+}
+
+.solar-time {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(6, 12, 24, 0.4);
+}
+
+.solar-date {
+  font: 600 1rem/1.2 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.solar-rates,
+.solar-bodies,
+.solar-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.solar-rates .hud-button,
+.solar-bodies .hud-button,
+.solar-toggle {
+  padding: 5px 8px;
+  font-size: 0.66rem;
+}
+
+.solar-bodies .hud-button::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 6px var(--c);
+}
+
+.solar-title {
+  margin: 2px 0 0;
+  font-size: 1.15rem;
+}
+
+.solar-facts {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.solar-fact {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 10px;
+  background: rgba(6, 12, 24, 0.45);
+  font-size: 0.78rem;
+}
+
+.solar-fact span {
+  color: var(--ink-dim);
+}
+
+.solar-fact b {
+  font: 600 0.78rem/1.3 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.solar-legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 10px;
+  color: var(--ink-dim);
+  font-size: 0.72rem;
+}
+
+.solar-legend span::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 2px;
+  margin-right: 6px;
+  vertical-align: middle;
+  background: var(--c);
+}
+
+.solar-moon-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.solar-phase {
+  flex: none;
+  width: 56px;
+  height: 56px;
+}
+
+.solar-events {
+  display: grid;
+  gap: 6px;
+}
+
+.solar-events summary {
+  cursor: pointer;
+  color: var(--ink-dim);
+  font: 600 0.72rem/1.6 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.solar-events .hud-button {
+  margin-top: 5px;
+  justify-content: flex-start;
+  font-size: 0.7rem;
+}
+
+.solar-label-wrap {
+  pointer-events: none;
+}
+
+.solar-label {
+  display: inline-block;
+  transform: translate(8px, -50%);
+  padding: 2px 6px;
+  border-left: 2px solid var(--c, var(--cyan));
+  background: rgba(3, 6, 14, 0.55);
+  color: var(--ink);
+  font: 600 0.62rem/1.3 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }

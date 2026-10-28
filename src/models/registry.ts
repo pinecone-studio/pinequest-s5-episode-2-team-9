@@ -18,15 +18,18 @@ export function modelBySlug(slug: string): ModelDefinition | undefined {
 
 /** Labs that are not take-apart models (own scene and panel). */
 export interface Experience {
-  id: 'atoms'
+  id: 'atoms' | 'solar'
   slug: string
   accent: string
   titleKey: string
   summaryKey: string
+  /** Short "what's inside" line on the library card. */
+  metaKey: string
 }
 
 export const experiences: Experience[] = [
-  { id: 'atoms', slug: 'atoms', accent: '#5ee7ff', titleKey: 'atoms.title', summaryKey: 'atoms.summary' },
+  { id: 'atoms', slug: 'atoms', accent: '#5ee7ff', titleKey: 'atoms.title', summaryKey: 'atoms.summary', metaKey: 'atoms.meta' },
+  { id: 'solar', slug: 'solar-system', accent: '#ffcf6b', titleKey: 'solar.title', summaryKey: 'solar.summary', metaKey: 'solar.meta' },
 ]
 
 export function experienceBySlug(slug: string): Experience | undefined {

@@ -3,20 +3,26 @@
 //                tap to select, double pinch a part = open Study
 //   two hands:   pinch near the model and pull apart = explode; away from it = scale;
 //                twist both hands like a wheel = roll;
-//                hold a part + pull with the other hand = open Study.
+//                hold a part + pull with the other hand = open Study;
+//                push both open palms towards the camera = reset the view.
 //   in study:    the shown part (or piece) splits into its pieces: pinch near it and pull apart =
 //                spread them; hold a piece + pull with the other hand, tap or double click it =
 //                go into that piece; fist = back up one level.
+//   bloom:       five fingertips gathered then opened (or the reverse) = scale the model,
+//                following the fingertip spread live. A blooming hand holds nothing (a bud is
+//                not a pinch), so it scales what is on screen: the model, or the part in Study.
 // Hands are stabilized: small jitter is ignored, and letting go restores the pose from just
 // before the fingers opened, so the model stays exactly where it was left.
 
 import { Plane, Quaternion, Raycaster, Vector2, Vector3, type PerspectiveCamera } from 'three'
 import { play } from '../audio/sfx'
 import { tuning } from '../input/tuning'
+import { PinchPair } from '../input/twoHands'
 import { useLab } from '../lab/labStore'
 import { useModel } from '../lab/modelStore'
 import { piecesAt } from '../models/ModelDefinition'
 import type { ModelRig } from '../scene/modelRig'
+import { gestureHud } from './gestureHud'
 import type { HubEvent, Pointer, PointerHub } from './pointerHub'
 
 interface SingleGesture {
@@ -39,10 +45,7 @@ interface TwoHandGesture {
   kind: 'explode' | 'scale' | 'stretch'
   a: string
   b: string
-  d0: number
-  /** Hand distance and twist angle, after the jitter band. */
-  d: number
-  angle: number
+  pair: PinchPair
   explode0: number
   scale0: number
   partId: string | null
@@ -57,20 +60,23 @@ interface Snapshot {
 }
 
 const STRETCH_TO_STUDY = 1.35
+/** User zoom limits, shared by wheel, two-hand scale and bloom. */
+const MIN_SCALE = 0.5
+const MAX_SCALE = 2.5
 const TAP_PX = 10
 const TAP_MS = 400
 /** Two pinches on the same part within this time open it in Study. */
 const DOUBLE_PINCH_MS = 450
-/** Hand movement inside these bands is ignored (tracking jitter). */
+/** Hand movement inside this band is ignored (tracking jitter). */
 const HAND_BAND_PX = 3
-const DISTANCE_BAND_PX = 4
-const TWIST_BAND = (4 * Math.PI) / 180
 /** On release, the pose is restored from this long before (opening the fingers moves the hand). */
 const RELEASE_SETTLE_MS = 180
 
 export class InteractionController {
   private singles = new Map<string, SingleGesture>()
   private two: TwoHandGesture | null = null
+  /** Active blooms: pointer id → model scale when the bloom started. */
+  private blooms = new Map<string, number>()
   private momentum = { yaw: 0, pitch: 0 }
   private raycaster = new Raycaster()
   private ndc = new Vector2()
@@ -120,7 +126,7 @@ export class InteractionController {
   private handle(e: HubEvent): void {
     const store = useModel.getState()
     if (e.type === 'wheel') {
-      if (store.mode !== 'assembly') store.set({ scale: clamp(store.scale * Math.exp(-e.deltaY * 0.0012), 0.5, 2.5) })
+      if (store.mode !== 'assembly') store.set({ scale: clamp(store.scale * Math.exp(-e.deltaY * 0.0012), MIN_SCALE, MAX_SCALE) })
       return
     }
     if (e.type === 'doubleclick') {
@@ -141,6 +147,21 @@ export class InteractionController {
     }
     if (e.type === 'fist') {
       this.back()
+      return
+    }
+    if (e.type === 'bloom') {
+      if (e.phase === 'end') this.blooms.delete(e.pointer.id)
+      else if (store.mode !== 'assembly' && !this.two) this.blooms.set(e.pointer.id, store.scale)
+      return
+    }
+    if (e.type === 'reset') {
+      if (store.mode === 'assembly' || store.carried) return
+      this.two = null
+      this.blooms.clear()
+      this.history = []
+      this.stopMomentum()
+      store.resetView()
+      play('click')
       return
     }
     if (e.type === 'down') this.onDown(e.pointer)
@@ -169,16 +190,16 @@ export class InteractionController {
     if (other && p.kind === 'hand') {
       const a = this.hub.pointers.get(other.pointerId)
       if (!a) return
-      const d0 = Math.max(20, Math.hypot(p.x - a.x, p.y - a.y))
+      const pair = new PinchPair(a, p)
       if (other.kind === 'partDrag' && other.partId) {
-        this.two = { kind: 'stretch', a: other.pointerId, b: p.id, d0, d: d0, angle: 0, explode0: 0, scale0: 0, partId: other.partId }
+        this.two = { kind: 'stretch', a: other.pointerId, b: p.id, pair, explode0: 0, scale0: 0, partId: other.partId }
         return
       }
       // Study: holding a piece and pulling with the other hand goes into that piece.
       if (store.mode === 'study' && other.kind === 'rotate' && other.pressedPart) {
         this.singles.delete(other.pointerId)
         this.stopMomentum()
-        this.two = { kind: 'stretch', a: other.pointerId, b: p.id, d0, d: d0, angle: 0, explode0: 0, scale0: 0, partId: other.pressedPart }
+        this.two = { kind: 'stretch', a: other.pointerId, b: p.id, pair, explode0: 0, scale0: 0, partId: other.pressedPart }
         return
       }
       if (other.kind === 'carry') return
@@ -190,9 +211,10 @@ export class InteractionController {
       const near = [a, p].every((q) => Math.hypot(q.x - center.x, q.y - center.y) < radius)
       const spreadable = store.mode === 'explore' || (store.mode === 'study' && hasPieces(store))
       const kind = near && spreadable ? 'explode' : 'scale'
-      const angle = Math.atan2(p.y - a.y, p.x - a.x)
       const explode0 = store.mode === 'study' ? store.pieceSpread : store.explode
-      this.two = { kind, a: other.pointerId, b: p.id, d0, d: d0, angle, explode0, scale0: store.scale, partId: null }
+      this.two = { kind, a: other.pointerId, b: p.id, pair, explode0, scale0: store.scale, partId: null }
+      // Two-hand zoom takes over from any one-hand bloom.
+      this.blooms.clear()
       this.history = []
       return
     }
@@ -365,22 +387,14 @@ export class InteractionController {
       if (!a || !b) {
         this.two = null
       } else {
-        this.two.d = follow(this.two.d, Math.max(20, Math.hypot(a.x - b.x, a.y - b.y)), DISTANCE_BAND_PX)
-        const ratio = this.two.d / this.two.d0
-        if (this.two.kind !== 'stretch') {
-          // Twisting both hands like a wheel rolls the model (screen y points down, so negate).
-          const turn = wrapAngle(Math.atan2(b.y - a.y, b.x - a.x) - this.two.angle)
-          if (Math.abs(turn) > TWIST_BAND) {
-            const step = turn - Math.sign(turn) * TWIST_BAND
-            this.two.angle = wrapAngle(this.two.angle + step)
-            this.rig.rotateBy(0, 0, -step)
-          }
-        }
+        const { ratio, turn } = this.two.pair.update(a, b)
+        // Twisting both hands like a wheel rolls the model about the view axis (screen y points down, so negate).
+        if (this.two.kind !== 'stretch' && turn) this.rig.rotateBy(0, 0, -turn)
         if (this.two.kind === 'explode') {
           const amount = clamp(this.two.explode0 + (ratio - 1) * tuning.get().explodeGain, 0, 1)
           store.set(store.mode === 'study' ? { pieceSpread: amount } : { explode: amount })
         } else if (this.two.kind === 'scale') {
-          store.set({ scale: clamp(this.two.scale0 * ratio, 0.5, 2.5) })
+          store.set({ scale: clamp(this.two.scale0 * ratio, MIN_SCALE, MAX_SCALE) })
         } else if (this.two.kind === 'stretch' && this.two.partId && ratio > STRETCH_TO_STUDY) {
           const id = this.two.partId
           this.singles.delete(this.two.a)
@@ -394,6 +408,16 @@ export class InteractionController {
         }
       }
     }
+
+    // One-hand bloom: the scale follows the fingertip spread live.
+    if (!this.two) {
+      for (const [id, base] of this.blooms) {
+        const factor = this.hub.pointers.get(id)?.bloom
+        if (factor == null) this.blooms.delete(id)
+        else store.set({ scale: clamp(base * factor, MIN_SCALE, MAX_SCALE) })
+      }
+    }
+    gestureHud.two = this.two ? { kind: this.two.kind, a: this.two.a, b: this.two.b } : null
 
     // Single-pointer gestures.
     let rotating = false
@@ -476,16 +500,6 @@ export class InteractionController {
 function hasPieces(store: ReturnType<typeof useModel.getState>): boolean {
   const part = store.def?.parts.find((p) => p.id === store.studyPart)
   return !!part && piecesAt(part, store.studyPath).length > 0
-}
-
-/** Moves `current` toward `target` only by how far `target` is outside the band (backlash filter). */
-function follow(current: number, target: number, band: number): number {
-  const d = target - current
-  return Math.abs(d) <= band ? current : target - Math.sign(d) * band
-}
-
-function wrapAngle(a: number): number {
-  return Math.atan2(Math.sin(a), Math.cos(a))
 }
 
 function clamp(v: number, min: number, max: number) {

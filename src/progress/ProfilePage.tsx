@@ -1,5 +1,6 @@
 import { Link } from 'react-router'
 import { useAuth } from '../auth/authStore'
+import { SubscriptionStatus } from '../billing/SubscriptionStatus'
 import { useLang, useT, useTx } from '../i18n'
 import { keys } from '../models/ModelDefinition'
 import { library } from '../models/registry'
@@ -46,8 +47,9 @@ export function ProfilePage() {
             </>
           )}
         </p>
+        <SubscriptionStatus />
 
-        {status === 'loading' && <p className="profile-note">{t('profile.loading')}</p>}
+        {status === 'loading' &&<p className="profile-note">{t('profile.loading')}</p>}
         {status === 'error' && (
           <p className="auth-notice" data-kind="error" role="alert">
             {t('profile.error')}

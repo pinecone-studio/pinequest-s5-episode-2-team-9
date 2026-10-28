@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { useAuth } from '../auth/authStore'
+import { useLang } from '../i18n'
 import { emptyProgress, withAssembly, withStudied, type ModelProgress } from './progress'
 
 interface ProgressState {
@@ -26,7 +27,7 @@ async function load(forUid: string, name: string | null, email: string | null): 
   try {
     const fs = await loadFirestore()
     const [memberSince, byModel] = await Promise.all([
-      fs.touchProfile(forUid, name, email),
+      fs.touchProfile(forUid, name, email, useLang.getState().lang),
       fs.loadProgress(forUid),
     ])
     if (uid !== forUid) return false
@@ -62,13 +63,26 @@ export function startProgress(): void {
       lastName = user.name
       void ready
         .then(async (ok) => {
-          if (ok) await (await loadFirestore()).touchProfile(user.uid, user.name, user.email)
+          if (ok)
+            await (
+              await loadFirestore()
+            ).touchProfile(user.uid, user.name, user.email, useLang.getState().lang)
         })
         .catch(warn)
     }
   }
   sync(useAuth.getState())
   useAuth.subscribe(sync)
+  // The admin page shows prices in each user's language, so keep it current.
+  useLang.subscribe((s, prev) => {
+    const user = useAuth.getState().user
+    if (!user || s.lang === prev.lang) return
+    void ready
+      .then(async (ok) => {
+        if (ok) await (await loadFirestore()).touchProfile(user.uid, user.name, user.email, s.lang)
+      })
+      .catch(warn)
+  })
 }
 
 /** Waits for the user's progress to load, so a write never races the first read. */
