@@ -18,6 +18,8 @@ interface LabState {
   tipsOpen: boolean
   /** Persisted user preferences. */
   headParallax: boolean
+  /** The side panel is tucked away to give the model the whole screen. */
+  panelHidden: boolean
   /** The gesture tips were shown once already. */
   tipsSeen: boolean
   /** Hologram glow or physically based materials. */
@@ -40,6 +42,7 @@ export const useLab = create<LabState>()(
       creditsOpen: false,
       tipsOpen: false,
       headParallax: false,
+      panelHidden: false,
       tipsSeen: false,
       viewStyle: 'hologram',
       forcedRealistic: false,
@@ -47,7 +50,7 @@ export const useLab = create<LabState>()(
     }),
     {
       name: 'hologemma.lab',
-      partialize: (s) => ({ headParallax: s.headParallax, tipsSeen: s.tipsSeen, viewStyle: s.viewStyle }),
+      partialize: (s) => ({ headParallax: s.headParallax, panelHidden: s.panelHidden, tipsSeen: s.tipsSeen, viewStyle: s.viewStyle }),
     },
   ),
 )

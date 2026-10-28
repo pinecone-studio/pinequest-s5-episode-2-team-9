@@ -1,9 +1,13 @@
 // Turns pointer events (hands + mouse) into model interactions:
-//   one pointer: rotate (with momentum), drag a part out, carry a part (assembly), tap to select
+//   one pointer: rotate (mouse flicks keep momentum), drag a part out, carry a part (assembly),
+//                tap to select, double pinch a part = open Study
 //   two hands:   pinch near the model and pull apart = explode; away from it = scale;
+//                twist both hands like a wheel = roll;
 //                hold a part + pull with the other hand = open Study.
+// Hands are stabilized: small jitter is ignored, and letting go restores the pose from just
+// before the fingers opened, so the model stays exactly where it was left.
 
-import { Plane, Raycaster, Vector2, Vector3, type PerspectiveCamera } from 'three'
+import { Plane, Quaternion, Raycaster, Vector2, Vector3, type PerspectiveCamera } from 'three'
 import { play } from '../audio/sfx'
 import { tuning } from '../input/tuning'
 import { useLab } from '../lab/labStore'
@@ -14,6 +18,7 @@ import type { HubEvent, Pointer, PointerHub } from './pointerHub'
 interface SingleGesture {
   kind: 'rotate' | 'partDrag' | 'carry'
   pointerId: string
+  hand: boolean
   partId: string | null
   /** Part under the pointer at press time (for tap-to-select). */
   pressedPart: string | null
@@ -31,14 +36,32 @@ interface TwoHandGesture {
   a: string
   b: string
   d0: number
+  /** Hand distance and twist angle, after the jitter band. */
+  d: number
+  angle: number
   explode0: number
   scale0: number
   partId: string | null
 }
 
+interface Snapshot {
+  time: number
+  explode: number
+  scale: number
+  rotation: Quaternion
+}
+
 const STRETCH_TO_STUDY = 1.35
 const TAP_PX = 10
 const TAP_MS = 400
+/** Two pinches on the same part within this time open it in Study. */
+const DOUBLE_PINCH_MS = 450
+/** Hand movement inside these bands is ignored (tracking jitter). */
+const HAND_BAND_PX = 3
+const DISTANCE_BAND_PX = 4
+const TWIST_BAND = (4 * Math.PI) / 180
+/** On release, the pose is restored from this long before (opening the fingers moves the hand). */
+const RELEASE_SETTLE_MS = 180
 
 export class InteractionController {
   private singles = new Map<string, SingleGesture>()
@@ -50,6 +73,9 @@ export class InteractionController {
   private hit = new Vector3()
   private tmp = new Vector3()
   private lastHovered: string | null = null
+  private lastTap: { part: string; time: number } | null = null
+  /** Recent poses during a hand gesture, for restoring on release. */
+  private history: Snapshot[] = []
 
   private rig: ModelRig
   private hub: PointerHub
@@ -133,7 +159,7 @@ export class InteractionController {
       if (!a) return
       const d0 = Math.max(20, Math.hypot(p.x - a.x, p.y - a.y))
       if (other.kind === 'partDrag' && other.partId) {
-        this.two = { kind: 'stretch', a: other.pointerId, b: p.id, d0, explode0: 0, scale0: 0, partId: other.partId }
+        this.two = { kind: 'stretch', a: other.pointerId, b: p.id, d0, d: d0, angle: 0, explode0: 0, scale0: 0, partId: other.partId }
         return
       }
       if (other.kind === 'carry') return
@@ -144,13 +170,16 @@ export class InteractionController {
       const radius = this.rig.screenRadius(this.camera, this.viewport().height) * tuning.get().explodeNearRadius
       const near = [a, p].every((q) => Math.hypot(q.x - center.x, q.y - center.y) < radius)
       const kind = near && store.mode === 'explore' ? 'explode' : 'scale'
-      this.two = { kind, a: other.pointerId, b: p.id, d0, explode0: store.explode, scale0: store.scale, partId: null }
+      const angle = Math.atan2(p.y - a.y, p.x - a.x)
+      this.two = { kind, a: other.pointerId, b: p.id, d0, d: d0, angle, explode0: store.explode, scale0: store.scale, partId: null }
+      this.history = []
       return
     }
 
     const gesture: SingleGesture = {
       kind: 'rotate',
       pointerId: p.id,
+      hand: p.kind === 'hand',
       partId: null,
       pressedPart: null,
       lastX: p.x,
@@ -162,6 +191,7 @@ export class InteractionController {
       vy: 0,
     }
     this.stopMomentum()
+    this.history = []
 
     if (store.mode === 'assembly') {
       const id = this.rig.pick(this.ray(p.x, p.y), ['bench'])
@@ -191,6 +221,7 @@ export class InteractionController {
     if (this.two && (this.two.a === p.id || this.two.b === p.id)) {
       const ended = this.two
       this.two = null
+      if (!cancelled && ended.kind !== 'stretch') this.settle(ended.kind)
       if (ended.kind === 'stretch') {
         // The holding hand keeps its part drag only if it is the one still pressed.
         if (ended.a === p.id) this.endSingle(p.id, store, cancelled)
@@ -206,12 +237,29 @@ export class InteractionController {
     if (!g) return
     this.singles.delete(pointerId)
 
+    const now = performance.now()
+    const tap = Math.hypot(g.lastX - g.startX, g.lastY - g.startY) < TAP_PX && now - g.startTime < TAP_MS
+    if (tap && g.hand && g.pressedPart && store.mode === 'explore') {
+      const last = this.lastTap
+      this.lastTap = { part: g.pressedPart, time: now }
+      if (last && last.part === g.pressedPart && now - last.time < DOUBLE_PINCH_MS) {
+        this.lastTap = null
+        if (g.partId) this.rig.relocate(g.partId, 'model')
+        store.openStudy(g.pressedPart)
+        play('open')
+        return
+      }
+    }
+
     if (g.kind === 'rotate') {
-      const tap = Math.hypot(g.lastX - g.startX, g.lastY - g.startY) < TAP_PX && performance.now() - g.startTime < TAP_MS
       if (tap && store.mode === 'explore') {
         store.set({ selected: g.pressedPart && store.selected !== g.pressedPart ? g.pressedPart : null })
         if (g.pressedPart) play('click')
-      } else if (!cancelled) {
+      } else if (cancelled) {
+        // Tracking lost: nothing to restore or fling.
+      } else if (g.hand) {
+        this.settle('rotate')
+      } else {
         this.momentum.yaw = clamp(g.vx, -6, 6)
         this.momentum.pitch = clamp(g.vy, -6, 6)
       }
@@ -250,6 +298,32 @@ export class InteractionController {
     }
   }
 
+  /** A hand let go: restore the pose from just before its fingers started to open. */
+  private settle(kind: 'explode' | 'scale' | 'rotate'): void {
+    const cutoff = performance.now() - RELEASE_SETTLE_MS
+    let snap: Snapshot | undefined
+    for (const s of this.history) if (s.time <= cutoff) snap = s
+    snap ??= this.history[0]
+    this.history = []
+    if (!snap) return
+    this.rig.rotation.copy(snap.rotation)
+    if (kind === 'explode') useModel.getState().set({ explode: snap.explode })
+    if (kind === 'scale') useModel.getState().set({ scale: snap.scale })
+  }
+
+  private record(): void {
+    const now = performance.now()
+    const store = useModel.getState()
+    const old = this.history[0]
+    const reuse = old && now - old.time > RELEASE_SETTLE_MS * 2 ? this.history.shift()! : null
+    const snap = reuse ?? { time: 0, explode: 0, scale: 0, rotation: new Quaternion() }
+    snap.time = now
+    snap.explode = store.explode
+    snap.scale = store.scale
+    snap.rotation.copy(this.rig.rotation)
+    this.history.push(snap)
+  }
+
   update(dt: number): void {
     const store = useModel.getState()
     const vp = this.viewport()
@@ -261,7 +335,17 @@ export class InteractionController {
       if (!a || !b) {
         this.two = null
       } else {
-        const ratio = Math.max(20, Math.hypot(a.x - b.x, a.y - b.y)) / this.two.d0
+        this.two.d = follow(this.two.d, Math.max(20, Math.hypot(a.x - b.x, a.y - b.y)), DISTANCE_BAND_PX)
+        const ratio = this.two.d / this.two.d0
+        if (this.two.kind !== 'stretch') {
+          // Twisting both hands like a wheel rolls the model (screen y points down, so negate).
+          const turn = wrapAngle(Math.atan2(b.y - a.y, b.x - a.x) - this.two.angle)
+          if (Math.abs(turn) > TWIST_BAND) {
+            const step = turn - Math.sign(turn) * TWIST_BAND
+            this.two.angle = wrapAngle(this.two.angle + step)
+            this.rig.rotateBy(0, 0, -step)
+          }
+        }
         if (this.two.kind === 'explode') {
           store.set({ explode: clamp(this.two.explode0 + (ratio - 1) * tuning.get().explodeGain, 0, 1) })
         } else if (this.two.kind === 'scale') {
@@ -282,10 +366,17 @@ export class InteractionController {
     for (const g of this.singles.values()) {
       const p = this.hub.pointers.get(g.pointerId)
       if (!p) continue
-      const dx = p.x - g.lastX
-      const dy = p.y - g.lastY
-      g.lastX = p.x
-      g.lastY = p.y
+      let dx = p.x - g.lastX
+      let dy = p.y - g.lastY
+      if (g.hand) {
+        // Jitter band: the anchor only moves once the hand leaves it, then trails at its edge.
+        const m = Math.hypot(dx, dy)
+        const keep = m > HAND_BAND_PX ? (m - HAND_BAND_PX) / m : 0
+        dx *= keep
+        dy *= keep
+      }
+      g.lastX += dx
+      g.lastY += dy
       if (g.kind === 'rotate') {
         rotating = true
         const k = 3.2 / vp.height
@@ -301,6 +392,9 @@ export class InteractionController {
         if (this.ray(p.x, p.y).ray.intersectPlane(this.plane, this.hit)) this.rig.carryTo(g.partId, this.hit)
       }
     }
+
+    const handGesture = this.two ? this.two.kind !== 'stretch' : [...this.singles.values()].some((g) => g.hand && g.kind === 'rotate')
+    if (handGesture) this.record()
 
     // Momentum after a rotation is released.
     if (!rotating && !this.two) {
@@ -327,6 +421,16 @@ export class InteractionController {
       if (hovered) play('hover')
     }
   }
+}
+
+/** Moves `current` toward `target` only by how far `target` is outside the band (backlash filter). */
+function follow(current: number, target: number, band: number): number {
+  const d = target - current
+  return Math.abs(d) <= band ? current : target - Math.sign(d) * band
+}
+
+function wrapAngle(a: number): number {
+  return Math.atan2(Math.sin(a), Math.cos(a))
 }
 
 function clamp(v: number, min: number, max: number) {

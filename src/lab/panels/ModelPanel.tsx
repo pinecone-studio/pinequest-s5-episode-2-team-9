@@ -6,6 +6,7 @@ import { useLab } from '../labStore'
 import { useModel } from '../modelStore'
 import { AssemblyPanel } from './AssemblyPanel'
 import { MotionControls } from './MotionControls'
+import { PanelHideButton } from './PanelToggle'
 import { StudyCard } from './StudyCard'
 import { TourCard } from './TourCard'
 
@@ -40,8 +41,11 @@ export function ModelPanel() {
         <span className="hud-tag" style={{ color: def.accent }}>
           {tx(keys.title(def.id))}
         </span>
-        <span className="mode-chip">
-          {t(mode === 'assembly' ? 'mode.assembly' : mode === 'study' ? 'mode.study' : 'mode.explore')}
+        <span className="hud-panel-tools">
+          <span className="mode-chip">
+            {t(mode === 'assembly' ? 'mode.assembly' : mode === 'study' ? 'mode.study' : 'mode.explore')}
+          </span>
+          <PanelHideButton />
         </span>
       </div>
 

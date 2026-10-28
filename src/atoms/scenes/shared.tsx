@@ -2,6 +2,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
 import { SphereGeometry, type PerspectiveCamera } from 'three'
 import { useLabServices } from '../../lab/LabContext'
+import { useLab } from '../../lab/labStore'
 import { createHoloMaterial } from '../../scene/HoloMaterial'
 import { PANEL_PX } from '../../scene/sceneShared'
 import { AtomInteraction } from '../atomInteraction'
@@ -31,9 +32,10 @@ export function useBallMaterial(color: string, fill = 0.35) {
 export function usePanelShift(): number {
   const camera = useThree((s) => s.camera) as PerspectiveCamera
   const size = useThree((s) => s.size)
+  const panelHidden = useLab((s) => s.panelHidden)
   const halfH = Math.tan((camera.fov * Math.PI) / 360) * camera.position.z
   const halfW = halfH * camera.aspect
-  return size.width > 700 ? -(PANEL_PX / size.width) * halfW : 0
+  return size.width > 700 && !panelHidden ? -(PANEL_PX / size.width) * halfW : 0
 }
 
 export function useHalfExtents(): { halfW: number; halfH: number } {

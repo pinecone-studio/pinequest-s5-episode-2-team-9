@@ -13,7 +13,11 @@ function HeroModel({ def, progress }: { def: ModelDefinition; progress: () => nu
   const { scene } = useGLTF(def.url)
   const camera = useThree((s) => s.camera) as PerspectiveCamera
   const size = useThree((s) => s.size)
-  const rig = useMemo(() => new ModelRig(def, scene), [def, scene])
+  const rig = useMemo(() => {
+    const r = new ModelRig(def, scene)
+    r.wideExplode = false
+    return r
+  }, [def, scene])
 
   useEffect(() => () => rig.dispose(), [rig])
   useEffect(() => {

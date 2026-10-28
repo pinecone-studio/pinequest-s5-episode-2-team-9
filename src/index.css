@@ -937,6 +937,35 @@ a {
   margin-bottom: 0;
 }
 
+.hud-panel-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Large enough to pinch or dwell on with a hand. */
+.panel-toggle {
+  justify-content: center;
+  min-width: 36px;
+  min-height: 32px;
+  padding: 0;
+  font-size: 1.1rem;
+}
+
+.panel-reveal {
+  position: absolute;
+  top: 64px;
+  right: 16px;
+  min-height: 40px;
+}
+
+@media (max-width: 700px) {
+  .panel-reveal {
+    top: auto;
+    bottom: 16px;
+  }
+}
+
 .mode-chip {
   padding: 3px 8px;
   border: 1px solid var(--line);

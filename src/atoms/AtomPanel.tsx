@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { play } from '../audio/sfx'
 import { useT, useTx, type I18nKey } from '../i18n'
+import { PanelHideButton } from '../lab/panels/PanelToggle'
 import { useAtom, type AtomTab, type Particle, type SpinSetup } from './atomStore'
 import { describeAtom, ELEMENTS } from './elements'
 import { energyEv, orbitalName } from './orbitals'
@@ -336,6 +337,7 @@ export function AtomPanel() {
     <aside className="model-panel hud-panel" data-hud>
       <div className="hud-panel-head">
         <span className="hud-tag">{t('atoms.title')}</span>
+        <PanelHideButton />
       </div>
       <div className="tabs">
         {TABS.map(([id, key]) => (

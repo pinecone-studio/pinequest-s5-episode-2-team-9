@@ -27,3 +27,4 @@ dist-ssr
 public/mediapipe
 scripts/.cache
 !.env.example
+.taste-skill
