@@ -24,6 +24,7 @@ import { trackLab } from './labAnalytics'
 import { useLab } from './labStore'
 import { useModel } from './modelStore'
 import { ModelPanel } from './panels/ModelPanel'
+import { PanelReveal } from './panels/PanelToggle'
 import { PartLabel } from './PartLabel'
 import { SettingsPanel } from './SettingsPanel'
 
@@ -43,7 +44,8 @@ export default function LabPage() {
     () => ({ input: new HandInput(), hub: new PointerHub(), face: new FaceTracker() }),
     [],
   )
-  const { camera, tracking, debug, devPanel, settingsOpen, creditsOpen, tipsOpen, headParallax, set } = useLab()
+  const { camera, tracking, debug, devPanel, settingsOpen, creditsOpen, tipsOpen, headParallax, panelHidden, set } =
+    useLab()
   const parallaxOn = headParallax && camera.state === 'live'
 
   // Head tracking runs only while head-coupled 3D is switched on.
@@ -125,7 +127,7 @@ export default function LabPage() {
     }
   }, [services])
 
-  // Keyboard: D = debug overlay, ` = gesture tuning; during a tour ← → step and Esc exits.
+  // Keyboard: D = debug overlay, ` = gesture tuning, H = hide the side panel; during a tour ← → step and Esc exits.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement) return
@@ -137,6 +139,7 @@ export default function LabPage() {
       }
       if (e.key === 'd' || e.key === 'D') set({ debug: !useLab.getState().debug })
       if (e.key === '`') set({ devPanel: !useLab.getState().devPanel })
+      if (e.key === 'h' || e.key === 'H') set({ panelHidden: !useLab.getState().panelHidden })
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -196,8 +199,14 @@ export default function LabPage() {
           </div>
         )}
 
-        {def && loaded && <ModelPanel />}
-        {experience && <AtomPanel />}
+        {panelHidden ? (
+          ((def && loaded) || experience) && <PanelReveal />
+        ) : (
+          <>
+            {def && loaded && <ModelPanel />}
+            {experience && <AtomPanel />}
+          </>
+        )}
         <CalibrationOverlay />
         {settingsOpen && <SettingsPanel />}
         {creditsOpen && <CreditsPanel />}

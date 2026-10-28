@@ -5,7 +5,9 @@ const TIPS: [string, I18nKey, I18nKey][] = [
   ['☝', 'tips.point', 'tips.pointText'],
   ['🤏', 'tips.pinch', 'tips.pinchText'],
   ['↔', 'tips.pull', 'tips.pullText'],
+  ['⟳', 'tips.twist', 'tips.twistText'],
   ['✋', 'tips.grab', 'tips.grabText'],
+  ['⁑', 'tips.double', 'tips.doubleText'],
   ['◔', 'tips.dwell', 'tips.dwellText'],
   ['✊', 'tips.fist', 'tips.fistText'],
 ]

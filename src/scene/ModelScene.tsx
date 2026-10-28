@@ -108,13 +108,14 @@ export function ModelScene({ def }: { def: ModelDefinition }) {
     }
 
     const unplaced = s.mode === 'assembly' ? benchOrder(def.parts.map((p) => p.id).filter((id) => !placed.has(id))) : []
-    const key = `${size.width}x${size.height}:${unplaced.join(',')}`
+    const lab = useLab.getState()
+    const panelPx = lab.panelHidden ? 0 : PANEL_PX
+    const key = `${size.width}x${size.height}:${panelPx}:${unplaced.join(',')}`
     if (key !== layoutKey.current) {
       layoutKey.current = key
-      rig.layout(camera, size, PANEL_PX, unplaced)
+      rig.layout(camera, size, panelPx, unplaced)
     }
 
-    const lab = useLab.getState()
     rig.setRealistic(lab.viewStyle === 'realistic' || lab.forcedRealistic)
     controller.update(dt)
     rig.update(

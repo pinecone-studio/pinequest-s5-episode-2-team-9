@@ -1,0 +1,1869 @@
+{
+ "url": "http://localhost:4179/",
+ "at": "2026-10-27T15:50:47.498Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 9,
+   "filled": [
+    0.71,
+    0.92,
+    1,
+    1,
+    0.7,
+    0.41,
+    1,
+    1,
+    1
+   ],
+   "motion": {
+    "elements": 32,
+    "css": 20,
+    "transitions": 4,
+    "scripted": 8,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 7543,
+     "screens": 8.4,
+     "words": 405,
+     "img": 18,
+     "video": 0,
+     "canvas": 1,
+     "svg": 1,
+     "sections": 5,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 18,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "heart.webp",
+      "brain.webp",
+      "computer-apart.webp",
+      "rocket-apart.webp",
+      "electric-motor.webp",
+      "step-camera.webp",
+      "step-hands.webp",
+      "step-assemble.webp"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Take science apart with your hands",
+     "words": 6,
+     "chars": 34,
+     "lines": 2,
+     "size": 86.4,
+     "vw": 6,
+     "font": "Inter Variable",
+     "weight": 700,
+     "tracking": -0.05,
+     "leading": 0.92,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "right",
+     "widthRatio": 0.54,
+     "top": 658,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Take science apart with your hands",
+     "words": 6,
+     "lines": 2,
+     "size": 86.4,
+     "font": "Inter Variable"
+    },
+    "headings": [
+     {
+      "text": "Take science apart with your hands",
+      "words": 6,
+      "chars": 34,
+      "lines": 2,
+      "size": 86.4,
+      "vw": 6,
+      "font": "Inter Variable",
+      "weight": 700,
+      "tracking": -0.05,
+      "leading": 0.92,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.54,
+      "top": 658,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Pinch, pull apart",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 60.5,
+      "vw": 4.2,
+      "font": "Inter Variable",
+      "weight": 700,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.46,
+      "top": 1644,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "pull apart",
+      "words": 2,
+      "chars": 10,
+      "lines": 1,
+      "size": 60.5,
+      "vw": 4.2,
+      "font": "Inter Variable",
+      "weight": 700,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.18,
+      "top": 1644,
+      "tag": "p",
+      "kind": "statement"
+     },
+     {
+      "text": "How it works",
+      "words": 3,
+      "chars": 12,
+      "lines": 1,
+      "size": 60.5,
+      "vw": 4.2,
+      "font": "Inter Variable",
+      "weight": 700,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.96,
+      "top": 1957,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "The library",
+      "words": 2,
+      "chars": 11,
+      "lines": 1,
+      "size": 60.5,
+      "vw": 4.2,
+      "font": "Inter Variable",
+      "weight": 700,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.47,
+      "top": 4326,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Your camera stays yours",
+      "words": 4,
+      "chars": 23,
+      "lines": 1,
+      "size": 60.5,
+      "vw": 4.2,
+      "font": "Inter Variable",
+      "weight": 700,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.96,
+      "top": 5602,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Hologemma",
+      "words": 1,
+      "chars": 9,
+      "lines": 1,
+      "size": 236.2,
+      "vw": 16.4,
+      "font": "Inter Variable",
+      "weight": 800,
+      "tracking": -0.065,
+      "leading": 0.82,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.96,
+      "top": 6679,
+      "tag": "p",
+      "kind": "statement"
+     }
+    ],
+    "headingSummary": {
+     "count": 7,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 2,
+     "centered": 0,
+     "medianWords": 3,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter Variable",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      14,
+      17,
+      21,
+      61,
+      86,
+      236
+     ],
+     "sizeCount": 6,
+     "notLoaded": [],
+     "body": {
+      "font": "Inter Variable",
+      "size": 17,
+      "leading": 1.55,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 18.8
+     },
+     "measureChars": 58,
+     "max": {
+      "size": 236.2,
+      "vw": 16.4,
+      "font": "Inter Variable",
+      "text": "Hologemma"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#04050b",
+     "bodyBgHsl": {
+      "h": 231,
+      "s": 0.47,
+      "l": 0.03
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#04050b",
+       "top": 0,
+       "hsl": {
+        "h": 231,
+        "s": 0.47,
+        "l": 0.03
+       }
+      },
+      {
+       "color": "#5ee7ff",
+       "top": 975,
+       "hsl": {
+        "h": 189,
+        "s": 1,
+        "l": 0.68
+       }
+      },
+      {
+       "color": "#0b101b",
+       "top": 1785,
+       "hsl": {
+        "h": 221,
+        "s": 0.42,
+        "l": 0.07
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#03151a",
+       "share": 0.44
+      },
+      {
+       "color": "#eef7ff",
+       "share": 0.38
+      },
+      {
+       "color": "#a9bccd",
+       "share": 0.11
+      },
+      {
+       "color": "#04050b",
+       "share": 0.06
+      },
+      {
+       "color": "#5ee7ff",
+       "share": 0
+      }
+     ],
+     "button": {
+      "bg": "#5ee7ff",
+      "hsl": {
+       "h": 189,
+       "s": 1,
+       "l": 0.68
+      },
+      "fg": "#03151a"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 6,
+     "inHero": 3,
+     "radius": "pill",
+     "height": 52,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Hologemma",
+      "Log in",
+      "Choose a model ↓"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 19,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "img",
+      "ratio": 0.09
+     },
+     {
+      "type": "img",
+      "ratio": 0.09
+     }
+    ],
+    "nav": {
+     "links": 5,
+     "fixed": false,
+     "height": 56,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "inter variable"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 7543,
+    "margins": {
+     "left": 32,
+     "right": 32
+    },
+    "sections": [
+     {
+      "sel": "section.masthead",
+      "tag": "section",
+      "top": 56,
+      "height": 919,
+      "words": 32,
+      "media": 5,
+      "middle": 0,
+      "heading": null,
+      "left": 0,
+      "right": 85,
+      "textLeft": 32,
+      "textRight": 85,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.pull",
+      "tag": "section",
+      "top": 975,
+      "height": 810,
+      "words": 24,
+      "media": 1,
+      "middle": 128,
+      "heading": null,
+      "left": 32,
+      "right": 0,
+      "textLeft": 32,
+      "textRight": 32,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#how.how",
+      "tag": "section",
+      "top": 1785,
+      "height": 2369,
+      "words": 65,
+      "media": 3,
+      "middle": 220,
+      "heading": {
+       "text": "How it works",
+       "size": 60,
+       "tag": "h2"
+      },
+      "left": 32,
+      "right": 75,
+      "textLeft": 32,
+      "textRight": 150,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#library.library",
+      "tag": "section",
+      "top": 4153,
+      "height": 1276,
+      "words": 74,
+      "media": 1,
+      "middle": 141,
+      "heading": {
+       "text": "The library",
+       "size": 60,
+       "tag": "h2"
+      },
+      "left": 32,
+      "right": 32,
+      "textLeft": 732,
+      "textRight": 32,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": true
+     },
+     {
+      "sel": "section#privacy.privacy",
+      "tag": "section",
+      "top": 5430,
+      "height": 1163,
+      "words": 57,
+      "media": 2,
+      "middle": 16,
+      "heading": {
+       "text": "Your camera stays yours",
+       "size": 60,
+       "tag": "h2"
+      },
+      "left": 32,
+      "right": 95,
+      "textLeft": 32,
+      "textRight": 115,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.site-footer",
+      "tag": "footer",
+      "top": 6593,
+      "height": 950,
+      "words": 138,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Hologemma",
+       "size": 236,
+       "tag": "p"
+      },
+      "left": 32,
+      "right": 32,
+      "textLeft": 32,
+      "textRight": 32,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Take science apart with your hands",
+      "size": 86,
+      "top": 658,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 32,
+      "n": 9
+     },
+     {
+      "x": 605,
+      "n": 3
+     },
+     {
+      "x": 637,
+      "n": 2
+     },
+     {
+      "x": 732,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 15,
+    "bodySize": 17,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0.09,
+    "voidBox": {
+     "x": 720,
+     "y": 120,
+     "w": 240,
+     "h": 480
+    }
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 7,
+   "filled": [
+    0.75,
+    0.99,
+    1,
+    0.65,
+    0.7,
+    1,
+    1
+   ],
+   "motion": {
+    "elements": 24,
+    "css": 18,
+    "transitions": 0,
+    "scripted": 6,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 6478,
+     "screens": 6.3,
+     "words": 402,
+     "img": 18,
+     "video": 0,
+     "canvas": 1,
+     "svg": 1,
+     "sections": 5,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 18,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "heart.webp",
+      "brain.webp",
+      "computer-apart.webp",
+      "rocket-apart.webp",
+      "electric-motor.webp",
+      "step-camera.webp",
+      "step-hands.webp",
+      "step-assemble.webp"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Take science apart with your hands",
+     "words": 6,
+     "chars": 34,
+     "lines": 2,
+     "size": 46.1,
+     "vw": 6,
+     "font": "Inter Variable",
+     "weight": 700,
+     "tracking": -0.05,
+     "leading": 0.92,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "right",
+     "widthRatio": 0.53,
+     "top": 741,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Take science apart with your hands",
+     "words": 6,
+     "lines": 2,
+     "size": 46.1,
+     "font": "Inter Variable"
+    },
+    "headings": [
+     {
+      "text": "Take science apart with your hands",
+      "words": 6,
+      "chars": 34,
+      "lines": 2,
+      "size": 46.1,
+      "vw": 6,
+      "font": "Inter Variable",
+      "weight": 700,
+      "tracking": -0.05,
+      "leading": 0.92,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.53,
+      "top": 741,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Pinch, pull apart",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 34,
+      "vw": 4.4,
+      "font": "Inter Variable",
+      "weight": 700,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.45,
+      "top": 1736,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "pull apart",
+      "words": 2,
+      "chars": 10,
+      "lines": 1,
+      "size": 34,
+      "vw": 4.4,
+      "font": "Inter Variable",
+      "weight": 700,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.19,
+      "top": 1736,
+      "tag": "p",
+      "kind": "statement"
+     },
+     {
+      "text": "How it works",
+      "words": 3,
+      "chars": 12,
+      "lines": 1,
+      "size": 34,
+      "vw": 4.4,
+      "font": "Inter Variable",
+      "weight": 700,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.95,
+      "top": 1994,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "The library",
+      "words": 2,
+      "chars": 11,
+      "lines": 1,
+      "size": 34,
+      "vw": 4.4,
+      "font": "Inter Variable",
+      "weight": 700,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "right",
+      "widthRatio": 0.46,
+      "top": 3583,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Your camera stays yours",
+      "words": 4,
+      "chars": 23,
+      "lines": 1,
+      "size": 34,
+      "vw": 4.4,
+      "font": "Inter Variable",
+      "weight": 700,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.95,
+      "top": 4748,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Hologemma",
+      "words": 1,
+      "chars": 9,
+      "lines": 1,
+      "size": 126,
+      "vw": 16.4,
+      "font": "Inter Variable",
+      "weight": 800,
+      "tracking": -0.065,
+      "leading": 0.82,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.95,
+      "top": 5532,
+      "tag": "p",
+      "kind": "statement"
+     }
+    ],
+    "headingSummary": {
+     "count": 7,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 2,
+     "centered": 0,
+     "medianWords": 3,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter Variable",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      14,
+      17,
+      18,
+      34,
+      46,
+      126
+     ],
+     "sizeCount": 6,
+     "notLoaded": [],
+     "body": {
+      "font": "Inter Variable",
+      "size": 17,
+      "leading": 1.55,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 18.8
+     },
+     "measureChars": 32,
+     "max": {
+      "size": 126,
+      "vw": 16.4,
+      "font": "Inter Variable",
+      "text": "Hologemma"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#04050b",
+     "bodyBgHsl": {
+      "h": 231,
+      "s": 0.47,
+      "l": 0.03
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#04050b",
+       "top": 0,
+       "hsl": {
+        "h": 231,
+        "s": 0.47,
+        "l": 0.03
+       }
+      },
+      {
+       "color": "#5ee7ff",
+       "top": 929,
+       "hsl": {
+        "h": 189,
+        "s": 1,
+        "l": 0.68
+       }
+      },
+      {
+       "color": "#0b101b",
+       "top": 1850,
+       "hsl": {
+        "h": 221,
+        "s": 0.42,
+        "l": 0.07
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#03151a",
+       "share": 0.45
+      },
+      {
+       "color": "#eef7ff",
+       "share": 0.37
+      },
+      {
+       "color": "#a9bccd",
+       "share": 0.11
+      },
+      {
+       "color": "#04050b",
+       "share": 0.06
+      },
+      {
+       "color": "#5ee7ff",
+       "share": 0
+      }
+     ],
+     "button": {
+      "bg": "#5ee7ff",
+      "hsl": {
+       "h": 189,
+       "s": 1,
+       "l": 0.68
+      },
+      "fg": "#03151a"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 6,
+     "inHero": 3,
+     "radius": "pill",
+     "height": 52,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Hologemma",
+      "Log in",
+      "Choose a model ↓"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 15,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "img",
+      "ratio": 0.09
+     },
+     {
+      "type": "img",
+      "ratio": 0.09
+     }
+    ],
+    "nav": {
+     "links": 5,
+     "fixed": false,
+     "height": 56,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "inter variable"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 6478,
+    "margins": {
+     "left": 18,
+     "right": 18
+    },
+    "sections": [
+     {
+      "sel": "section.masthead",
+      "tag": "section",
+      "top": 56,
+      "height": 873,
+      "words": 32,
+      "media": 5,
+      "middle": 0,
+      "heading": null,
+      "left": 0,
+      "right": 44,
+      "textLeft": 18,
+      "textRight": 44,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.pull",
+      "tag": "section",
+      "top": 929,
+      "height": 922,
+      "words": 24,
+      "media": 1,
+      "middle": 18,
+      "heading": null,
+      "left": 18,
+      "right": 0,
+      "textLeft": 18,
+      "textRight": 18,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#how.how",
+      "tag": "section",
+      "top": 1850,
+      "height": 1612,
+      "words": 57,
+      "media": 3,
+      "middle": 94,
+      "heading": {
+       "text": "First, allow your camera.",
+       "size": 18,
+       "tag": "h3"
+      },
+      "left": 18,
+      "right": 18,
+      "textLeft": 18,
+      "textRight": 21,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#library.library",
+      "tag": "section",
+      "top": 3463,
+      "height": 1166,
+      "words": 68,
+      "media": 1,
+      "middle": 87,
+      "heading": {
+       "text": "The library",
+       "size": 34,
+       "tag": "h2"
+      },
+      "left": 18,
+      "right": 18,
+      "textLeft": 396,
+      "textRight": 18,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#privacy.privacy",
+      "tag": "section",
+      "top": 4628,
+      "height": 855,
+      "words": 57,
+      "media": 1,
+      "middle": 16,
+      "heading": {
+       "text": "Your camera stays yours",
+       "size": 34,
+       "tag": "h2"
+      },
+      "left": 18,
+      "right": 23,
+      "textLeft": 18,
+      "textRight": 23,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.site-footer",
+      "tag": "footer",
+      "top": 5484,
+      "height": 994,
+      "words": 138,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Hologemma",
+       "size": 126,
+       "tag": "p"
+      },
+      "left": 18,
+      "right": 18,
+      "textLeft": 18,
+      "textRight": 18,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Take science apart with your hands",
+      "size": 46,
+      "top": 741,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 18,
+      "n": 7
+     },
+     {
+      "x": 323,
+      "n": 3
+     },
+     {
+      "x": 341,
+      "n": 2
+     },
+     {
+      "x": 396,
+      "n": 1
+     }
+    ],
+    "leftBlocks": 13,
+    "bodySize": 17,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 9,
+   "filled": [
+    0.76,
+    0.87,
+    0.91,
+    1,
+    0.56,
+    0.66,
+    1,
+    1,
+    1
+   ],
+   "motion": {
+    "elements": 32,
+    "css": 19,
+    "transitions": 4,
+    "scripted": 9,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 7435,
+     "screens": 8.8,
+     "words": 408,
+     "img": 20,
+     "video": 0,
+     "canvas": 0,
+     "svg": 1,
+     "sections": 5,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 18,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [
+      "heart.webp",
+      "brain.webp",
+      "computer-apart.webp",
+      "heart.webp",
+      "heart-apart.webp",
+      "step-camera.webp",
+      "step-hands.webp",
+      "step-assemble.webp"
+     ],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "Take science apart with your hands",
+     "words": 6,
+     "chars": 34,
+     "lines": 2,
+     "size": 37.4,
+     "vw": 9.6,
+     "font": "Inter Variable",
+     "weight": 700,
+     "tracking": -0.05,
+     "leading": 0.92,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.92,
+     "top": 417,
+     "tag": "h1",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Take science apart with your hands",
+     "words": 6,
+     "lines": 2,
+     "size": 37.4,
+     "font": "Inter Variable"
+    },
+    "headings": [
+     {
+      "text": "Take science apart with your hands",
+      "words": 6,
+      "chars": 34,
+      "lines": 2,
+      "size": 37.4,
+      "vw": 9.6,
+      "font": "Inter Variable",
+      "weight": 700,
+      "tracking": -0.05,
+      "leading": 0.92,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 417,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "Pinch, pull apart",
+      "words": 3,
+      "chars": 17,
+      "lines": 1,
+      "size": 34,
+      "vw": 8.7,
+      "font": "Inter Variable",
+      "weight": 700,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 1209,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "pull apart",
+      "words": 2,
+      "chars": 10,
+      "lines": 1,
+      "size": 34,
+      "vw": 8.7,
+      "font": "Inter Variable",
+      "weight": 700,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.37,
+      "top": 1732,
+      "tag": "p",
+      "kind": "statement"
+     },
+     {
+      "text": "How it works",
+      "words": 3,
+      "chars": 12,
+      "lines": 1,
+      "size": 34,
+      "vw": 8.7,
+      "font": "Inter Variable",
+      "weight": 700,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 1966,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "The library",
+      "words": 2,
+      "chars": 11,
+      "lines": 1,
+      "size": 34,
+      "vw": 8.7,
+      "font": "Inter Variable",
+      "weight": 700,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 3833,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Your camera stays yours",
+      "words": 4,
+      "chars": 23,
+      "lines": 2,
+      "size": 34,
+      "vw": 8.7,
+      "font": "Inter Variable",
+      "weight": 700,
+      "tracking": -0.04,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 5063,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "Hologemma",
+      "words": 1,
+      "chars": 9,
+      "lines": 1,
+      "size": 64,
+      "vw": 16.4,
+      "font": "Inter Variable",
+      "weight": 800,
+      "tracking": -0.065,
+      "leading": 0.82,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.92,
+      "top": 6356,
+      "tag": "p",
+      "kind": "statement"
+     }
+    ],
+    "headingSummary": {
+     "count": 7,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 2,
+     "centered": 0,
+     "medianWords": 3,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Inter Variable",
+       "share": 1,
+       "mono": false
+      }
+     ],
+     "familyCount": 1,
+     "sizes": [
+      14,
+      17,
+      18,
+      34,
+      37,
+      64
+     ],
+     "sizeCount": 6,
+     "notLoaded": [],
+     "body": {
+      "font": "Inter Variable",
+      "size": 17,
+      "leading": 1.55,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 18.8
+     },
+     "measureChars": 38,
+     "max": {
+      "size": 64,
+      "vw": 16.4,
+      "font": "Inter Variable",
+      "text": "Hologemma"
+     },
+     "monoShare": 0,
+     "monoProseShare": 0,
+     "monoFamilies": [],
+     "monoSamples": [],
+     "microLabels": 0,
+     "microLabelShare": 0,
+     "microSamples": [],
+     "upperShare": 0,
+     "centerShare": 0,
+     "smallText": 0
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#04050b",
+     "bodyBgHsl": {
+      "h": 231,
+      "s": 0.47,
+      "l": 0.03
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#04050b",
+       "top": 0,
+       "hsl": {
+        "h": 231,
+        "s": 0.47,
+        "l": 0.03
+       }
+      },
+      {
+       "color": "#5ee7ff",
+       "top": 800,
+       "hsl": {
+        "h": 189,
+        "s": 1,
+        "l": 0.68
+       }
+      },
+      {
+       "color": "#0b101b",
+       "top": 1846,
+       "hsl": {
+        "h": 221,
+        "s": 0.42,
+        "l": 0.07
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#03151a",
+       "share": 0.42
+      },
+      {
+       "color": "#eef7ff",
+       "share": 0.37
+      },
+      {
+       "color": "#a9bccd",
+       "share": 0.14
+      },
+      {
+       "color": "#04050b",
+       "share": 0.05
+      },
+      {
+       "color": "#5ee7ff",
+       "share": 0.02
+      }
+     ],
+     "button": {
+      "bg": "#141b29",
+      "hsl": {
+       "h": 220,
+       "s": 0.34,
+       "l": 0.12
+      },
+      "fg": "#eef7ff"
+     },
+     "lowContrast": []
+    },
+    "buttons": {
+     "count": 6,
+     "inHero": 3,
+     "radius": "pill",
+     "height": 52,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": [
+      "Hologemma",
+      "Log in",
+      "Choose a model ↓"
+     ]
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 0,
+     "hairlineSamples": [],
+     "outlinedBoxes": 0,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 16,
+     "roundedMedia": 0,
+     "mediaRadius": 0,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "img",
+      "ratio": 0.13
+     }
+    ],
+    "nav": {
+     "links": 2,
+     "fixed": false,
+     "height": 56,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": [
+     "inter variable"
+    ]
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 7435,
+    "margins": {
+     "left": 16,
+     "right": 16
+    },
+    "sections": [
+     {
+      "sel": "section.masthead",
+      "tag": "section",
+      "top": 56,
+      "height": 744,
+      "words": 32,
+      "media": 3,
+      "middle": 0,
+      "heading": {
+       "text": "Take science apart",
+       "size": 37,
+       "tag": "h1"
+      },
+      "left": 0,
+      "right": 43,
+      "textLeft": 16,
+      "textRight": 43,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section.pull",
+      "tag": "section",
+      "top": 800,
+      "height": 1047,
+      "words": 24,
+      "media": 2,
+      "middle": 0,
+      "heading": {
+       "text": "Pinch,",
+       "size": 34,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 16,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#how.how",
+      "tag": "section",
+      "top": 1846,
+      "height": 1514,
+      "words": 61,
+      "media": 3,
+      "middle": 0,
+      "heading": {
+       "text": "How it works",
+       "size": 34,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 19,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.library-photo",
+      "tag": "div",
+      "top": 3480,
+      "height": 321,
+      "words": 0,
+      "media": 1,
+      "middle": 0,
+      "heading": null,
+      "left": null,
+      "right": null,
+      "textLeft": null,
+      "textRight": null,
+      "fullBleed": true,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": true
+     },
+     {
+      "sel": "div.library-list",
+      "tag": "div",
+      "top": 3801,
+      "height": 1022,
+      "words": 86,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "The library",
+       "size": 34,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 16,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": true,
+      "pinned": false
+     },
+     {
+      "sel": "section#privacy.privacy",
+      "tag": "section",
+      "top": 4943,
+      "height": 1365,
+      "words": 57,
+      "media": 2,
+      "middle": 0,
+      "heading": {
+       "text": "Your camera stays yours",
+       "size": 34,
+       "tag": "h2"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 43,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer.site-footer",
+      "tag": "footer",
+      "top": 6308,
+      "height": 1127,
+      "words": 138,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Hologemma",
+       "size": 64,
+       "tag": "p"
+      },
+      "left": 16,
+      "right": 16,
+      "textLeft": 16,
+      "textRight": 16,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Take science apart with your hands",
+      "size": 37,
+      "top": 417,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 16,
+      "n": 15
+     }
+    ],
+    "leftBlocks": 15,
+    "bodySize": 17,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "/Users/berkh/Desktop/pinequest-s5-episode-2-team-9/.taste-skill/after/desktop-fold.jpg",
+   "pages": [
+    "/Users/berkh/Desktop/pinequest-s5-episode-2-team-9/.taste-skill/after/desktop-page-01.jpg",
+    "/Users/berkh/Desktop/pinequest-s5-episode-2-team-9/.taste-skill/after/desktop-page-02.jpg",
+    "/Users/berkh/Desktop/pinequest-s5-episode-2-team-9/.taste-skill/after/desktop-page-03.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "/Users/berkh/Desktop/pinequest-s5-episode-2-team-9/.taste-skill/after/tablet-fold.jpg",
+   "pages": [
+    "/Users/berkh/Desktop/pinequest-s5-episode-2-team-9/.taste-skill/after/tablet-page-01.jpg",
+    "/Users/berkh/Desktop/pinequest-s5-episode-2-team-9/.taste-skill/after/tablet-page-02.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "/Users/berkh/Desktop/pinequest-s5-episode-2-team-9/.taste-skill/after/mobile-fold.jpg",
+   "pages": [
+    "/Users/berkh/Desktop/pinequest-s5-episode-2-team-9/.taste-skill/after/mobile-page-01.jpg",
+    "/Users/berkh/Desktop/pinequest-s5-episode-2-team-9/.taste-skill/after/mobile-page-02.jpg"
+   ],
+   "film": []
+  }
+ ]
+}

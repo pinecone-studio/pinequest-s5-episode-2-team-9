@@ -62,7 +62,10 @@ export interface PartRig {
   home: Vector3
   /** Bounding radius in GLB units. */
   radius: number
+  /** Lab explode: a wide spread. */
   explodeOffset: Vector3
+  /** Landing hero explode: the original, tighter spread. */
+  compactOffset: Vector3
   location: PartLocation
   benchSlot: Vector3
   benchScale: number
@@ -94,7 +97,14 @@ export interface RigState {
 const tmpV = new Vector3()
 const tmpV2 = new Vector3()
 const tmpQ = new Quaternion()
+const viewQ = new Quaternion()
+const viewQInv = new Quaternion()
 const tmpColor = new Color()
+
+/** Exploded parts spread at most this much wider than tall, and flatter in depth. */
+const SPREAD_MAX_X = 1.8
+const SPREAD_Y = 0.85
+const SPREAD_Z = 0.6
 
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3)
 
@@ -122,9 +132,13 @@ export class ModelRig {
   private time = 0
   /** Horizontal shift so the model sits left of the side panel. */
   private layoutShift = 0
+  /** Half-size of the free area beside the panel (world units); the exploded view fits inside it. */
+  private fitHalf = { w: 1, h: 1 }
   private benchSlots = new Map<string, { pos: Vector3; scale: number }>()
   /** Realistic (PBR) look instead of the hologram. */
   realistic = false
+  /** Wide, screen-filling explode (lab); off keeps the original compact spread (landing hero). */
+  wideExplode = true
   /** Extra data stored on the GLB root (e.g. the robot dog's joint positions). */
   extras: Record<string, unknown> = {}
   /** Optional animation layered on the parts (heartbeat, spinning rotor...). */
@@ -211,6 +225,7 @@ export class ModelRig {
         home,
         radius: geometry.boundingSphere!.radius,
         explodeOffset: new Vector3(),
+        compactOffset: new Vector3(),
         location: 'model',
         benchSlot: new Vector3(),
         benchScale: 1,
@@ -243,6 +258,11 @@ export class ModelRig {
       const dir = part.def.explodeDir ? new Vector3(...part.def.explodeDir).normalize() : fromCenter.clone().normalize()
       if (!Number.isFinite(dir.x) || dir.lengthSq() === 0) dir.set(0, 1, 0)
       part.explodeOffset
+        .copy(fromCenter)
+        .multiplyScalar(1.3)
+        .addScaledVector(dir, this.rawRadius * 0.35)
+        .multiplyScalar(part.def.explodeScale ?? 1)
+      part.compactOffset
         .copy(fromCenter)
         .multiplyScalar(0.6)
         .addScaledVector(dir, this.rawRadius * 0.22)
@@ -293,12 +313,13 @@ export class ModelRig {
     else this.resetRotation()
   }
 
-  /** Rotates the model by screen-space drag angles (radians) around the camera axes. */
-  rotateBy(yaw: number, pitch: number): void {
+  /** Rotates the model by screen-space angles (radians) around the camera axes; roll turns it in the screen plane. */
+  rotateBy(yaw: number, pitch: number, roll = 0): void {
     tmpQ.setFromAxisAngle(tmpV.set(0, 1, 0), yaw)
     this.rotation.premultiply(tmpQ)
     tmpQ.setFromAxisAngle(tmpV.set(1, 0, 0), pitch)
     this.rotation.premultiply(tmpQ)
+    if (roll) this.rotation.premultiply(tmpQ.setFromAxisAngle(tmpV.set(0, 0, 1), roll))
     this.rotation.normalize()
   }
 
@@ -306,7 +327,9 @@ export class ModelRig {
   layout(camera: PerspectiveCamera, viewport: { width: number; height: number }, panelPx: number, unplaced: string[]): void {
     const halfH = Math.tan((camera.fov * Math.PI) / 360) * camera.position.z
     const halfW = halfH * camera.aspect
-    this.layoutShift = viewport.width > 700 ? -(panelPx / viewport.width) * halfW : 0
+    const panelFrac = viewport.width > 700 ? panelPx / viewport.width : 0
+    this.layoutShift = -panelFrac * halfW
+    this.fitHalf = { w: halfW * (1 - panelFrac) * 0.92, h: halfH * 0.8 }
 
     this.benchSlots.clear()
     const n = unplaced.length
@@ -406,7 +429,12 @@ export class ModelRig {
 
     // Whole-model layout: assembly lifts and shrinks the model above the bench.
     const assembling = s.mode === 'assembly'
-    const explodeShrink = 1 / (1 + 0.5 * Math.min(1, Math.max(0, s.explode)))
+    viewQ.copy(this.model.quaternion)
+    viewQInv.copy(viewQ).invert()
+    const explodeAmount = easeOut(Math.min(1, Math.max(0, s.explode)))
+    const explodeShrink = this.wideExplode
+      ? 1 + (this.explodedFit() - 1) * explodeAmount
+      : 1 / (1 + 0.5 * Math.min(1, Math.max(0, s.explode)))
     const modelScale = assembling ? 0.56 : s.scale * (s.mode === 'explore' ? explodeShrink : 1)
     const modelY = assembling ? 0.5 : 0
     this.model.position.x += (this.layoutShift - this.model.position.x) * k
@@ -427,7 +455,8 @@ export class ModelRig {
           part.targetPos.copy(this.center)
           part.targetScale = Math.min(6, Math.max(1, (this.rawRadius * 0.72) / part.radius))
         } else {
-          part.targetPos.copy(part.home).addScaledVector(part.explodeOffset, explode)
+          if (this.wideExplode) part.targetPos.copy(part.home).add(this.spreadOffset(part, explode, tmpV2).applyQuaternion(viewQInv))
+          else part.targetPos.copy(part.home).addScaledVector(part.compactOffset, explode)
           part.targetScale = 1
         }
       } else if (part.location === 'bench') {
@@ -498,6 +527,29 @@ export class ModelRig {
     this.updateLeaderLines(s.mode === 'explore' ? explode : 0, assembling)
     this.updateCarryLine(s.carried)
     this.updateClipping(s, camera)
+  }
+
+  /** A part's explode offset at `amount`, in view axes: widened toward the free screen width. */
+  private spreadOffset(part: PartRig, amount: number, out: Vector3): Vector3 {
+    out.copy(part.explodeOffset).multiplyScalar(amount).applyQuaternion(viewQ)
+    out.x *= Math.min(SPREAD_MAX_X, Math.max(1, this.fitHalf.w / this.fitHalf.h))
+    out.y *= SPREAD_Y
+    out.z *= SPREAD_Z
+    return out
+  }
+
+  /** Model scale (0..1) at which the fully exploded parts fit the free area. */
+  private explodedFit(): number {
+    let x = 0
+    let y = 0
+    for (const part of this.parts.values()) {
+      if (part.location !== 'model') continue
+      tmpV.copy(part.home).sub(this.center).applyQuaternion(viewQ).add(this.spreadOffset(part, 1, tmpV2))
+      x = Math.max(x, Math.abs(tmpV.x) + part.radius)
+      y = Math.max(y, Math.abs(tmpV.y) + part.radius)
+    }
+    if (!x || !y) return 1
+    return Math.min(1, this.fitHalf.w / (x * this.normScale), this.fitHalf.h / (y * this.normScale))
   }
 
   /** Flash a part (snap feedback). */
