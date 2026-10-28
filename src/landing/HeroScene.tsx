@@ -40,6 +40,9 @@ function HeroModel({ def, progress }: { def: ModelDefinition; progress: () => nu
         placed: EMPTY,
         carried: null,
         hintPart: null,
+        studyPath: [],
+        hoveredPiece: null,
+        pieceSpread: 0,
       },
       camera,
     )

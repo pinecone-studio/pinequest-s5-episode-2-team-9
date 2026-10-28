@@ -4,6 +4,9 @@
 //   two hands:   pinch near the model and pull apart = explode; away from it = scale;
 //                twist both hands like a wheel = roll;
 //                hold a part + pull with the other hand = open Study.
+//   in study:    the shown part (or piece) splits into its pieces: pinch near it and pull apart =
+//                spread them; hold a piece + pull with the other hand, tap or double click it =
+//                go into that piece; fist = back up one level.
 // Hands are stabilized: small jitter is ignored, and letting go restores the pose from just
 // before the fingers opened, so the model stays exactly where it was left.
 
@@ -12,6 +15,7 @@ import { play } from '../audio/sfx'
 import { tuning } from '../input/tuning'
 import { useLab } from '../lab/labStore'
 import { useModel } from '../lab/modelStore'
+import { piecesAt } from '../models/ModelDefinition'
 import type { ModelRig } from '../scene/modelRig'
 import type { HubEvent, Pointer, PointerHub } from './pointerHub'
 
@@ -47,6 +51,7 @@ interface TwoHandGesture {
 interface Snapshot {
   time: number
   explode: number
+  pieceSpread: number
   scale: number
   rotation: Quaternion
 }
@@ -73,6 +78,7 @@ export class InteractionController {
   private hit = new Vector3()
   private tmp = new Vector3()
   private lastHovered: string | null = null
+  private lastHoveredPiece: string | null = null
   private lastTap: { part: string; time: number } | null = null
   /** Recent poses during a hand gesture, for restoring on release. */
   private history: Snapshot[] = []
@@ -118,7 +124,13 @@ export class InteractionController {
       return
     }
     if (e.type === 'doubleclick') {
-      if (store.mode === 'explore') {
+      if (store.mode === 'study' && store.studyPart) {
+        const id = this.rig.pickPiece(this.ray(e.x, e.y), store.studyPart, store.studyPath)
+        if (id) {
+          store.openPiece(id)
+          play('open')
+        }
+      } else if (store.mode === 'explore') {
         const id = this.rig.pick(this.ray(e.x, e.y), ['model'])
         if (id) {
           store.openStudy(id)
@@ -141,7 +153,7 @@ export class InteractionController {
     const store = useModel.getState()
     if (lab.settingsOpen || lab.creditsOpen || lab.tipsOpen) lab.set({ settingsOpen: false, creditsOpen: false, tipsOpen: false })
     else if (store.tourStep !== null) store.endTour()
-    else if (store.mode === 'study') store.closeStudy()
+    else if (store.mode === 'study') store.closePiece()
     else if (store.selected) store.set({ selected: null })
     else if (store.mode === 'explore' && store.explode > 0) store.set({ explode: 0 })
     else return
@@ -162,6 +174,13 @@ export class InteractionController {
         this.two = { kind: 'stretch', a: other.pointerId, b: p.id, d0, d: d0, angle: 0, explode0: 0, scale0: 0, partId: other.partId }
         return
       }
+      // Study: holding a piece and pulling with the other hand goes into that piece.
+      if (store.mode === 'study' && other.kind === 'rotate' && other.pressedPart) {
+        this.singles.delete(other.pointerId)
+        this.stopMomentum()
+        this.two = { kind: 'stretch', a: other.pointerId, b: p.id, d0, d: d0, angle: 0, explode0: 0, scale0: 0, partId: other.pressedPart }
+        return
+      }
       if (other.kind === 'carry') return
       this.singles.delete(other.pointerId)
       this.stopMomentum()
@@ -169,9 +188,11 @@ export class InteractionController {
       const center = this.rig.screenCenter(this.camera, this.viewport())
       const radius = this.rig.screenRadius(this.camera, this.viewport().height) * tuning.get().explodeNearRadius
       const near = [a, p].every((q) => Math.hypot(q.x - center.x, q.y - center.y) < radius)
-      const kind = near && store.mode === 'explore' ? 'explode' : 'scale'
+      const spreadable = store.mode === 'explore' || (store.mode === 'study' && hasPieces(store))
+      const kind = near && spreadable ? 'explode' : 'scale'
       const angle = Math.atan2(p.y - a.y, p.x - a.x)
-      this.two = { kind, a: other.pointerId, b: p.id, d0, d: d0, angle, explode0: store.explode, scale0: store.scale, partId: null }
+      const explode0 = store.mode === 'study' ? store.pieceSpread : store.explode
+      this.two = { kind, a: other.pointerId, b: p.id, d0, d: d0, angle, explode0, scale0: store.scale, partId: null }
       this.history = []
       return
     }
@@ -202,6 +223,9 @@ export class InteractionController {
         store.set({ carried: id, hovered: null })
         play('pick')
       }
+    } else if (store.mode === 'study' && store.studyPart) {
+      // pressedPart holds the piece under the pointer here.
+      gesture.pressedPart = this.rig.pickPiece(this.ray(p.x, p.y), store.studyPart, store.studyPath)
     } else if (store.mode === 'explore') {
       const id = this.rig.pick(this.ray(p.x, p.y), ['model'])
       gesture.pressedPart = id
@@ -255,6 +279,11 @@ export class InteractionController {
       if (tap && store.mode === 'explore') {
         store.set({ selected: g.pressedPart && store.selected !== g.pressedPart ? g.pressedPart : null })
         if (g.pressedPart) play('click')
+      } else if (tap && store.mode === 'study') {
+        if (g.pressedPart) {
+          store.openPiece(g.pressedPart)
+          play('open')
+        }
       } else if (cancelled) {
         // Tracking lost: nothing to restore or fling.
       } else if (g.hand) {
@@ -307,7 +336,7 @@ export class InteractionController {
     this.history = []
     if (!snap) return
     this.rig.rotation.copy(snap.rotation)
-    if (kind === 'explode') useModel.getState().set({ explode: snap.explode })
+    if (kind === 'explode') useModel.getState().set(useModel.getState().mode === 'study' ? { pieceSpread: snap.pieceSpread } : { explode: snap.explode })
     if (kind === 'scale') useModel.getState().set({ scale: snap.scale })
   }
 
@@ -316,9 +345,10 @@ export class InteractionController {
     const store = useModel.getState()
     const old = this.history[0]
     const reuse = old && now - old.time > RELEASE_SETTLE_MS * 2 ? this.history.shift()! : null
-    const snap = reuse ?? { time: 0, explode: 0, scale: 0, rotation: new Quaternion() }
+    const snap = reuse ?? { time: 0, explode: 0, pieceSpread: 0, scale: 0, rotation: new Quaternion() }
     snap.time = now
     snap.explode = store.explode
+    snap.pieceSpread = store.pieceSpread
     snap.scale = store.scale
     snap.rotation.copy(this.rig.rotation)
     this.history.push(snap)
@@ -347,15 +377,19 @@ export class InteractionController {
           }
         }
         if (this.two.kind === 'explode') {
-          store.set({ explode: clamp(this.two.explode0 + (ratio - 1) * tuning.get().explodeGain, 0, 1) })
+          const amount = clamp(this.two.explode0 + (ratio - 1) * tuning.get().explodeGain, 0, 1)
+          store.set(store.mode === 'study' ? { pieceSpread: amount } : { explode: amount })
         } else if (this.two.kind === 'scale') {
           store.set({ scale: clamp(this.two.scale0 * ratio, 0.5, 2.5) })
         } else if (this.two.kind === 'stretch' && this.two.partId && ratio > STRETCH_TO_STUDY) {
           const id = this.two.partId
           this.singles.delete(this.two.a)
           this.two = null
-          this.rig.relocate(id, 'model')
-          store.openStudy(id)
+          if (store.mode === 'study') store.openPiece(id)
+          else {
+            this.rig.relocate(id, 'model')
+            store.openStudy(id)
+          }
           play('open')
         }
       }
@@ -420,7 +454,28 @@ export class InteractionController {
       store.set({ hovered })
       if (hovered) play('hover')
     }
+
+    // Study: the piece under any free pointer.
+    let hoveredPiece: string | null = null
+    if (store.mode === 'study' && store.studyPart) {
+      for (const p of this.hub.scenePointers()) {
+        if (p.pressed) continue
+        hoveredPiece = this.rig.pickPiece(this.ray(p.x, p.y), store.studyPart, store.studyPath)
+        if (hoveredPiece) break
+      }
+    }
+    if (hoveredPiece !== this.lastHoveredPiece) {
+      this.lastHoveredPiece = hoveredPiece
+      store.set({ hoveredPiece })
+      if (hoveredPiece) play('hover')
+    }
   }
+}
+
+/** The part or piece shown in Study splits into pieces. */
+function hasPieces(store: ReturnType<typeof useModel.getState>): boolean {
+  const part = store.def?.parts.find((p) => p.id === store.studyPart)
+  return !!part && piecesAt(part, store.studyPath).length > 0
 }
 
 /** Moves `current` toward `target` only by how far `target` is outside the band (backlash filter). */

@@ -4,7 +4,7 @@ import { useT, type I18nKey } from '../../i18n'
 import { dogClock, LEGS } from '../../scene/motion/dogMotion'
 import { ecg, heartClock, phaseAt } from '../../scene/motion/heartClock'
 import { useModel } from '../modelStore'
-import { BrainMonitor, CirculationMonitor, MotorMonitor, RocketMonitor } from './RunMonitors'
+import { BrainMonitor, BreathMonitor, CirculationMonitor, MotorMonitor, RocketMonitor } from './RunMonitors'
 
 /** ECG trace that scrolls with the beating heart. */
 function HeartMonitor() {
@@ -94,9 +94,10 @@ function GaitMonitor() {
 
 export function MotionControls() {
   const t = useT()
-  const { def, running, tempo, gait, slowMotion, set } = useModel()
+  const { def, running, tempo, gait, slowMotion, breathDepth, set } = useModel()
   if (!def?.motion) return null
   const heart = def.motion === 'heart'
+  const lungs = def.motion === 'lungs'
   const rocket = def.motion === 'rocket'
   const slowable = def.motion !== 'dog'
   return (
@@ -107,7 +108,20 @@ export function MotionControls() {
         data-active={running}
         onClick={() => {
           play('click')
-          set({ running: !running, tempo: heart ? (tempo > 30 && tempo <= 180 ? tempo : 72) : tempo > 100 ? 60 : tempo || 60 })
+          set({
+            running: !running,
+            tempo: heart
+              ? tempo > 30 && tempo <= 180
+                ? tempo
+                : 72
+              : lungs
+                ? tempo >= 6 && tempo <= 30
+                  ? tempo
+                  : 14
+                : tempo > 100
+                  ? 60
+                  : tempo || 60,
+          })
         }}
       >
         {running ? t('motion.stop') : t(`motion.play.${def.motion}` as I18nKey)}
@@ -115,13 +129,14 @@ export function MotionControls() {
       {running && (
         <label className="slider-row">
           <span>
-            {heart ? t('motion.bpm') : rocket ? t('motion.throttle') : t('motion.speed')}: {Math.round(tempo)}
-            {heart ? '' : '%'}
+            {heart ? t('motion.bpm') : lungs ? t('motion.breaths') : rocket ? t('motion.throttle') : t('motion.speed')}:{' '}
+            {Math.round(tempo)}
+            {heart || lungs ? '' : '%'}
           </span>
           <input
             type="range"
-            min={heart ? 40 : 10}
-            max={heart ? 180 : 100}
+            min={heart ? 40 : lungs ? 6 : 10}
+            max={heart ? 180 : lungs ? 30 : 100}
             step={1}
             value={tempo}
             onChange={(e) => set({ tempo: Number(e.target.value) })}
@@ -141,6 +156,16 @@ export function MotionControls() {
           {t('motion.slow')}
         </button>
       )}
+      {running && lungs && (
+        <div className="qn-row">
+          {(['quiet', 'deep'] as const).map((d) => (
+            <button key={d} type="button" className="hud-button" data-active={breathDepth === d} onClick={() => set({ breathDepth: d })}>
+              {t(`motion.breath.${d}` as I18nKey)}
+            </button>
+          ))}
+        </div>
+      )}
+      {running && lungs && <BreathMonitor />}
       {running && heart && <HeartMonitor />}
       {running && heart && <CirculationMonitor />}
       {running && rocket && <RocketMonitor />}

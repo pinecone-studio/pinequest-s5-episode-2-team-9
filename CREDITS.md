@@ -18,6 +18,23 @@ Licence: [Creative Commons Attribution 4.0 International](https://creativecommon
 - Grouped the meshes into 18 parts.
 - Simplified and compressed the meshes.
 
+### Human lungs: Human Reference Atlas (HuBMAP), CC BY 4.0
+`public/models/lungs.glb` (and the air paths in `src/models/lungs/airways.json`) is built by `scripts/build-lungs.ts` from two 3D reference organs of the Human Reference Atlas, made from the Visible Human Male (National Library of Medicine):
+
+- *3D Reference Organ for Lung, Male, v1.3.* HuBMAP. https://cdn.humanatlas.io/digital-objects/ref-organ/lung-male/v1.3/assets/3d-vh-m-lung.glb
+- Browne, Kristen, and Heidi Schlehlein. 2024. *3D Reference Organ for Blood Vasculature, Male, v1.3.* HuBMAP. https://doi.org/10.48539/HBM473.XTPP.725
+
+Licence: [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/).
+
+**Changes made:**
+- Filled each lung as a volume and split it into its 18 bronchopulmonary segments (each voxel goes to the segment whose surface patch or segmental bronchus is nearest), then rebuilt the five lobes and the segments as closed, smoothed meshes.
+- Split every segment into secondary pulmonary lobules (about 2.4 cm apart).
+- Grouped the lobar and segmental bronchi per airway and gave each bronchus the cartilage plates nearest to it.
+- Took the pulmonary trunk, arteries and veins from the vasculature organ.
+- **Added the trachea and main bronchi (cartilage rings, trachealis, annular ligaments, mucosa) and the diaphragm (domes fitted under the lung bases, central tendon, crura, caval, oesophageal and aortic openings), modelled by Hologemma.** The atlas has no meshes for them.
+- Traced the centre lines of the airway tree for the air flow.
+- Simplified and compressed the meshes.
+
 ### Human brain: Human Reference Atlas (HuBMAP), CC BY 4.0
 `public/models/brain.glb` is built by `scripts/build-brain.ts` from:
 

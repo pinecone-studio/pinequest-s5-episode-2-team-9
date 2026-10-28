@@ -3,7 +3,7 @@
 
 import type { LookId } from '../scene/realisticLooks'
 
-export type ModelId = 'heart' | 'robotDog' | 'brain' | 'rocketEngine' | 'electricMotor' | 'skeleton' | 'muscles' | 'computer'
+export type ModelId = 'heart' | 'lungs' | 'robotDog' | 'brain' | 'rocketEngine' | 'electricMotor' | 'skeleton' | 'muscles' | 'computer'
 
 export interface PartDef {
   /** Node name in the GLB. */
@@ -21,6 +21,46 @@ export interface PartDef {
   explodeScale?: number
   /** Overrides the automatic explode direction (model space). */
   explodeDir?: [number, number, number]
+  /** Smaller pieces the part splits into in Study, which can split again (GLB nodes `<parent>__<piece>`). */
+  pieces?: PieceDef[]
+}
+
+/** A piece of a part (a lobe's segment, a segment's lobule, a ring of the trachea...). */
+export interface PieceDef {
+  /** Unique among its siblings. */
+  id: string
+  /** Shares the name and description of another piece key, e.g. every lobule. */
+  info?: string
+  /** Numbered copies of one structure: the number is added to the name. */
+  n?: number
+  /** Hologram tint (default: varied from the parent's colour). */
+  color?: string
+  /** Realistic look (default: the parent's). */
+  look?: LookId
+  pieces?: PieceDef[]
+}
+
+/** GLB node name of a piece, below its parent's node. */
+export const pieceNode = (parent: string, piece: string) => `${parent}__${piece}`
+
+/** The pieces along a path below a part (stops at the first id that does not exist). */
+export function piecePath(part: PartDef, path: readonly string[]): PieceDef[] {
+  const out: PieceDef[] = []
+  let level = part.pieces
+  for (const id of path) {
+    const p = level?.find((x) => x.id === id)
+    if (!p) break
+    out.push(p)
+    level = p.pieces
+  }
+  return out
+}
+
+/** The pieces the node at `path` splits into (empty for a leaf). */
+export function piecesAt(part: PartDef, path: readonly string[]): PieceDef[] {
+  const chain = piecePath(part, path)
+  if (chain.length < path.length) return []
+  return (chain.length ? chain[chain.length - 1].pieces : part.pieces) ?? []
 }
 
 /** One step of a guided tour. Text lives in i18n under keys.tourTitle / keys.tourText. */
@@ -62,7 +102,7 @@ export interface ModelDefinition {
   /** Citations shown in the credits panel. */
   sources: { text: string; url: string }[]
   /** Optional motion the model can play. */
-  motion?: 'heart' | 'motor' | 'rocket' | 'dog' | 'brain'
+  motion?: 'heart' | 'lungs' | 'motor' | 'rocket' | 'dog' | 'brain'
   /** Realistic-view materials, looked up by part id, then info id, then group, then 'default'. */
   looks: Record<string, LookId> & { default: LookId }
   /** Physical model with no hologram look: the view switch is hidden and PBR is always on. */
@@ -85,6 +125,8 @@ export const keys = {
   partDesc: (m: ModelId, p: PartDef) => `${m}.info.${p.info ?? p.id}.desc`,
   partFact: (m: ModelId, p: PartDef) => `${m}.info.${p.info ?? p.id}.fact`,
   partHint: (m: ModelId, p: PartDef) => `${m}.hint.${p.hint ?? p.id}`,
+  pieceName: (m: ModelId, p: PieceDef) => `${m}.piece.${p.info ?? p.id}`,
+  pieceDesc: (m: ModelId, p: PieceDef) => `${m}.piece.${p.info ?? p.id}.desc`,
   tourTitle: (m: ModelId, step: string) => `${m}.tour.${step}.title`,
   tourText: (m: ModelId, step: string) => `${m}.tour.${step}.text`,
 }

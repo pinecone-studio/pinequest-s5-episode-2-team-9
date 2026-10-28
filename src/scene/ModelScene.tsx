@@ -11,6 +11,7 @@ import { ModelRig } from './modelRig'
 import { createBrainMotion } from './motion/brainMotion'
 import { createDogMotion } from './motion/dogMotion'
 import { createHeartMotion } from './motion/heartMotion'
+import { createLungMotion } from './motion/lungMotion'
 import { createMotorMotion } from './motion/motorMotion'
 import { createRocketMotion } from './motion/rocketMotion'
 import { PANEL_PX, labelAnchor } from './sceneShared'
@@ -36,7 +37,9 @@ export function ModelScene({ def }: { def: ModelDefinition }) {
     const motion =
       def.motion === 'heart'
         ? createHeartMotion(rig)
-        : def.motion === 'motor'
+        : def.motion === 'lungs'
+          ? createLungMotion(rig)
+          : def.motion === 'motor'
           ? createMotorMotion(rig)
           : def.motion === 'rocket'
             ? createRocketMotion(rig)
@@ -134,13 +137,24 @@ export function ModelScene({ def }: { def: ModelDefinition }) {
         placed,
         carried: s.carried,
         hintPart: s.hintPart,
+        studyPath: s.studyPath,
+        hoveredPiece: s.hoveredPiece,
+        pieceSpread: s.pieceSpread,
       },
       camera,
     )
 
-    // Label anchor: hovered part, else the selected one (not in study, which has its own card).
+    // Label anchor: hovered part, else the selected one. Study has its own card, so there
+    // it only labels the hovered piece.
     const labelled = s.mode === 'study' ? null : (s.hovered ?? s.selected)
-    if (labelled && rig.parts.get(labelled)?.mesh.visible) {
+    const pieceAt =
+      s.mode === 'study' && s.studyPart && s.hoveredPiece ? rig.pieceWorld(s.studyPart, s.studyPath, s.hoveredPiece, tmp) : null
+    if (pieceAt) {
+      const p = rig.toScreen(pieceAt, camera, size)
+      labelAnchor.x = p.x
+      labelAnchor.y = p.y
+      labelAnchor.visible = true
+    } else if (labelled && rig.parts.get(labelled)?.mesh.visible) {
       const p = rig.toScreen(rig.partWorld(labelled, tmp), camera, size)
       labelAnchor.x = p.x
       labelAnchor.y = p.y
