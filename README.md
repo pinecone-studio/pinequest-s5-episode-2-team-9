@@ -38,11 +38,12 @@ Built once with the asset scripts and committed to `public/models/`:
 
 ```bash
 npx tsx scripts/build-heart.ts   # Human Reference Atlas heart + vessels (CC BY 4.0)
+npx tsx scripts/build-lungs.ts   # Human Reference Atlas lungs + bronchi + vessels, modelled trachea + diaphragm (~3 min)
 npx tsx scripts/build-dog.ts     # Mini Pupper 2 CAD (Apache-2.0) + modelled servos/battery
 npx tsx scripts/inspect-glb.ts public/models/heart.glb
 ```
 
-A new model = a GLB, a definition in `src/models/<name>/definition.ts`, an entry in `src/models/registry.ts`, and its texts in `src/i18n/*.json` (a test checks every key). Its guided tour is a step list in `src/models/<name>/tour.ts` (each step can pick a part to face and highlight, an explode or cut-away amount, or the model's motion) plus `<model>.tour.<step>.title` / `.text` texts.
+A new model = a GLB, a definition in `src/models/<name>/definition.ts`, an entry in `src/models/registry.ts`, and its texts in `src/i18n/*.json` (a test checks every key). A part can list `pieces` (see `PieceDef`): smaller structures it splits into in Study, nested to any depth (GLB nodes `<parent>__<piece>`), with texts `<model>.piece.<id>` / `.desc`. The lungs go lung → lobe → segment → lobule. Its guided tour is a step list in `src/models/<name>/tour.ts` (each step can pick a part to face and highlight, an explode or cut-away amount, or the model's motion) plus `<model>.tour.<step>.title` / `.text` texts.
 
 ## Layout
 
