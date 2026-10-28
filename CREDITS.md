@@ -67,6 +67,16 @@ The OBJ file headers still mention the older CC BY-SA 2.1 Japan licence. The dat
 
 In the app the model is called "Robot Dog". Hologemma is not affiliated with MangDang.
 
+## Solar system
+Textures are resized and converted to WebP by `scripts/build-solar-textures.ts`.
+- **Planet, Sun, Saturn ring, Earth (day, clouds, relief, oceans) and star maps**: [Solar System Scope](https://www.solarsystemscope.com/textures/), CC BY 4.0, based on NASA mission data.
+- **Moon colour**: NASA Scientific Visualization Studio, [CGI Moon Kit](https://svs.gsfc.nasa.gov/4720) (LRO LROC). Public domain.
+- **Earth's city lights**: NASA Earth Observatory, [Black Marble 2016](https://earthobservatory.nasa.gov/features/NightLights). Public domain.
+- **Planet positions**: E. M. Standish, JPL, [Keplerian Elements for Approximate Positions of the Major Planets](https://ssd.jpl.nasa.gov/planets/approx_pos.html).
+- **Spin axes and rotation**: IAU Working Group on Cartographic Coordinates and Rotational Elements, report 2015 (Archinal et al., 2018).
+- **Moon position**: low-precision lunar formulae of the Astronomical Almanac.
+- **Planet facts**: NASA [Planetary Fact Sheets](https://nssdc.gsfc.nasa.gov/planetary/factsheet/).
+
 ## Fonts
 - **Inter**, Rasmus Andersson. SIL Open Font License 1.1 (via @fontsource-variable/inter).
 - **JetBrains Mono**, JetBrains. SIL Open Font License 1.1 (via @fontsource-variable/jetbrains-mono).

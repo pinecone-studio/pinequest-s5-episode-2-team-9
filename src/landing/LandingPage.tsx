@@ -80,7 +80,7 @@ function ExperienceCard({ exp, startWord, mobile }: { exp: Experience; startWord
         <ModelGlyph id={exp.id} />
       </div>
       <div className="library-body">
-        <span className="library-meta">{t('atoms.tab.build')} · {t('atoms.tab.orbitals')} · {t('atoms.tab.light')}</span>
+        <span className="library-meta">{tx(exp.metaKey)}</span>
         <h3>{tx(exp.titleKey)}</h3>
         <p>{tx(exp.summaryKey)}</p>
         {mobile ? (

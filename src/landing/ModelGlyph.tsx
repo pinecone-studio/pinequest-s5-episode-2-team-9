@@ -10,6 +10,19 @@ export function ModelGlyph({ id }: { id: string }) {
       </svg>
     )
   }
+  if (id === 'solar') {
+    return (
+      <svg viewBox="0 0 200 200" className="glyph">
+        <circle className="glyph-dot" cx="100" cy="100" r="14" />
+        <ellipse className="glyph-sub" cx="100" cy="100" rx="42" ry="16" />
+        <ellipse className="glyph-main" cx="100" cy="100" rx="66" ry="25" />
+        <ellipse className="glyph-sub" cx="100" cy="100" rx="88" ry="34" />
+        <circle className="glyph-accent" cx="160" cy="113" r="7" />
+        <circle className="glyph-main" cx="57" cy="88" r="4" />
+        <path className="glyph-accent" d="M154 98l12 30" />
+      </svg>
+    )
+  }
   if (id === 'heart') {
     return (
       <svg viewBox="0 0 200 200" className="glyph">
