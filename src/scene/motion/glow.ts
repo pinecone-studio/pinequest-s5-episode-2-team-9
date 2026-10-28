@@ -12,3 +12,14 @@ export function glowPart(part: PartRig, amount: number): void {
     for (const m of part.reals) m.emissive.add(tmp)
   }
 }
+
+/** Fades a part this frame (k < 1), so what a motion draws inside it stands out. */
+export function fadePart(part: PartRig, k: number): void {
+  if (part.mesh.material === part.holo) part.holo.uniforms.uIntensity.value *= k
+  else
+    for (const m of part.reals) {
+      m.transparent = true
+      m.depthWrite = false
+      m.opacity *= k
+    }
+}

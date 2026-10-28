@@ -62,7 +62,7 @@ export interface ModelDefinition {
   /** Citations shown in the credits panel. */
   sources: { text: string; url: string }[]
   /** Optional motion the model can play. */
-  motion?: 'heart' | 'motor' | 'rocket' | 'dog'
+  motion?: 'heart' | 'motor' | 'rocket' | 'dog' | 'brain'
   /** Realistic-view materials, looked up by part id, then info id, then group, then 'default'. */
   looks: Record<string, LookId> & { default: LookId }
   /** Physical model with no hologram look: the view switch is hidden and PBR is always on. */

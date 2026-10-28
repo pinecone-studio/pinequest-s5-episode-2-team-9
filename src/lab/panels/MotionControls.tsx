@@ -4,6 +4,7 @@ import { useT, type I18nKey } from '../../i18n'
 import { dogClock, LEGS } from '../../scene/motion/dogMotion'
 import { ecg, heartClock, phaseAt } from '../../scene/motion/heartClock'
 import { useModel } from '../modelStore'
+import { BrainMonitor, CirculationMonitor, MotorMonitor, RocketMonitor } from './RunMonitors'
 
 /** ECG trace that scrolls with the beating heart. */
 function HeartMonitor() {
@@ -93,9 +94,11 @@ function GaitMonitor() {
 
 export function MotionControls() {
   const t = useT()
-  const { def, running, tempo, gait, set } = useModel()
+  const { def, running, tempo, gait, slowMotion, set } = useModel()
   if (!def?.motion) return null
   const heart = def.motion === 'heart'
+  const rocket = def.motion === 'rocket'
+  const slowable = def.motion !== 'dog'
   return (
     <div className="motion-controls">
       <button
@@ -112,7 +115,7 @@ export function MotionControls() {
       {running && (
         <label className="slider-row">
           <span>
-            {heart ? t('motion.bpm') : t('motion.speed')}: {Math.round(tempo)}
+            {heart ? t('motion.bpm') : rocket ? t('motion.throttle') : t('motion.speed')}: {Math.round(tempo)}
             {heart ? '' : '%'}
           </span>
           <input
@@ -125,7 +128,24 @@ export function MotionControls() {
           />
         </label>
       )}
+      {running && slowable && (
+        <button
+          type="button"
+          className="hud-button hud-button--wide"
+          data-active={slowMotion}
+          onClick={() => {
+            play('click')
+            set({ slowMotion: !slowMotion })
+          }}
+        >
+          {t('motion.slow')}
+        </button>
+      )}
       {running && heart && <HeartMonitor />}
+      {running && heart && <CirculationMonitor />}
+      {running && rocket && <RocketMonitor />}
+      {running && def.motion === 'motor' && <MotorMonitor />}
+      {running && def.motion === 'brain' && <BrainMonitor />}
       {running && def.motion === 'dog' && (
         <>
           <div className="qn-row">
@@ -138,7 +158,7 @@ export function MotionControls() {
           <GaitMonitor />
         </>
       )}
-      {running && !heart && <p className="panel-hint">{t(`motion.hint.${def.motion}` as I18nKey)}</p>}
+      {running && def.motion === 'dog' && <p className="panel-hint">{t('motion.hint.dog')}</p>}
     </div>
   )
 }
