@@ -202,7 +202,23 @@ export default function LandingPage() {
 
       <section className="library" ref={libraryRef}>
         <motion.div className="library-head" {...reveal}>
-          <h2>{t('landing.libraryTitle')}</h2>
+          <h2 className="library-title">
+            <span>{t('landing.libraryTitle')}</span>
+            <svg
+              className="library-title-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M12 6.5C9.5 4.5 6 4 3 4v15c3 0 6.5.5 9 2 2.5-1.5 6-2 9-2V4c-3 0-6.5.5-9 2.5Z" />
+              <path d="M12 6.5V21M6 8l3 1M6 12l3 1M15 9l3-1M15 13l3-1" />
+            </svg>
+          </h2>
           <p>{t('landing.librarySubtitle')}</p>
           <PicksNote />
         </motion.div>
