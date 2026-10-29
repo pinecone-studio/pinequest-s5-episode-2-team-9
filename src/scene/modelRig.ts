@@ -630,7 +630,7 @@ export class ModelRig {
     const k = 1 - Math.exp(-dt * 9)
     const kFast = 1 - Math.exp(-dt * 16)
 
-    // Whole-model layout: assembly lifts and shrinks the model above the bench.
+    // Whole-model layout: assembly lifts and shrinks the model above the bench (the user can still zoom it).
     const assembling = s.mode === 'assembly'
     viewQ.copy(this.model.quaternion)
     viewQInv.copy(viewQ).invert()
@@ -638,7 +638,7 @@ export class ModelRig {
     const explodeShrink = this.wideExplode
       ? 1 + (this.explodedFit() - 1) * explodeAmount
       : 1 / (1 + 0.5 * Math.min(1, Math.max(0, s.explode)))
-    const modelScale = assembling ? 0.56 : s.scale * (s.mode === 'explore' ? explodeShrink : 1)
+    const modelScale = assembling ? 0.56 * s.scale : s.scale * (s.mode === 'explore' ? explodeShrink : 1)
     const modelY = assembling ? 0.5 : 0
     this.model.position.x += (this.layoutShift - this.model.position.x) * k
     this.model.position.y += (modelY - this.model.position.y) * k
