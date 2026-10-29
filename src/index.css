@@ -3053,6 +3053,10 @@ a.account-avatar:hover {
 }
 
 /* Keep text and overlays readable on the lighter surfaces. Scientific colors stay in the scenes. */
+:root[data-theme='light'] :is(.how-step, .library-card:not(:hover)) {
+  border-color: #6b7d91;
+}
+
 :root[data-theme='light'] .library-meta {
   color: color-mix(in srgb, var(--accent) 35%, var(--ink));
 }
