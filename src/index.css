@@ -3058,8 +3058,9 @@ a.account-avatar:hover {
   border-color: var(--card-border);
 }
 
-:root[data-theme='light'] .library-card:hover {
-  border-color: color-mix(in srgb, var(--accent) 45%, #1f2937);
+:root[data-theme='light'] .library-card {
+  /* Tailwind's translate property handles the lift alongside the reveal transform. */
+  transform: none;
 }
 
 :root[data-theme='light'] .profile-models li {

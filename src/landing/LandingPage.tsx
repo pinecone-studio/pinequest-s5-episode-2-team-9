@@ -16,6 +16,15 @@ import { pickStartWord } from './startWord'
 
 const YEAR = new Date().getFullYear()
 
+const LIBRARY_CARD_CLASS = [
+  'library-card',
+  'light:transition-all light:duration-300 light:ease-[cubic-bezier(0.23,1,0.32,1)]',
+  'light:fine:motion-safe:hover:-translate-y-1.5',
+  'light:fine:hover:border-cyan-400',
+  'light:fine:hover:shadow-xl light:fine:hover:shadow-cyan-500/10',
+  'light:motion-reduce:transition-none',
+].join(' ')
+
 const STEP_ICON_PATHS = [
   [
     'M5 6h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z',
@@ -79,7 +88,7 @@ function LibraryCard({ def, startWord, mobile }: { def: ModelDefinition; startWo
   const t = useT()
   const tx = useTx()
   return (
-    <motion.article className="library-card" style={{ '--accent': def.accent } as React.CSSProperties} {...reveal}>
+    <motion.article className={LIBRARY_CARD_CLASS} style={{ '--accent': def.accent } as React.CSSProperties} {...reveal}>
       <div className="library-visual">
         <ModelGlyph id={def.id} />
       </div>
@@ -111,7 +120,7 @@ function ExperienceCard({ exp, startWord, mobile }: { exp: Experience; startWord
   const t = useT()
   const tx = useTx()
   return (
-    <motion.article className="library-card" style={{ '--accent': exp.accent } as React.CSSProperties} {...reveal}>
+    <motion.article className={LIBRARY_CARD_CLASS} style={{ '--accent': exp.accent } as React.CSSProperties} {...reveal}>
       <div className="library-visual">
         <ModelGlyph id={exp.id} />
       </div>
