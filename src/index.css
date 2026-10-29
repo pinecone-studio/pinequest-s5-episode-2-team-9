@@ -1106,6 +1106,114 @@ a {
   font-size: 0.88rem;
 }
 
+/* Ask Hologemma (fine-tuned tutor) */
+.ask-tutor {
+  display: grid;
+  gap: 8px;
+  padding: 10px 12px;
+  border-left: 2px solid var(--cyan);
+  border-radius: 4px;
+  background: rgba(94, 231, 255, 0.06);
+}
+
+.ask-log {
+  display: grid;
+  gap: 8px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.ask-turn {
+  margin: 0;
+  line-height: 1.5;
+  font-size: 0.88rem;
+  white-space: pre-wrap;
+}
+
+.ask-turn--user {
+  justify-self: end;
+  max-width: 85%;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px 8px 2px 8px;
+  color: var(--ink-dim);
+}
+
+.ask-thinking {
+  color: var(--ink-dim);
+  animation: ask-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes ask-pulse {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ask-thinking {
+    animation: none;
+  }
+}
+
+.ask-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* Tall enough to pinch or dwell on with a hand. */
+.ask-chip {
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: transparent;
+  color: var(--ink);
+  font: 0.8rem/1.3 var(--font-sans);
+  text-align: left;
+  cursor: pointer;
+}
+
+.ask-chip:hover:not(:disabled) {
+  border-color: var(--cyan);
+  box-shadow: 0 0 10px rgba(94, 231, 255, 0.3);
+}
+
+.ask-form {
+  display: flex;
+  gap: 6px;
+}
+
+.ask-form input {
+  flex: 1;
+  min-width: 0;
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: rgba(4, 5, 11, 0.6);
+  color: var(--ink);
+  font: 0.88rem var(--font-sans);
+}
+
+.ask-form input:focus {
+  outline: none;
+  border-color: var(--cyan);
+}
+
+.ask-form .hud-button:disabled,
+.ask-chip:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.ask-error {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #ffb4a8;
+}
+
 /* Assembly */
 .assembly-panel {
   display: grid;
@@ -1149,6 +1257,116 @@ a {
   margin: 4px 0 0;
   line-height: 1.5;
   font-size: 0.86rem;
+}
+
+/* Assembly guide (models with connections) */
+.guide-card {
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+  border-left: 2px solid var(--cyan);
+  border-radius: 4px;
+  background: rgba(94, 231, 255, 0.07);
+}
+
+.guide-card strong {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+}
+
+.guide-card strong i {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+}
+
+.guide-card-to {
+  font: 500 0.78rem/1.3 var(--font-mono);
+  letter-spacing: 0.04em;
+  color: var(--ink-dim);
+}
+
+.guide-card p {
+  margin: 0;
+  line-height: 1.5;
+  font-size: 0.88rem;
+}
+
+.guide-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 6;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.guide-label span {
+  display: inline-grid;
+  gap: 2px;
+  padding: 5px 10px;
+  border: 1px solid var(--cyan);
+  border-radius: 6px;
+  background: rgba(4, 5, 11, 0.78);
+  font: 600 0.8rem/1.2 var(--font-sans);
+  white-space: nowrap;
+  transform: translate(14px, -50%);
+  box-shadow: 0 0 14px rgba(94, 231, 255, 0.3);
+  backdrop-filter: blur(6px);
+}
+
+.guide-label em {
+  font: 600 0.62rem/1 var(--font-mono);
+  font-style: normal;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+/* Study close-up: what plugs in where. The span sits on the socket (its dot); the tag drops
+   below it by --drop when it would overlap another, joined by a leader line. */
+.port-labels span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.port-labels i {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(4, 5, 11, 0.8);
+}
+
+.port-labels span::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: var(--drop, 0px);
+  background: var(--line);
+}
+
+.port-labels b {
+  position: absolute;
+  top: var(--drop, 0px);
+  left: 8px;
+  padding: 3px 7px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(4, 5, 11, 0.72);
+  font: 600 0.68rem/1 var(--font-sans);
+  white-space: nowrap;
+  transform: translateY(-50%);
+  backdrop-filter: blur(4px);
 }
 
 .assembly-message--wrong {

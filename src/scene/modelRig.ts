@@ -30,7 +30,7 @@ import {
 } from 'three'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from 'three-mesh-bvh'
-import type { ModelDefinition, PartDef } from '../models/ModelDefinition'
+import type { Connection, ModelDefinition, PartDef } from '../models/ModelDefinition'
 import { lookFor, type ModelDefinition as Def } from '../models/ModelDefinition'
 import { createHoloMaterial } from './HoloMaterial'
 import { createRealisticMaterial, LOOKS, type LookId } from './realisticLooks'
@@ -81,6 +81,21 @@ export interface PartRig {
   poseScale: number
 }
 
+/** Where a part joins the part it attaches to (from the GLB's `connections` extras). */
+export interface PartJoint {
+  to: string
+  /** The opening on the parent, in inner space (where it is once the parent is assembled). */
+  pos: Vector3
+  /** The same point relative to this part's own pivot, so it follows the part when carried. */
+  local: Vector3
+  /** Unit direction from the opening into this part. */
+  normal: Vector3
+  /** Vessels and cables: centre line from the opening outward, in inner space. */
+  path: Vector3[] | null
+  /** Cables: the socket their other end plugs into, in inner space. */
+  from: { part: string; pos: Vector3 } | null
+}
+
 export interface RigState {
   mode: 'explore' | 'study' | 'assembly'
   explode: number
@@ -92,6 +107,8 @@ export interface RigState {
   placed: ReadonlySet<string>
   carried: string | null
   hintPart: string | null
+  /** Assembly guide's suggestion: a softer pulse than a hint. */
+  guidePart?: string | null
 }
 
 const tmpV = new Vector3()
@@ -141,6 +158,8 @@ export class ModelRig {
   wideExplode = true
   /** Extra data stored on the GLB root (e.g. the robot dog's joint positions). */
   extras: Record<string, unknown> = {}
+  /** Where each part attaches, for models whose GLB measures it (see `connected` on the definition). */
+  readonly joints = new Map<string, PartJoint>()
   /** Optional animation layered on the parts (heartbeat, spinning rotor...). */
   private motion: RigMotion | null = null
 
@@ -168,7 +187,9 @@ export class ModelRig {
     for (const partDef of def.parts) {
       const src = scene.getObjectByName(partDef.id)
       // A node with several primitives loads as a group of meshes, one per material.
-      const srcMeshes = (src instanceof Mesh ? [src] : (src?.children.filter((c) => c instanceof Mesh) ?? [])) as Mesh[]
+      const srcMeshes = (
+        src instanceof Mesh ? [src] : (src?.children.filter((c) => c instanceof Mesh) ?? [])
+      ) as Mesh[]
       if (!srcMeshes.length) throw new Error(`Part "${partDef.id}" not found in ${def.url}`)
       const srcMesh = srcMeshes[0]
       const layered = new Set(srcMeshes.map((m) => (m.material as Material).name)).size > 1
@@ -208,7 +229,10 @@ export class ModelRig {
         mesh.add(edges)
       }
 
-      const ghost = new Mesh(geometry, createHoloMaterial({ color: '#dff8ff', opacity: 0, fill: 0.05, fresnelPower: 1.5 }))
+      const ghost = new Mesh(
+        geometry,
+        createHoloMaterial({ color: '#dff8ff', opacity: 0, fill: 0.05, fresnelPower: 1.5 }),
+      )
       ghost.position.copy(home)
       ghost.visible = false
       ghost.raycast = () => {}
@@ -244,6 +268,20 @@ export class ModelRig {
     scene.traverse((o) => {
       if (Object.keys(o.userData ?? {}).length && !Object.keys(this.extras).length) this.extras = o.userData
     })
+    const connections = (this.extras.connections ?? {}) as Record<string, Connection>
+    for (const [id, c] of Object.entries(connections)) {
+      const part = this.parts.get(id)
+      if (!part) continue
+      const pos = new Vector3(...c.pos)
+      this.joints.set(id, {
+        to: c.to,
+        pos,
+        local: pos.clone().sub(part.home),
+        normal: new Vector3(...c.normal).normalize(),
+        path: c.path ? c.path.map((p) => new Vector3(...p)) : null,
+        from: c.from ? { part: c.from.part, pos: new Vector3(...c.from.pos) } : null,
+      })
+    }
     box.getBoundingSphere(sphere)
     this.center.copy(box.getCenter(new Vector3()))
     this.rawRadius = sphere.radius
@@ -255,7 +293,9 @@ export class ModelRig {
     // Explode offsets: radial spread plus a push along each part's direction.
     for (const part of this.parts.values()) {
       const fromCenter = part.home.clone().sub(this.center)
-      const dir = part.def.explodeDir ? new Vector3(...part.def.explodeDir).normalize() : fromCenter.clone().normalize()
+      const dir = part.def.explodeDir
+        ? new Vector3(...part.def.explodeDir).normalize()
+        : fromCenter.clone().normalize()
       if (!Number.isFinite(dir.x) || dir.lengthSq() === 0) dir.set(0, 1, 0)
       part.explodeOffset
         .copy(fromCenter)
@@ -273,7 +313,13 @@ export class ModelRig {
     leaderGeometry.setAttribute('position', new BufferAttribute(new Float32Array(this.parts.size * 6), 3))
     this.leaderLines = new LineSegments(
       leaderGeometry,
-      new LineBasicMaterial({ color: '#8ff3ff', transparent: true, opacity: 0, blending: AdditiveBlending, depthWrite: false }),
+      new LineBasicMaterial({
+        color: '#8ff3ff',
+        transparent: true,
+        opacity: 0,
+        blending: AdditiveBlending,
+        depthWrite: false,
+      }),
     )
     this.leaderLines.frustumCulled = false
     this.leaderLines.raycast = () => {}
@@ -283,7 +329,14 @@ export class ModelRig {
     carryGeometry.setAttribute('position', new BufferAttribute(new Float32Array(6), 3))
     this.carryLine = new Line(
       carryGeometry,
-      new LineDashedMaterial({ color: '#dff8ff', dashSize: 0.05, gapSize: 0.04, transparent: true, opacity: 0.8, depthWrite: false }),
+      new LineDashedMaterial({
+        color: '#dff8ff',
+        dashSize: 0.05,
+        gapSize: 0.04,
+        transparent: true,
+        opacity: 0.8,
+        depthWrite: false,
+      }),
     )
     this.carryLine.frustumCulled = false
     this.carryLine.visible = false
@@ -324,7 +377,12 @@ export class ModelRig {
   }
 
   /** Recomputes bench slots and the side-panel shift for the current camera/viewport. */
-  layout(camera: PerspectiveCamera, viewport: { width: number; height: number }, panelPx: number, unplaced: string[]): void {
+  layout(
+    camera: PerspectiveCamera,
+    viewport: { width: number; height: number },
+    panelPx: number,
+    unplaced: string[],
+  ): void {
     const halfH = Math.tan((camera.fov * Math.PI) / 360) * camera.position.z
     const halfW = halfH * camera.aspect
     const panelFrac = viewport.width > 700 ? panelPx / viewport.width : 0
@@ -392,6 +450,19 @@ export class ModelRig {
     return this.parts.get(id)!.mesh.getWorldPosition(out)
   }
 
+  /** World position of the opening a part attaches to (on its parent, assembled); its slot if unmeasured. */
+  openingWorld(id: string, out = new Vector3()): Vector3 {
+    const joint = this.joints.get(id)
+    return joint ? this.inner.localToWorld(out.copy(joint.pos)) : this.slotWorld(id, out)
+  }
+
+  /** World position of the part's own connecting end, wherever the part is now. */
+  attachWorld(id: string, out = new Vector3()): Vector3 {
+    const joint = this.joints.get(id)
+    const mesh = this.parts.get(id)!.mesh
+    return joint ? mesh.localToWorld(out.copy(joint.local)) : mesh.getWorldPosition(out)
+  }
+
   /** Radius of the whole model on screen, in pixels. */
   screenRadius(camera: PerspectiveCamera, viewportHeight: number): number {
     const center = this.model.getWorldPosition(tmpV)
@@ -406,7 +477,11 @@ export class ModelRig {
     return { x: ((tmpV.x + 1) / 2) * viewport.width, y: ((1 - tmpV.y) / 2) * viewport.height }
   }
 
-  toScreen(world: Vector3, camera: Camera, viewport: { width: number; height: number }): { x: number; y: number } {
+  toScreen(
+    world: Vector3,
+    camera: Camera,
+    viewport: { width: number; height: number },
+  ): { x: number; y: number } {
     tmpV2.copy(world).project(camera)
     return { x: ((tmpV2.x + 1) / 2) * viewport.width, y: ((1 - tmpV2.y) / 2) * viewport.height }
   }
@@ -415,7 +490,8 @@ export class ModelRig {
   pick(raycaster: Raycaster, locations: PartLocation[] = ['model', 'bench']): string | null {
     const candidates: Mesh[] = []
     for (const part of this.parts.values()) {
-      if (part.mesh.visible && part.opacity > 0.3 && locations.includes(part.location)) candidates.push(part.mesh)
+      if (part.mesh.visible && part.opacity > 0.3 && locations.includes(part.location))
+        candidates.push(part.mesh)
     }
     raycaster.firstHitOnly = true
     const hits = raycaster.intersectObjects(candidates, false)
@@ -455,7 +531,10 @@ export class ModelRig {
           part.targetPos.copy(this.center)
           part.targetScale = Math.min(6, Math.max(1, (this.rawRadius * 0.72) / part.radius))
         } else {
-          if (this.wideExplode) part.targetPos.copy(part.home).add(this.spreadOffset(part, explode, tmpV2).applyQuaternion(viewQInv))
+          if (this.wideExplode)
+            part.targetPos
+              .copy(part.home)
+              .add(this.spreadOffset(part, explode, tmpV2).applyQuaternion(viewQInv))
           else part.targetPos.copy(part.home).addScaledVector(part.compactOffset, explode)
           part.targetScale = 1
         }
@@ -470,8 +549,11 @@ export class ModelRig {
         part.targetScale = this.normScale * this.model.scale.x
       }
 
-      part.opacityTarget = focus && focus !== id ? 0 : 1
+      // Bench parts without a slot belong to a later assembly stage and stay hidden.
+      const offStage = part.location === 'bench' && !this.benchSlots.has(id)
+      part.opacityTarget = (focus && focus !== id) || offStage ? 0 : 1
       const hinted = s.hintPart === id
+      const guided = !hinted && s.guidePart === id
       // The part being studied is shown alone, so it needs no highlight tint.
       part.highlightTarget =
         focus === id
@@ -480,7 +562,9 @@ export class ModelRig {
             ? 1
             : hinted
               ? 0.6 + 0.4 * Math.sin(this.time * 6)
-              : 0
+              : guided
+                ? 0.3 + 0.2 * Math.sin(this.time * 4)
+                : 0
 
       part.pose.lerp(part.targetPos, part.location === 'carry' ? kFast : k)
       part.poseScale += (part.targetScale - part.poseScale) * k
@@ -518,7 +602,11 @@ export class ModelRig {
       part.ghost.visible = showGhost
       if (showGhost) {
         const strong = s.carried === id || hinted
-        part.ghost.material.uniforms.uOpacity.value = strong ? 0.45 + 0.2 * Math.sin(this.time * 5) : 0.07
+        part.ghost.material.uniforms.uOpacity.value = strong
+          ? 0.45 + 0.2 * Math.sin(this.time * 5)
+          : guided
+            ? 0.2 + 0.08 * Math.sin(this.time * 4)
+            : 0.07
         part.ghost.material.uniforms.uTime.value = this.time
       }
     }
@@ -544,7 +632,11 @@ export class ModelRig {
     let y = 0
     for (const part of this.parts.values()) {
       if (part.location !== 'model') continue
-      tmpV.copy(part.home).sub(this.center).applyQuaternion(viewQ).add(this.spreadOffset(part, 1, tmpV2))
+      tmpV
+        .copy(part.home)
+        .sub(this.center)
+        .applyQuaternion(viewQ)
+        .add(this.spreadOffset(part, 1, tmpV2))
       x = Math.max(x, Math.abs(tmpV.x) + part.radius)
       y = Math.max(y, Math.abs(tmpV.y) + part.radius)
     }
@@ -577,8 +669,9 @@ export class ModelRig {
     const part = carried ? this.parts.get(carried) : null
     this.carryLine.visible = !!part && part.location === 'carry'
     if (!part || !this.carryLine.visible) return
-    const from = part.mesh.getWorldPosition(tmpV)
-    const to = this.slotWorld(part.def.id, tmpV2)
+    // From the part's own connecting end to the opening it joins (centres for unmeasured models).
+    const from = this.attachWorld(part.def.id, tmpV)
+    const to = this.openingWorld(part.def.id, tmpV2)
     const attr = this.carryLine.geometry.getAttribute('position') as BufferAttribute
     attr.setXYZ(0, from.x, from.y, from.z)
     attr.setXYZ(1, to.x, to.y, to.z)
@@ -591,7 +684,9 @@ export class ModelRig {
     const active = this.def.cutaway && s.cutaway > 0.01 && s.mode !== 'assembly'
     const focus = s.mode === 'study' && s.studyPart ? this.parts.get(s.studyPart) : null
     const centerWorld = focus ? focus.mesh.getWorldPosition(tmpV) : this.model.getWorldPosition(tmpV)
-    const radiusWorld = focus ? focus.radius * focus.mesh.scale.x * this.normScale * this.model.scale.x : this.model.scale.x
+    const radiusWorld = focus
+      ? focus.radius * focus.mesh.scale.x * this.normScale * this.model.scale.x
+      : this.model.scale.x
     const zCut = centerWorld.z + radiusWorld * (1 - 1.8 * s.cutaway)
     this.clipPlane.set(tmpV2.set(0, 0, -1), zCut)
     void camera

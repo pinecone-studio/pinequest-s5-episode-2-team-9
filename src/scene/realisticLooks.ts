@@ -63,6 +63,7 @@ export const LOOKS = {
   chip: { color: '#121316', roughness: 0.62 },
   brushedSteel: { color: '#a9aeb3', metalness: 1, roughness: 0.45 },
   sleeve: { color: '#16181b', roughness: 0.82, sheen: 0.7, sheenColor: '#5a6068' },
+  sataData: { color: '#a3202a', roughness: 0.45, clearcoat: 0.5 },
   label: { color: '#c4c8cc', roughness: 0.75 },
   labelDark: { color: '#2a2d33', roughness: 0.6 },
   ledWhite: { color: '#bfe6f5', roughness: 0.3, emissive: '#2a6f8c' },

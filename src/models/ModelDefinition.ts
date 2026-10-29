@@ -21,6 +21,29 @@ export interface PartDef {
   explodeScale?: number
   /** Overrides the automatic explode direction (model space). */
   explodeDir?: [number, number, number]
+  /** Vessels: the blood they carry, for the flow shown when they are connected. */
+  blood?: 'rich' | 'poor'
+  /** Cables: what they carry, for the pulse shown when they are plugged in. */
+  signal?: 'power' | 'data'
+  /**
+   * Vessels and cables: 'in' = blood or current flows from this part into the one it attaches to
+   * (veins, a power cable into the board), 'out' = away from it (arteries, a fan lead).
+   */
+  flow?: 'in' | 'out'
+}
+
+/** Where a part joins the part it attaches to, measured by the model's build script (GLB root extras). */
+export interface Connection {
+  /** The part it attaches to. */
+  to: string
+  /** Centre of the opening, in GLB root space (the space of the part nodes). */
+  pos: [number, number, number]
+  /** Unit direction from the opening into this part. */
+  normal: [number, number, number]
+  /** Vessels and cables: centre line from the opening outward. */
+  path?: [number, number, number][]
+  /** Cables: the plug at the other end, in the part it comes from. */
+  from?: { part: string; pos: [number, number, number]; normal: [number, number, number] }
 }
 
 /** One step of a guided tour. Text lives in i18n under keys.tourTitle / keys.tourText. */
@@ -69,6 +92,8 @@ export interface ModelDefinition {
   realisticOnly?: boolean
   /** Optional guided tour, in order. */
   tour?: TourStep[]
+  /** The GLB carries `connections` extras: assembly shows where each part attaches and how blood flows through it. */
+  connected?: boolean
 }
 
 export function lookFor(def: ModelDefinition, part: PartDef): LookId {
@@ -85,6 +110,8 @@ export const keys = {
   partDesc: (m: ModelId, p: PartDef) => `${m}.info.${p.info ?? p.id}.desc`,
   partFact: (m: ModelId, p: PartDef) => `${m}.info.${p.info ?? p.id}.fact`,
   partHint: (m: ModelId, p: PartDef) => `${m}.hint.${p.hint ?? p.id}`,
+  /** Guide line while a part is being attached (models with connections). */
+  partLink: (m: ModelId, p: PartDef) => `${m}.link.${p.id}`,
   tourTitle: (m: ModelId, step: string) => `${m}.tour.${step}.title`,
   tourText: (m: ModelId, step: string) => `${m}.tour.${step}.text`,
 }

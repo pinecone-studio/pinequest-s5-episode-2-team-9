@@ -2,6 +2,7 @@ import { play } from '../../audio/sfx'
 import { useT, useTx } from '../../i18n'
 import { keys } from '../../models/ModelDefinition'
 import { useModel } from '../modelStore'
+import { AskTutor } from './AskTutor'
 
 export function StudyCard() {
   const t = useT()
@@ -22,6 +23,8 @@ export function StudyCard() {
         <span className="hud-tag">{t('study.fact')}</span>
         <p>{tx(keys.partFact(def.id, part))}</p>
       </div>
+
+      <AskTutor key={part.id} model={def.id} part={part.id} />
 
       {def.cutaway && (
         <label className="slider-row">

@@ -19,7 +19,7 @@ export async function handle(fn: () => Promise<Response>): Promise<Response> {
     return await fn()
   } catch (error) {
     if (error instanceof HttpError) return json({ error: error.code }, error.status)
-    console.error('[billing]', error)
+    console.error('[api]', error)
     if (error instanceof WireError) return json({ error: 'provider_error' }, 502)
     return json({ error: 'server_error' }, 500)
   }

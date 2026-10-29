@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import en from '../i18n/en.json'
 import mn from '../i18n/mn.json'
 import { LOOKS } from '../scene/realisticLooks'
-import { assemblyOrder, keys, placeable } from './ModelDefinition'
+import { assemblyOrder, keys, placeable, type Connection } from './ModelDefinition'
 import { library } from './registry'
 
 interface GltfJson {
@@ -31,13 +31,15 @@ describe.each(library)('$id model', (def) => {
 
   it('names only known realistic looks in its GLB materials', () => {
     // Multi-material parts carry one material per look, named by its look id.
-    for (const m of glbJson(def.url).materials ?? []) if (m.name && m.name !== 'holo') expect(LOOKS, m.name).toHaveProperty([m.name])
+    for (const m of glbJson(def.url).materials ?? [])
+      if (m.name && m.name !== 'holo') expect(LOOKS, m.name).toHaveProperty([m.name])
   })
 
   it('has unique part ids and valid dependencies', () => {
     const ids = def.parts.map((p) => p.id)
     expect(new Set(ids).size).toBe(ids.length)
-    for (const part of def.parts) for (const dep of part.dependsOn) expect(ids, `${part.id} → ${dep}`).toContain(dep)
+    for (const part of def.parts)
+      for (const dep of part.dependsOn) expect(ids, `${part.id} → ${dep}`).toContain(dep)
     for (const base of def.baseParts) expect(ids).toContain(base)
     for (const part of def.parts) expect(def.groups).toContain(part.group)
   })
@@ -62,6 +64,25 @@ describe.each(library)('$id model', (def) => {
     for (const key of required) {
       expect(en, key).toHaveProperty([key])
       expect(mn, key).toHaveProperty([key])
+    }
+  })
+
+  it.runIf(def.connected)('knows where every part attaches and how blood flows through its vessels', () => {
+    const root = glbJson(def.url).nodes.find((n) => (n as { extras?: unknown }).extras) as {
+      extras?: { connections?: Record<string, Connection> }
+    }
+    const connections = root?.extras?.connections ?? {}
+    for (const p of def.parts) {
+      if (def.baseParts.includes(p.id)) continue
+      const c = connections[p.id]
+      expect(c, `${p.id} has a measured opening`).toBeDefined()
+      expect(c.to, `${p.id} attaches to its first dependency`).toBe(p.dependsOn[0])
+      expect(Math.hypot(...c.normal), `${p.id} normal`).toBeCloseTo(1, 2)
+      if (p.flow) expect(c.path?.length ?? 0, `${p.id} has a flow path`).toBeGreaterThanOrEqual(3)
+      for (const key of [keys.partLink(def.id, p)]) {
+        expect(en, key).toHaveProperty([key])
+        expect(mn, key).toHaveProperty([key])
+      }
     }
   })
 

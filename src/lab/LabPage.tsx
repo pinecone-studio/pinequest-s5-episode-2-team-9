@@ -27,7 +27,9 @@ import { useLab } from './labStore'
 import { useModel } from './modelStore'
 import { ModelPanel } from './panels/ModelPanel'
 import { PanelReveal } from './panels/PanelToggle'
+import { GuideLabel } from './GuideLabel'
 import { PartLabel } from './PartLabel'
+import { PortLabels } from './PortLabels'
 import { SettingsPanel } from './SettingsPanel'
 
 const reasonKeys: Record<CameraErrorKind, I18nKey> = {
@@ -46,8 +48,18 @@ export default function LabPage() {
     () => ({ input: new HandInput(), hub: new PointerHub(), face: new FaceTracker() }),
     [],
   )
-  const { camera, tracking, debug, devPanel, settingsOpen, creditsOpen, tipsOpen, headParallax, panelHidden, set } =
-    useLab()
+  const {
+    camera,
+    tracking,
+    debug,
+    devPanel,
+    settingsOpen,
+    creditsOpen,
+    tipsOpen,
+    headParallax,
+    panelHidden,
+    set,
+  } = useLab()
   const parallaxOn = headParallax && camera.state === 'live'
 
   // Head tracking runs only while head-coupled 3D is switched on.
@@ -153,7 +165,9 @@ export default function LabPage() {
         <video ref={videoRef} className="lab-video" data-live={camera.state === 'live'} />
         {def || experience ? (
           <HoloCanvas>
-            <Suspense fallback={null}>{def ? <ModelScene def={def} /> : experience?.id === 'solar' ? <SolarScene /> : <AtomScene />}</Suspense>
+            <Suspense fallback={null}>
+              {def ? <ModelScene def={def} /> : experience?.id === 'solar' ? <SolarScene /> : <AtomScene />}
+            </Suspense>
             {parallaxOn && <HeadParallax head={() => services.face.latest} />}
           </HoloCanvas>
         ) : (
@@ -161,6 +175,8 @@ export default function LabPage() {
         )}
         {def && !loaded && <p className="lab-loading">{t('model.loading')}</p>}
         <PartLabel />
+        <GuideLabel />
+        <PortLabels />
         <HandLayer />
 
         <header className="lab-bar" data-hud>
