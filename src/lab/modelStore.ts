@@ -34,6 +34,8 @@ interface ModelState {
   placed: string[]
   carried: string | null
   hintPart: string | null
+  /** Assembly guide: points at the next part and where it attaches (models with connections). */
+  guide: boolean
   message: AssemblyMessage | null
   /** Incremented to ask the scene to reset the view rotation. */
   resetToken: number
@@ -81,6 +83,34 @@ interface ModelState {
 
 let messageId = 0
 
+/** The next part in assembly order that is not placed yet. */
+export function nextPart(def: ModelDefinition, placed: readonly string[]): string | null {
+  const done = new Set(placed)
+  return assemblyOrder(def).find((id) => !done.has(id)) ?? null
+}
+
+/** The part the assembly guide is about: the one in hand, else the hinted one, else (guide on) the next one. */
+export function guideTarget(s: {
+  def: ModelDefinition | null
+  mode: ViewMode
+  placed: readonly string[]
+  carried: string | null
+  hintPart: string | null
+  guide: boolean
+}): string | null {
+  if (!s.def?.connected || s.mode !== 'assembly') return null
+  return s.carried ?? s.hintPart ?? (s.guide ? nextPart(s.def, s.placed) : null)
+}
+
+/**
+ * Models with many parts are rebuilt one group at a time: the bench holds the unplaced parts of
+ * the group the next part belongs to. Returns null when every part is placed.
+ */
+export function assemblyStage(def: ModelDefinition, placed: readonly string[]): string | null {
+  const next = nextPart(def, placed)
+  return next ? def.parts.find((p) => p.id === next)!.group : null
+}
+
 /** Store patch that shows a part (or one of its pieces): its pieces start slightly apart so they read as separate. */
 function studyPatch(def: ModelDefinition | null, partId: string, path: string[]): Partial<ModelState> {
   const part = def?.parts.find((p) => p.id === partId)
@@ -102,6 +132,7 @@ const initial = {
   placed: [],
   carried: null,
   hintPart: null,
+  guide: true,
   message: null,
   running: false,
   tempo: 72,
@@ -227,8 +258,7 @@ export const useModel = create<ModelState>()((set, get) => ({
   hint: () => {
     const { def, placed, hintPart } = get()
     if (!def) return
-    const placedSet = new Set(placed)
-    const next = assemblyOrder(def).find((id) => !placedSet.has(id))
+    const next = nextPart(def, placed)
     if (!next) return
     if (hintPart === next) {
       // Second press: place it automatically.

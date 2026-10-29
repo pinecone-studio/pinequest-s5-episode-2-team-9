@@ -5,8 +5,9 @@ import { Vector3, type PerspectiveCamera } from 'three'
 import { InteractionController } from '../interaction/controller'
 import { useLabServices } from '../lab/LabContext'
 import { useLab } from '../lab/labStore'
-import { useModel } from '../lab/modelStore'
+import { assemblyStage, guideTarget, nextPart, useModel } from '../lab/modelStore'
 import type { ModelDefinition } from '../models/ModelDefinition'
+import { ConnectionGuide } from './connectionGuide'
 import { ModelRig } from './modelRig'
 import { createBrainMotion } from './motion/brainMotion'
 import { createDogMotion } from './motion/dogMotion'
@@ -14,8 +15,7 @@ import { createHeartMotion } from './motion/heartMotion'
 import { createLungMotion } from './motion/lungMotion'
 import { createMotorMotion } from './motion/motorMotion'
 import { createRocketMotion } from './motion/rocketMotion'
-import { PANEL_PX, labelAnchor } from './sceneShared'
-
+import { PANEL_PX, guideAnchor, labelAnchor, portAnchors } from './sceneShared'
 
 // Deterministic shuffle so the bench is not laid out in assembly order.
 function benchOrder(ids: string[]): string[] {
@@ -54,6 +54,20 @@ export function ModelScene({ def }: { def: ModelDefinition }) {
       motion?.dispose()
     }
   }, [rig, def])
+  // Assembly guidance for models that know where their parts attach.
+  const guide = useRef<ConnectionGuide | null>(null)
+  useEffect(() => {
+    if (!def.connected) return
+    const g = new ConnectionGuide(rig)
+    guide.current = g
+    return () => {
+      guide.current = null
+      g.dispose()
+      guideAnchor.visible = false
+    }
+  }, [rig, def])
+  /** Parts placed as of the last frame, to start a flow pulse on each newly connected vessel. */
+  const lastPlaced = useRef(new Set<string>())
   const controller = useMemo(
     () => new InteractionController(rig, hub, camera, () => get().size),
     [rig, hub, camera, get],
@@ -97,6 +111,7 @@ export function ModelScene({ def }: { def: ModelDefinition }) {
 
     // Mode transitions move parts between the model and the bench.
     if (s.mode !== lastMode.current) {
+      lastPlaced.current = new Set(placed)
       if (s.mode === 'assembly') rig.scatterToBench(placed)
       else if (lastMode.current === 'assembly') rig.gatherToModel()
       lastMode.current = s.mode
@@ -109,11 +124,26 @@ export function ModelScene({ def }: { def: ModelDefinition }) {
         if (placed.has(id) && part.location === 'bench') {
           rig.relocate(id, 'model')
           rig.flash(id)
+        } else if (!placed.has(id) && part.location === 'model') {
+          // "Start again" (and a hot reload) clears placed parts without leaving assembly mode.
+          rig.relocate(id, 'bench')
         }
       }
     }
 
-    const unplaced = s.mode === 'assembly' ? benchOrder(def.parts.map((p) => p.id).filter((id) => !placed.has(id))) : []
+    if (s.mode === 'assembly') {
+      for (const id of placed) if (!lastPlaced.current.has(id)) guide.current?.pulse(id)
+      lastPlaced.current = new Set(placed)
+    }
+
+    // Connected models are rebuilt one group at a time, so the bench only holds the current group.
+    const stage = s.mode === 'assembly' && def.connected ? assemblyStage(def, s.placed) : null
+    const unplaced =
+      s.mode === 'assembly'
+        ? benchOrder(
+            def.parts.filter((p) => !placed.has(p.id) && (!stage || p.group === stage)).map((p) => p.id),
+          )
+        : []
     const lab = useLab.getState()
     const panelPx = lab.panelHidden ? 0 : PANEL_PX
     const key = `${size.width}x${size.height}:${panelPx}:${unplaced.join(',')}`
@@ -137,12 +167,41 @@ export function ModelScene({ def }: { def: ModelDefinition }) {
         placed,
         carried: s.carried,
         hintPart: s.hintPart,
+        guidePart: s.mode === 'assembly' && def.connected && s.guide ? nextPart(def, s.placed) : null,
         studyPath: s.studyPath,
         hoveredPiece: s.hoveredPiece,
         pieceSpread: s.pieceSpread,
       },
       camera,
     )
+
+    // Guide ring on the opening the current part attaches to.
+    if (guide.current) {
+      const target = guideTarget(s)
+      const at = guide.current.update(dt, target, camera, size)
+      guideAnchor.visible = !!at
+      if (at) {
+        guideAnchor.x = at.x
+        guideAnchor.y = at.y
+      }
+    }
+
+    // Study close-up: label every socket or opening on the studied part with what plugs in there.
+    if (def.connected && s.mode === 'study' && s.studyPart) {
+      const host = rig.parts.get(s.studyPart)
+      const ids: string[] = []
+      if (host && host.opacity > 0.9) {
+        for (const [id, joint] of rig.joints) {
+          if (joint.to !== s.studyPart) continue
+          ids.push(id)
+          const world = host.mesh.localToWorld(tmp.copy(joint.pos).sub(host.home))
+          portAnchors.at.set(id, rig.toScreen(world, camera, size))
+        }
+      }
+      if (ids.join() !== portAnchors.ids.join()) portAnchors.ids = ids
+    } else if (portAnchors.ids.length) {
+      portAnchors.ids = []
+    }
 
     // Label anchor: hovered part, else the selected one. Study has its own card, so there
     // it only labels the hovered piece.

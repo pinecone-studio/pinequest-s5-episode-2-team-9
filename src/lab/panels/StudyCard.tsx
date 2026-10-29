@@ -4,6 +4,7 @@ import { keys, piecePath, piecesAt } from '../../models/ModelDefinition'
 import { pieceColorAt } from '../../scene/pieceColors'
 import { pieceLabel } from '../pieceLabel'
 import { useModel } from '../modelStore'
+import { AskTutor } from './AskTutor'
 
 export function StudyCard() {
   const t = useT()
@@ -91,6 +92,8 @@ export function StudyCard() {
           <p className="panel-hint">{t('study.piecesHint')}</p>
         </>
       )}
+
+      <AskTutor key={part.id} model={def.id} part={part.id} />
 
       {def.cutaway && (
         <label className="slider-row">

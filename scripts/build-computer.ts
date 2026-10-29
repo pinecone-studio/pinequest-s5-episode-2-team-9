@@ -27,7 +27,18 @@ import {
 } from 'three'
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
 import type { LookId } from '../src/scene/realisticLooks'
-import { boundsOf, boxMesh, cylinderMesh, mergeMeshData, recomputeNormals, type MeshData, type Vec3 } from './lib/gltf'
+import {
+  boundsOf,
+  boxMesh,
+  centroid,
+  cylinderMesh,
+  mergeMeshData,
+  recomputeNormals,
+  type MeshData,
+  type Vec3,
+} from './lib/gltf'
+import { computer } from '../src/models/computer/definition'
+import { junction } from './lib/connectors'
 import { partData, writePartsGlb, type OutputPart } from './lib/output'
 import { placed } from './lib/three-mesh'
 
@@ -98,7 +109,8 @@ function applyMatrix(d: MeshData, m: Matrix4): MeshData {
   return { positions, normals, indices: d.indices }
 }
 
-const moveLs = (ls: Ls, position: Vec3, q = new Quaternion()): Ls => ls.map(([l, d]) => [l, xformQ(d, position, q)])
+const moveLs = (ls: Ls, position: Vec3, q = new Quaternion()): Ls =>
+  ls.map(([l, d]) => [l, xformQ(d, position, q)])
 
 const box = (c: Vec3, s: Vec3) => boxMesh(c, s)
 
@@ -155,8 +167,10 @@ function rectPath<T extends Path>(p: T, x0: number, y0: number, x1: number, y1: 
   p.quadraticCurveTo(x0, y0, x0 + r, y0)
   return p
 }
-const rectShape = (x0: number, y0: number, x1: number, y1: number, r = 0) => rectPath(new Shape(), x0, y0, x1, y1, r)
-const rectHole = (x0: number, y0: number, x1: number, y1: number, r = 0) => rectPath(new Path(), x0, y0, x1, y1, r)
+const rectShape = (x0: number, y0: number, x1: number, y1: number, r = 0) =>
+  rectPath(new Shape(), x0, y0, x1, y1, r)
+const rectHole = (x0: number, y0: number, x1: number, y1: number, r = 0) =>
+  rectPath(new Path(), x0, y0, x1, y1, r)
 function circleHole(cx: number, cy: number, r: number): Path {
   const p = new Path()
   p.absarc(cx, cy, r, 0, Math.PI * 2, true)
@@ -177,7 +191,13 @@ function polyHole(cx: number, cy: number, r: number, sides: number, rot = 0): Pa
  * world as: 'xy' (u, v, w) / 'xz' (u, w, -v) / 'yz' (w, v, -u). `at` is the
  * plate's centre along its normal.
  */
-function plate(shape: Shape, depth: number, plane: 'xy' | 'xz' | 'yz', at: number, curveSegments = 10): MeshData {
+function plate(
+  shape: Shape,
+  depth: number,
+  plane: 'xy' | 'xz' | 'yz',
+  at: number,
+  curveSegments = 10,
+): MeshData {
   const g = new ExtrudeGeometry(shape, { depth, bevelEnabled: false, curveSegments })
   g.translate(0, 0, -depth / 2)
   const d = placed(g)
@@ -270,7 +290,8 @@ function fanLocal(o: FanOptions): Ls {
       return s
     }
     // Front and back flanges, a round shroud between them, and corner posts.
-    for (const y of [t / 2 - 0.0015, -t / 2 + 0.0015]) ls.push([frameLook, plate(flange(), 0.003, 'xz', y, 16)])
+    for (const y of [t / 2 - 0.0015, -t / 2 + 0.0015])
+      ls.push([frameLook, plate(flange(), 0.003, 'xz', y, 16)])
     ls.push([
       frameLook,
       placed(
@@ -293,7 +314,8 @@ function fanLocal(o: FanOptions): Ls {
       [-screw, -screw],
     ]) {
       ls.push([frameLook, cyl([x, 0, z], 0.0042, t - 0.006, 1, 12)])
-      if (o.pads) for (const y of [t / 2, -t / 2]) ls.push(['rubber', rbox([x, y, z], [0.011, 0.0012, 0.011], 0.002)])
+      if (o.pads)
+        for (const y of [t / 2, -t / 2]) ls.push(['rubber', rbox([x, y, z], [0.011, 0.0012, 0.011], 0.002)])
     }
     // Motor struts on the exhaust side.
     for (let k = 0; k < 4; k++) {
@@ -455,7 +477,10 @@ function caseFrame(): Ls {
 
   // Brass-coloured standoffs under the board's mounting holes.
   for (const [x, y] of MOUNT_HOLES)
-    ls.push(['gold', cyl([x, y, (TRAY_Z + BOARD_Z - BOARD_T / 2) / 2], 0.0028, BOARD_Z - BOARD_T / 2 - TRAY_Z, 2, 6)])
+    ls.push([
+      'gold',
+      cyl([x, y, (TRAY_Z + BOARD_Z - BOARD_T / 2) / 2], 0.0028, BOARD_Z - BOARD_T / 2 - TRAY_Z, 2, 6),
+    ])
 
   // Front panel: a frame around a fine steel mesh, with the intake fan behind it.
   const front = rectShape(-HALF_W, 0, HALF_W, TOP)
@@ -473,7 +498,13 @@ function caseFrame(): Ls {
   // Front I/O on the roof: power button with a light ring, USB-A, USB-C, audio.
   const fy = TOP + 0.0002
   ls.push(['nickel', cyl([0.2, fy + 0.0012, 0.065], 0.0062, 0.0024, 1, 32)])
-  ls.push(['ledWhite', placed(new RingGeometry(0.0064, 0.0074, 32), { position: [0.2, fy + 0.0001, 0.065], rotation: [-Math.PI / 2, 0, 0] })])
+  ls.push([
+    'ledWhite',
+    placed(new RingGeometry(0.0064, 0.0074, 32), {
+      position: [0.2, fy + 0.0001, 0.065],
+      rotation: [-Math.PI / 2, 0, 0],
+    }),
+  ])
   for (const z of [0.038, 0.02]) {
     ls.push(['nickel', quad([0.2, fy, z], [0.0062, 0.0136], 1)])
     ls.push(['chip', quad([0.2, fy + 0.00005, z], [0.005, 0.0124], 1)])
@@ -481,7 +512,13 @@ function caseFrame(): Ls {
   }
   ls.push(['chip', rbox([0.2, fy - 0.0004, 0.004], [0.0034, 0.0012, 0.0092], 0.0016)])
   ls.push(['chip', cyl([0.2, fy - 0.0004, -0.012], 0.0018, 0.0012, 1, 16)])
-  ls.push(['jackGreen', placed(new RingGeometry(0.0018, 0.0028, 20), { position: [0.2, fy + 0.0001, -0.012], rotation: [-Math.PI / 2, 0, 0] })])
+  ls.push([
+    'jackGreen',
+    placed(new RingGeometry(0.0018, 0.0028, 20), {
+      position: [0.2, fy + 0.0001, -0.012],
+      rotation: [-Math.PI / 2, 0, 0],
+    }),
+  ])
 
   // Drive cage at the bottom front: side walls, a top shelf for the 2.5" SSD,
   // and rubber grommets where the hard disk is screwed in.
@@ -491,11 +528,15 @@ function caseFrame(): Ls {
     ls.push([steel, plate(wall, 0.0012, 'xy', z)])
   }
   ls.push([steel, box([0.1, 0.041, 0], [0.156, 0.0012, 0.108])])
-  for (const x of [0.0545, 0.1555]) for (const z of [-0.053, 0.053]) ls.push(['rubber', cyl([x, 0.0128, z], 0.0035, 0.003, 2, 14)])
+  for (const x of [0.0545, 0.1555])
+    for (const z of [-0.053, 0.053]) ls.push(['rubber', cyl([x, 0.0128, z], 0.0035, 0.003, 2, 14)])
 
   // Rubber feet and the side panel thumbscrews on the rear.
-  for (const x of [-0.19, 0.19]) for (const z of [-0.085, 0.085]) ls.push(['rubber', rbox([x, -0.003, z], [0.05, 0.007, 0.024], 0.003)])
-  for (const y of [0.03, 0.43]) for (const z of [-HALF_W + 0.006, HALF_W - 0.006]) ls.push(['nickel', cyl([-HALF_D - 0.0025, y, z], 0.004, 0.005, 0, 16)])
+  for (const x of [-0.19, 0.19])
+    for (const z of [-0.085, 0.085]) ls.push(['rubber', rbox([x, -0.003, z], [0.05, 0.007, 0.024], 0.003)])
+  for (const y of [0.03, 0.43])
+    for (const z of [-HALF_W + 0.006, HALF_W - 0.006])
+      ls.push(['nickel', cyl([-HALF_D - 0.0025, y, z], 0.004, 0.005, 0, 16)])
   return ls
 }
 
@@ -538,15 +579,33 @@ function psu(): Ls {
   ls.push(['darkMetal', plate(top, t, 'xz', y1 - t / 2, 24)])
   // Wire grille over the fan.
   for (const r of [0.016, 0.03, 0.044, 0.058])
-    ls.push(['darkMetal', placed(new TorusGeometry(r, 0.0007, 6, 64), { position: [cx, y1 + 0.0012, 0], rotation: [Math.PI / 2, 0, 0] })])
+    ls.push([
+      'darkMetal',
+      placed(new TorusGeometry(r, 0.0007, 6, 64), {
+        position: [cx, y1 + 0.0012, 0],
+        rotation: [Math.PI / 2, 0, 0],
+      }),
+    ])
   for (let k = 0; k < 4; k++) {
     const a = (k * Math.PI) / 2 + Math.PI / 4
     ls.push([
       'darkMetal',
-      xformQ(cyl([0, 0, 0], 0.0007, 0.12, 0, 6), [cx, y1 + 0.0012, 0], new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), a)),
+      xformQ(
+        cyl([0, 0, 0], 0.0007, 0.12, 0, 6),
+        [cx, y1 + 0.0012, 0],
+        new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), a),
+      ),
     ])
   }
-  ls.push(...fan([cx, y1 - 0.016, 0], [0, 1, 0], { size: 0.12, radius: 0.057, depth: 0.025, count: 7, pads: false }))
+  ls.push(
+    ...fan([cx, y1 - 0.016, 0], [0, 1, 0], {
+      size: 0.12,
+      radius: 0.057,
+      depth: 0.025,
+      count: 7,
+      pads: false,
+    }),
+  )
   ls.push(['chip', box([cx, y0 + 0.02, 0], [x1 - x0 - 0.01, 0.002, z1 - z0 - 0.01])]) // dark interior
 
   // Rear: honeycomb vent, IEC C14 inlet and the rocker switch.
@@ -595,8 +654,42 @@ function psu(): Ls {
   return ls
 }
 
-/** Cable paths, shared by the cable part and the plug positions. */
-const CABLES = {
+/**
+ * Every cable is its own part. `points` run from the destination plug to the source (as the
+ * modular PSU cables always did) unless `toEnd` is set; `to` and `from` name the parts at each end.
+ * The plug that goes into `to` is what the assembly guide points at.
+ */
+interface CableSpec {
+  points: Vec3[]
+  side: Vec3
+  cols: number
+  rows: number
+  pitch: number
+  radius: number
+  look: LookId
+  /** Part the destination plug goes into, and the part at the other end. */
+  to: string
+  from: string
+  /** The destination is the last point (default: the first). */
+  toEnd?: boolean
+  /** Plug lengths at the destination and at the source end (0 = no plug, the wire leaves the part). */
+  plugTo: number
+  plugFrom: number
+  /** Plug body size across the wires (defaults to the bundle size). */
+  plugSize?: [number, number]
+  latch?: boolean
+}
+
+const POWER = { pitch: 0.0042, radius: 0.0017, look: 'sleeve' as LookId }
+const THIN = { pitch: 0.0024, radius: 0.0009, look: 'sleeve' as LookId }
+const FAN_WIRE = { cols: 4, rows: 1, pitch: 0.0013, radius: 0.00055, look: 'sleeve' as LookId }
+/** Board headers stand up from the board; plugs come straight down onto them. */
+const onHeader = (x: number, y: number): Vec3[] => [
+  [x, y, BT + 0.02],
+  [x, y, BT + 0.0105],
+]
+
+const PATHS = {
   atx: {
     // 24-pin: right-angle plug on the board edge, back through the right grommet,
     // down behind the tray, forward under it and into the PSU.
@@ -683,39 +776,262 @@ const CABLES = {
   },
 }
 
-function psuCables(): Ls {
+const CABLES: Record<string, CableSpec> = {
+  atx_cable: {
+    ...PATHS.atx,
+    ...POWER,
+    to: 'motherboard',
+    from: 'psu',
+    plugTo: 0.016,
+    plugFrom: 0.016,
+    latch: true,
+  },
+  cpu_power_cable: {
+    ...PATHS.eps,
+    ...POWER,
+    to: 'motherboard',
+    from: 'psu',
+    plugTo: 0.014,
+    plugFrom: 0.016,
+    latch: true,
+  },
+  gpu_power_cable: {
+    ...PATHS.pcie,
+    ...POWER,
+    to: 'gpu',
+    from: 'psu',
+    plugTo: 0.014,
+    plugFrom: 0.016,
+    latch: true,
+  },
+  ssd_power_cable: {
+    ...PATHS.sataSsd,
+    ...THIN,
+    to: 'sata_ssd',
+    from: 'psu',
+    plugTo: 0.011,
+    plugFrom: 0.016,
+    plugSize: [0.023, 0.0054],
+  },
+  hdd_power_cable: {
+    ...PATHS.sataHdd,
+    ...THIN,
+    to: 'hdd',
+    from: 'psu',
+    plugTo: 0.012,
+    plugFrom: 0.016,
+    plugSize: [0.023, 0.0054],
+  },
+  // SATA data: from the drive's narrow 7-pin socket up to the right-angle ports on the board's edge.
+  ssd_data_cable: {
+    points: [
+      [0.035, 0.0444, -0.016],
+      [0.022, 0.05, -0.024],
+      [0.035, 0.09, -0.05],
+      [0.098, 0.16, -0.06],
+      [0.107, 0.226, -0.0657],
+      [0.0955, 0.226, -0.0657],
+    ],
+    side: [0, 1, 0],
+    cols: 1,
+    rows: 1,
+    pitch: 0,
+    radius: 0.0026,
+    look: 'sataData',
+    to: 'motherboard',
+    from: 'sata_ssd',
+    toEnd: true,
+    plugTo: 0.008,
+    plugFrom: 0.01,
+    plugSize: [0.0105, 0.0058],
+  },
+  hdd_data_cable: {
+    points: [
+      [0.0165, 0.0105, -0.012],
+      [0.004, 0.016, -0.022],
+      [0.02, 0.06, -0.052],
+      [0.1, 0.15, -0.062],
+      [0.11, 0.2155, -0.0657],
+      [0.0955, 0.2155, -0.0657],
+    ],
+    side: [0, 1, 0],
+    cols: 1,
+    rows: 1,
+    pitch: 0,
+    radius: 0.0026,
+    look: 'sataData',
+    to: 'motherboard',
+    from: 'hdd',
+    toEnd: true,
+    plugTo: 0.008,
+    plugFrom: 0.01,
+    plugSize: [0.0105, 0.0058],
+  },
+  // Fan leads: fixed to the fan frame, a small 4-pin plug on the board header.
+  cpu_fan_cable: {
+    points: [
+      [-0.004, 0.414, -0.03],
+      [-0.002, 0.43, -0.048],
+      [0.006, 0.434, -0.058],
+      ...onHeader(0.006, 0.425),
+    ],
+    side: [1, 0, 0],
+    ...FAN_WIRE,
+    to: 'motherboard',
+    from: 'cpu_fan',
+    toEnd: true,
+    plugTo: 0.006,
+    plugFrom: 0,
+    plugSize: [0.011, 0.0035],
+  },
+  front_fan_cable: {
+    points: [
+      [0.195, 0.225, -0.044],
+      [0.15, 0.2, -0.06],
+      [0.04, 0.184, -0.062],
+      [-0.03, 0.186, -0.062],
+      ...onHeader(-0.045, 0.1945),
+    ],
+    side: [1, 0, 0],
+    ...FAN_WIRE,
+    to: 'motherboard',
+    from: 'front_fan',
+    toEnd: true,
+    plugTo: 0.006,
+    plugFrom: 0,
+    plugSize: [0.011, 0.0035],
+  },
+  rear_fan_cable: {
+    points: [
+      [-0.197, 0.414, -0.016],
+      [-0.19, 0.445, -0.045],
+      [-0.1, 0.448, -0.062],
+      [0.05, 0.448, -0.062],
+      [0.075, 0.44, -0.06],
+      ...onHeader(0.078, 0.418),
+    ],
+    side: [1, 0, 0],
+    ...FAN_WIRE,
+    to: 'motherboard',
+    from: 'rear_fan',
+    toEnd: true,
+    plugTo: 0.006,
+    plugFrom: 0,
+    plugSize: [0.011, 0.0035],
+  },
+  // Front I/O on the roof, down the front of the board to its bottom-edge headers.
+  front_panel_cable: {
+    points: [
+      [0.19, 0.444, 0.06],
+      [0.17, 0.44, 0.0],
+      [0.135, 0.42, -0.06],
+      [0.115, 0.3, -0.064],
+      [0.07, 0.2, -0.062],
+      [0.035, 0.186, -0.06],
+      ...onHeader(0.03, 0.1945),
+    ],
+    side: [1, 0, 0],
+    cols: 5,
+    rows: 2,
+    pitch: 0.00254,
+    radius: 0.0007,
+    look: 'sleeve',
+    to: 'motherboard',
+    from: 'case_frame',
+    toEnd: true,
+    plugTo: 0.006,
+    plugFrom: 0,
+    plugSize: [0.0137, 0.0061],
+  },
+  usb3_cable: {
+    points: [
+      [0.19, 0.444, 0.03],
+      [0.165, 0.43, -0.02],
+      [0.125, 0.38, -0.058],
+      [0.095, 0.322, -0.06],
+      [0.081, 0.31, BT + 0.022],
+      [0.081, 0.31, BT + 0.0105],
+    ],
+    side: [0, 1, 0],
+    cols: 3,
+    rows: 2,
+    pitch: 0.0019,
+    radius: 0.0009,
+    look: 'plasticBlue',
+    to: 'motherboard',
+    from: 'case_frame',
+    toEnd: true,
+    plugTo: 0.006,
+    plugFrom: 0,
+    plugSize: [0.021, 0.0105],
+  },
+  audio_cable: {
+    points: [
+      [0.19, 0.444, -0.012],
+      [0.16, 0.43, -0.058],
+      [0.118, 0.27, -0.064],
+      [0.06, 0.181, -0.062],
+      [-0.08, 0.181, -0.062],
+      ...onHeader(-0.1, 0.1945),
+    ],
+    side: [1, 0, 0],
+    cols: 4,
+    rows: 1,
+    pitch: 0.0016,
+    radius: 0.0007,
+    look: 'sleeve',
+    to: 'motherboard',
+    from: 'case_frame',
+    toEnd: true,
+    plugTo: 0.006,
+    plugFrom: 0,
+    plugSize: [0.0137, 0.0061],
+  },
+}
+
+/** Where a plug's tip sits in its socket, and the way the cable leaves it. */
+interface PlugEnd {
+  tip: Vector3
+  out: Vector3
+}
+
+function cableGeometry(c: CableSpec): { ls: Ls; dest: PlugEnd; source: PlugEnd; line: Vector3[] } {
   const ls: Ls = []
-  const pitch = 0.0042
-  const plugs: Record<keyof typeof CABLES, { board: number; psu: number; sata?: boolean }> = {
-    atx: { board: 0.016, psu: 0.016 },
-    eps: { board: 0.014, psu: 0.016 },
-    pcie: { board: 0.014, psu: 0.016 },
-    sataHdd: { board: 0.012, psu: 0.016, sata: true },
-    sataSsd: { board: 0.011, psu: 0.016, sata: true },
+  const { mesh, start, end } = wireBundle(c.points, c.side, c.cols, c.rows, c.pitch, c.radius)
+  ls.push([c.look, mesh])
+  const w = c.plugSize?.[0] ?? c.cols * c.pitch + 0.003
+  const h = c.plugSize?.[1] ?? c.rows * c.pitch + 0.002
+  const plugs: [Frame, 1 | -1, number][] = [
+    [start, -1, c.toEnd ? c.plugFrom : c.plugTo],
+    [end, 1, c.toEnd ? c.plugTo : c.plugFrom],
+  ]
+  for (const [f, outward, len] of plugs) if (len > 0) ls.push(['plasticBlack', plugAt(f, outward, len, w, h)])
+  // Release latch on the destination plug of the big power connectors.
+  if (c.latch) {
+    const f = c.toEnd ? end : start
+    const dir = c.toEnd ? 1 : -1
+    const latch = f.p
+      .clone()
+      .addScaledVector(f.t, (dir * c.plugTo) / 2)
+      .addScaledVector(f.layer, h / 2 + 0.0008)
+    ls.push(['plasticBlack', orientedBox(latch, f.t, f.side, f.layer, [0.006, 0.004, 0.0016])])
   }
-  for (const key of Object.keys(CABLES) as (keyof typeof CABLES)[]) {
-    const c = CABLES[key]
-    const p = plugs[key]
-    const wirePitch = p.sata ? 0.0024 : pitch
-    const r = p.sata ? 0.0009 : 0.0017
-    const { mesh, start, end } = wireBundle(c.points, c.side, c.cols, c.rows, wirePitch, r)
-    ls.push(['sleeve', mesh])
-    const w = c.cols * wirePitch + 0.003
-    const h = c.rows * wirePitch + (p.sata ? 0.003 : 0.002)
-    ls.push(['plasticBlack', plugAt(start, -1, p.board, w, h)])
-    ls.push(['plasticBlack', plugAt(end, 1, p.psu, w, h)])
-    // Release latch on the board-end plug of the big connectors.
-    if (!p.sata) {
-      const latch = start.p
-        .clone()
-        .addScaledVector(start.t, -p.board / 2)
-        .addScaledVector(start.layer, h / 2 + 0.0008)
-      ls.push(['plasticBlack', orientedBox(latch, start.t, start.side, start.layer, [0.006, 0.004, 0.0016])])
-    }
-  }
-  // Cable combs keep the visible runs neat.
-  ls.push(['plasticBlack', combAt(CABLES.pcie.points, CABLES.pcie.side, 0.35, 4 * pitch + 0.004, 2 * pitch + 0.003)])
-  return ls
+  // Plug tips: the start plug extends back along -t, the end plug forward along +t.
+  const tipAt = (f: Frame, outward: 1 | -1, len: number): PlugEnd => ({
+    tip: f.p.clone().addScaledVector(f.t, outward * len),
+    out: f.t.clone().multiplyScalar(-outward),
+  })
+  const startEnd = tipAt(start, -1, c.toEnd ? c.plugFrom : c.plugTo)
+  const endEnd = tipAt(end, 1, c.toEnd ? c.plugTo : c.plugFrom)
+  const curve = new CatmullRomCurve3(
+    c.points.map((q) => new Vector3(...q)),
+    false,
+    'centripetal',
+  )
+  const line = curve.getSpacedPoints(16)
+  // The flow line runs from the destination plug outward.
+  if (c.toEnd) line.reverse()
+  return { ls, dest: c.toEnd ? endEnd : startEnd, source: c.toEnd ? startEnd : endEnd, line }
 }
 
 function motherboard(): Ls {
@@ -743,7 +1059,8 @@ function motherboard(): Ls {
   for (const x of DIMM_X) {
     ls.push(['plasticBlack', box([x, DIMM_Y, BT + 0.0038], [0.0062, 0.1365, 0.0075])])
     ls.push(['chip', box([x, DIMM_Y, BT + 0.0076], [0.0016, 0.133, 0.0003])])
-    for (const s of [-1, 1]) ls.push(['plasticGrey', box([x, DIMM_Y + s * 0.0708, BT + 0.006], [0.0064, 0.005, 0.012])])
+    for (const s of [-1, 1])
+      ls.push(['plasticGrey', box([x, DIMM_Y + s * 0.0708, BT + 0.006], [0.0064, 0.005, 0.012])])
   }
 
   // VRM: chokes and polymer capacitors along the left and top of the socket.
@@ -762,15 +1079,24 @@ function motherboard(): Ls {
   ls.push(['plasticBlack', box([-0.138, 0.425, BT + 0.006], [0.0188, 0.0104, 0.012])]) // 8-pin EPS
   ls.push(['plasticBlack', box([0.082, 0.365, BT + 0.0048], [0.01, 0.0516, 0.0096])]) // 24-pin, right angle
   ls.push(['plasticBlack', box([0.081, 0.31, BT + 0.0045], [0.011, 0.02, 0.009])]) // USB 3 front header
-  for (let i = 0; i < 4; i++) ls.push(['plasticBlack', box([0.081, 0.2155 + i * 0.0105, BT + 0.0035], [0.012, 0.0085, 0.007])]) // SATA
-  for (let i = 0; i < 4; i++) ls.push(['chip', box([0.0871, 0.2155 + i * 0.0105, BT + 0.0035], [0.0003, 0.0068, 0.0028])])
+  for (let i = 0; i < 4; i++)
+    ls.push(['plasticBlack', box([0.081, 0.2155 + i * 0.0105, BT + 0.0035], [0.012, 0.0085, 0.007])]) // SATA
+  for (let i = 0; i < 4; i++)
+    ls.push(['chip', box([0.0871, 0.2155 + i * 0.0105, BT + 0.0035], [0.0003, 0.0068, 0.0028])])
   const header = (x: number, y: number, cols: number, rows: number, shroud: boolean) => {
     const p = 0.00254
-    if (shroud) ls.push(['plasticBlack', box([x, y, BT + 0.004], [cols * p + 0.002, rows * p + 0.002, 0.008])])
+    if (shroud)
+      ls.push(['plasticBlack', box([x, y, BT + 0.004], [cols * p + 0.002, rows * p + 0.002, 0.008])])
     else ls.push(['plasticBlack', box([x, y, BT + 0.00125], [cols * p, rows * p, 0.0025])])
     for (let i = 0; i < cols; i++)
       for (let j = 0; j < rows; j++)
-        ls.push(['gold', box([x + (i - (cols - 1) / 2) * p, y + (j - (rows - 1) / 2) * p, BT + 0.004], [0.0006, 0.0006, 0.006])])
+        ls.push([
+          'gold',
+          box(
+            [x + (i - (cols - 1) / 2) * p, y + (j - (rows - 1) / 2) * p, BT + 0.004],
+            [0.0006, 0.0006, 0.006],
+          ),
+        ])
   }
   header(0.03, 0.1945, 5, 2, false) // front panel
   header(-0.02, 0.1945, 5, 2, false) // USB 2
@@ -791,7 +1117,8 @@ function motherboard(): Ls {
   ls.push(['chip', box([-0.165, 0.27, BT + 0.0006], [0.008, 0.008, 0.0012])])
   ls.push(['labelDark', rbox([-0.195, 0.262, BT + 0.0015], [0.02, 0.016, 0.003], 0.001)])
   ls.push(['aluminium', box([-0.195, 0.262, BT + 0.0031], [0.012, 0.003, 0.0002])])
-  for (let i = 0; i < 4; i++) ls.push(['gold', cyl([-0.21 + i * 0.0065, 0.215, BT + 0.004], 0.0025, 0.008, 2, 14)])
+  for (let i = 0; i < 4; i++)
+    ls.push(['gold', cyl([-0.21 + i * 0.0065, 0.215, BT + 0.004], 0.0025, 0.008, 2, 14)])
 
   // Rear I/O cover over the port stacks.
   ls.push(['plasticBlack', rbox([-0.2005, 0.364, BT + 0.018], [0.031, 0.136, 0.036], 0.004, 3)])
@@ -801,7 +1128,8 @@ function motherboard(): Ls {
   const PORT_X = -0.2235
   const shell = (y: number, z: number, h: number, w: number, depth = 0.016) =>
     ls.push(['nickel', box([PORT_X + depth / 2, y, z], [depth, h, w])])
-  const opening = (y: number, z: number, h: number, w: number) => ls.push(['chip', quad([PORT_X - 0.00005, y, z], [h, w], 0, -1)])
+  const opening = (y: number, z: number, h: number, w: number) =>
+    ls.push(['chip', quad([PORT_X - 0.00005, y, z], [h, w], 0, -1)])
   const usbA = (y: number, z: number, look: LookId) => {
     shell(y, z, 0.0145, 0.0068)
     opening(y, z, 0.0128, 0.0052)
@@ -878,12 +1206,21 @@ function vrmHeatsink(): Ls {
     ls.push(['darkMetal', rbox([c[0], c[1], BT + 0.004], [s[0], s[1], 0.008], 0.0015)])
     for (let i = 0; i < count; i++) {
       const o = (i - (count - 1) / 2) * ((finsAlong === 1 ? s[1] : s[0]) / count)
-      const pos: Vec3 = finsAlong === 1 ? [c[0], c[1] + o, BT + 0.008 + (h - 0.008) / 2] : [c[0] + o, c[1], BT + 0.008 + (h - 0.008) / 2]
+      const pos: Vec3 =
+        finsAlong === 1
+          ? [c[0], c[1] + o, BT + 0.008 + (h - 0.008) / 2]
+          : [c[0] + o, c[1], BT + 0.008 + (h - 0.008) / 2]
       const size: Vec3 = finsAlong === 1 ? [s[0], 0.0016, h - 0.008] : [0.0016, s[1], h - 0.008]
       ls.push(['darkMetal', box(pos, size)])
     }
     // Brushed accent cap.
-    ls.push(['aluminium', box([c[0], c[1], BT + h + 0.0004], finsAlong === 1 ? [s[0] * 0.5, s[1], 0.0008] : [s[0], s[1] * 0.5, 0.0008])])
+    ls.push([
+      'aluminium',
+      box(
+        [c[0], c[1], BT + h + 0.0004],
+        finsAlong === 1 ? [s[0] * 0.5, s[1], 0.0008] : [s[0], s[1] * 0.5, 0.0008],
+      ),
+    ])
   }
   finned([-0.1045, 0.369, 0], [0.017, 0.082, 0], 1, 12)
   finned([-0.0455, 0.4105, 0], [0.065, 0.015, 0], 0, 12)
@@ -927,7 +1264,10 @@ function cpuSocket(): Ls {
   ls.push(['plasticBlack', box([x, y, BT + 0.0005], [SOCK.w, SOCK.h, 0.001])])
   for (const s of [-1, 1]) {
     ls.push(['plasticBlack', box([x, y + s * (SOCK.h / 2 - 0.002), BT + 0.0018], [SOCK.w, 0.004, 0.0036])])
-    ls.push(['plasticBlack', box([x + s * (SOCK.w / 2 - 0.002), y, BT + 0.0018], [0.004, SOCK.h - 0.008, 0.0036])])
+    ls.push([
+      'plasticBlack',
+      box([x + s * (SOCK.w / 2 - 0.002), y, BT + 0.0018], [0.004, SOCK.h - 0.008, 0.0036]),
+    ])
   }
   // Spring contacts, shown as a fine gold field.
   for (let i = 0; i < 30; i++)
@@ -937,7 +1277,13 @@ function cpuSocket(): Ls {
       ls.push(['gold', quad([px, py, BT + 0.0011], [0.0005, 0.0005], 2)])
     }
   // Steel load plate with a window for the heat spreader, its hinge and the lever.
-  const lp = rectShape(x - SOCK.w / 2 - 0.0015, y - SOCK.h / 2 - 0.0015, x + SOCK.w / 2 - 0.004, y + SOCK.h / 2 + 0.0015, 0.002)
+  const lp = rectShape(
+    x - SOCK.w / 2 - 0.0015,
+    y - SOCK.h / 2 - 0.0015,
+    x + SOCK.w / 2 - 0.004,
+    y + SOCK.h / 2 + 0.0015,
+    0.002,
+  )
   lp.holes.push(rectHole(x - 0.0175, y - 0.0205, x + 0.0175, y + 0.0205, 0.002))
   ls.push(['nickel', plate(lp, 0.0006, 'xy', BT + 0.0039, 8)])
   ls.push(['nickel', box([x - SOCK.w / 2 - 0.0015, y, BT + 0.0028], [0.003, SOCK.h * 0.8, 0.0022])])
@@ -985,9 +1331,13 @@ function cpu(): Ls {
     for (const s of [-1, 1]) {
       const px = x - 0.0195 + i * 0.003
       ls.push(['nickel', box([px, y + s * 0.0182, SUB_Z + 0.0008], [0.0008, 0.0012, 0.0005])])
-      if (rand() > 0.5) ls.push(['chip', box([px + 0.0012, y + s * 0.0182, SUB_Z + 0.0008], [0.0006, 0.001, 0.0004])])
+      if (rand() > 0.5)
+        ls.push(['chip', box([px + 0.0012, y + s * 0.0182, SUB_Z + 0.0008], [0.0006, 0.001, 0.0004])])
     }
-  ls.push(['gold', quad([x - SUB.w / 2 + 0.002, y - SUB.h / 2 + 0.002, SUB_Z + 0.00062], [0.0022, 0.0022], 2)])
+  ls.push([
+    'gold',
+    quad([x - SUB.w / 2 + 0.002, y - SUB.h / 2 + 0.002, SUB_Z + 0.00062], [0.0022, 0.0022], 2),
+  ])
   // The land grid underneath: gold pads that meet the socket's springs.
   for (let i = 0; i < 30; i++)
     for (let j = 0; j < 24; j++) {
@@ -999,7 +1349,15 @@ function cpu(): Ls {
 }
 
 // Tower cooler: fins stacked away from the board, fan blowing toward the rear.
-const COOLER = { x: SOCKET.x, y: SOCKET.y, finDepth: 0.05, finWidth: 0.12, fins: 48, finPitch: 0.0021, finZ0: BT + 0.04 }
+const COOLER = {
+  x: SOCKET.x,
+  y: SOCKET.y,
+  finDepth: 0.05,
+  finWidth: 0.12,
+  fins: 48,
+  finPitch: 0.0021,
+  finZ0: BT + 0.04,
+}
 const FIN_Z_TOP = COOLER.finZ0 + (COOLER.fins - 1) * COOLER.finPitch
 const FIN_Z_MID = (COOLER.finZ0 + FIN_Z_TOP) / 2
 
@@ -1029,16 +1387,26 @@ function cpuCooler(): Ls {
       [x + half, yy, pipeZ + 0.014],
       [x + half, yy, FIN_Z_TOP + 0.003],
     ].map((p) => new Vector3(...p))
-    ls.push(['nickel', placed(new TubeGeometry(new CatmullRomCurve3(pts, false, 'centripetal'), 80, 0.003, 12, false))])
+    ls.push([
+      'nickel',
+      placed(new TubeGeometry(new CatmullRomCurve3(pts, false, 'centripetal'), 80, 0.003, 12, false)),
+    ])
   })
   // Fin stack: thin aluminium plates parallel to the board, with folded edges.
   for (let i = 0; i < COOLER.fins; i++) {
     const z = COOLER.finZ0 + i * COOLER.finPitch
     ls.push(['aluminium', box([x, y, z], [COOLER.finDepth, COOLER.finWidth, 0.0004])])
-    for (const s of [-1, 1]) ls.push(['aluminium', box([x, y + s * (COOLER.finWidth / 2 - 0.0002), z + 0.0006], [COOLER.finDepth, 0.0004, 0.0012])])
+    for (const s of [-1, 1])
+      ls.push([
+        'aluminium',
+        box([x, y + s * (COOLER.finWidth / 2 - 0.0002), z + 0.0006], [COOLER.finDepth, 0.0004, 0.0012]),
+      ])
   }
   // Top cover with pipe caps.
-  ls.push(['darkMetal', rbox([x, y, FIN_Z_TOP + 0.0025], [COOLER.finDepth + 0.002, COOLER.finWidth + 0.002, 0.003], 0.0012)])
+  ls.push([
+    'darkMetal',
+    rbox([x, y, FIN_Z_TOP + 0.0025], [COOLER.finDepth + 0.002, COOLER.finWidth + 0.002, 0.003], 0.0012),
+  ])
   ls.push(['brushedSteel', rbox([x, y, FIN_Z_TOP + 0.0042], [0.03, 0.08, 0.0005], 0.0002)])
   for (const dy of [-0.0135, -0.0045, 0.0045, 0.0135])
     for (const s of [-1, 1]) {
@@ -1115,7 +1483,8 @@ function m2Ssd(): Ls {
   }
   ls.push(['chip', rbox([x0 + 0.017, y, z + 0.001], [0.012, 0.012, 0.0012], 0.0003)])
   ls.push(['chip', rbox([x0 + 0.031, y, z + 0.001], [0.008, 0.01, 0.0012], 0.0003)])
-  for (const dx of [0.047, 0.065]) ls.push(['chip', rbox([x0 + dx, y, z + 0.001], [0.014, 0.018, 0.0012], 0.0003)])
+  for (const dx of [0.047, 0.065])
+    ls.push(['chip', rbox([x0 + dx, y, z + 0.001], [0.014, 0.018, 0.0012], 0.0003)])
   ls.push(['label', quad([xc + 0.015, y, z + 0.0017], [0.034, 0.02], 2)])
   ls.push(['labelDark', quad([xc + 0.015, y + 0.006, z + 0.00175], [0.034, 0.005], 2)])
   ls.push(['nickel', cyl([x1 - 0.0025, y, z + 0.0012], 0.0026, 0.0016, 2, 16)])
@@ -1156,7 +1525,8 @@ function gpu(): Ls {
 
   // Backplate on the top side, with vents and screws around the GPU core.
   const bp = rectShape(x0 + 0.003, -(zTop - 0.002), x1 - 0.0005, -(BT + 0.014), 0.002)
-  for (let i = 0; i < 6; i++) bp.holes.push(rectHole(0.004 + i * 0.006, -(zTop - 0.02), 0.0075 + i * 0.006, -(BT + 0.03), 0.0015))
+  for (let i = 0; i < 6; i++)
+    bp.holes.push(rectHole(0.004 + i * 0.006, -(zTop - 0.02), 0.0075 + i * 0.006, -(BT + 0.03), 0.0015))
   ls.push(['darkMetal', plate(bp, 0.0015, 'xz', PY + 0.0035, 6)])
   for (const [dx, dz] of [
     [-0.022, -0.022],
@@ -1169,10 +1539,14 @@ function gpu(): Ls {
 
   // Cooler: contact plate, heat pipes and a dense fin stack under the PCB.
   ls.push(['copper', box([-0.105, PY - 0.004, zMid], [0.036, 0.004, 0.036])])
-  for (let i = 0; i < 5; i++) ls.push(['nickel', cyl([-0.085, PY - 0.0075, BT + 0.035 + i * 0.012], 0.003, 0.25, 0, 12)])
+  for (let i = 0; i < 5; i++)
+    ls.push(['nickel', cyl([-0.085, PY - 0.0075, BT + 0.035 + i * 0.012], 0.003, 0.25, 0, 12)])
   for (let i = 0; i < 112; i++) {
     const x = -0.2125 + i * 0.0023
-    ls.push(['aluminium', box([x, PY - 0.0175, (BT + 0.016 + zTop - 0.003) / 2], [0.0004, 0.021, zTop - 0.003 - BT - 0.016])])
+    ls.push([
+      'aluminium',
+      box([x, PY - 0.0175, (BT + 0.016 + zTop - 0.003) / 2], [0.0004, 0.021, zTop - 0.003 - BT - 0.016]),
+    ])
   }
 
   // Shroud: a fan plate with three openings, side walls and an end cap.
@@ -1192,17 +1566,25 @@ function gpu(): Ls {
   ls.push(['plasticBlack', box([xc + 0.001, PY - 0.04, BT + 0.0175], [len - 0.002, 0.008, 0.003])])
   ls.push(['plasticBlack', box([x1 - 0.0015, PY - 0.024, zMid + 0.004], [0.003, 0.04, zTop - BT - 0.026])])
   // Angular trims between the fans and the light bar on the top edge.
-  for (const fx of [-0.1285, -0.0415]) ls.push(['darkMetal', box([fx, sy - 0.0018, zMid], [0.004, 0.0008, 0.09])])
+  for (const fx of [-0.1285, -0.0415])
+    ls.push(['darkMetal', box([fx, sy - 0.0018, zMid], [0.004, 0.0008, 0.09])])
   ls.push(['ledWhite', box([-0.105, PY - 0.024, zTop + 0.0002], [0.12, 0.012, 0.0006])])
   for (const fx of fanXs) {
-    ls.push(['darkMetal', placed(new RingGeometry(0.0425, 0.0445, 64), { position: [fx, sy - 0.0016, zMid], rotation: [Math.PI / 2, 0, 0] })])
+    ls.push([
+      'darkMetal',
+      placed(new RingGeometry(0.0425, 0.0445, 64), {
+        position: [fx, sy - 0.0016, zMid],
+        rotation: [Math.PI / 2, 0, 0],
+      }),
+    ])
     ls.push(...fan([fx, PY - 0.036, zMid], [0, -1, 0], { size: 0, radius: 0.0418, depth: 0.012, count: 11 }))
   }
 
   // Bracket with the display outputs and a vent grille.
   const br = rectShape(-(zTop + 0.002), PY - 0.0535, -(BT + 0.003), PY + 0.0065)
   const ports = [BT + 0.022, BT + 0.039, BT + 0.056, BT + 0.075]
-  for (const z of ports) br.holes.push(rectHole(-(z + 0.0085), PY - 0.0105, -(z - 0.0085), PY - 0.0035, 0.0006))
+  for (const z of ports)
+    br.holes.push(rectHole(-(z + 0.0085), PY - 0.0105, -(z - 0.0085), PY - 0.0035, 0.0006))
   for (let i = 0; i < 9; i++) {
     const z = BT + 0.012 + i * 0.011
     br.holes.push(rectHole(-(z + 0.0075), PY - 0.048, -z, PY - 0.016, 0.0025))
@@ -1274,7 +1656,9 @@ function hdd(): Ls {
   ] as [number, number, number][])
     ls.push(['chip', box([x + dx, y - t / 2 - 0.0021, dz], [s, 0.001, s])])
   // Side mounting holes.
-  for (const dx of [-0.0455, 0.0555]) for (const s of [-1, 1]) ls.push(['chip', cyl([x + dx, y - 0.007, s * (w / 2 + 0.0001)], 0.0018, 0.0006, 2, 12)])
+  for (const dx of [-0.0455, 0.0555])
+    for (const s of [-1, 1])
+      ls.push(['chip', cyl([x + dx, y - 0.007, s * (w / 2 + 0.0001)], 0.0018, 0.0006, 2, 12)])
   ls.push(...sataConnectors(x0, y - t / 2 + 0.004, 0.017, -0.012))
   return ls
 }
@@ -1289,7 +1673,6 @@ const SHAPES: { id: string; ls: Ls }[] = [
   { id: 'case_frame', ls: caseFrame() },
   { id: 'side_panel', ls: sidePanel() },
   { id: 'psu', ls: psu() },
-  { id: 'psu_cables', ls: psuCables() },
   { id: 'motherboard', ls: motherboard() },
   { id: 'io_shield', ls: ioShield() },
   { id: 'vrm_heatsink', ls: vrmHeatsink() },
@@ -1307,17 +1690,66 @@ const SHAPES: { id: string; ls: Ls }[] = [
   { id: 'front_fan', ls: caseFan([HALF_D - 0.006 - 0.0125 - 0.001, 0.28, 0.013]) },
   { id: 'rear_fan', ls: caseFan([-HALF_D + WALL + 0.0125 + 0.0005, 0.36, 0.038]) },
 ]
+const CABLE_PARTS = Object.entries(CABLES).map(([id, spec]) => ({ id, ...cableGeometry(spec), spec }))
+// A cable comb keeps the visible run of the graphics power cable neat.
+CABLE_PARTS.find((c) => c.id === 'gpu_power_cable')!.ls.push([
+  'plasticBlack',
+  combAt(PATHS.pcie.points, PATHS.pcie.side, 0.35, 4 * POWER.pitch + 0.004, 2 * POWER.pitch + 0.003),
+])
 
 async function main() {
   await mkdir('public/models', { recursive: true })
-  const parts: OutputPart[] = SHAPES.map(({ id, ls }) => {
+  const shapes = [...SHAPES, ...CABLE_PARTS.map(({ id, ls }) => ({ id, ls }))]
+  const parts: OutputPart[] = shapes.map(({ id, ls }) => {
     const layers = layered(ls)
     return { id, data: mergeMeshData(layers.map((l) => l.data)), layers, maxTriangles: 200000 }
   })
   const all = mergeMeshData(parts.map(partData))
   const b = boundsOf(all.positions)
   const origin: Vec3 = [(b.min[0] + b.max[0]) / 2, (b.min[1] + b.max[1]) / 2, (b.min[2] + b.max[2]) / 2]
-  await writePartsGlb(FILE, 'computer', parts, origin)
+  const local = (v: { x: number; y: number; z: number } | Vec3): Vec3 => {
+    const [x, y, z] = Array.isArray(v) ? v : [v.x, v.y, v.z]
+    return [+(x - origin[0]).toFixed(5), +(y - origin[1]).toFixed(5), +(z - origin[2]).toFixed(5)]
+  }
+  const dir = (v: Vector3): Vec3 => [+v.x.toFixed(4), +v.y.toFixed(4), +v.z.toFixed(4)]
+
+  // Where each part attaches (see Connection in src/models/ModelDefinition.ts). Cables: the plug in
+  // their destination socket, the plug at the other end, and the wire run for the current pulse.
+  const connections: Record<string, unknown> = {}
+  for (const c of CABLE_PARTS) {
+    connections[c.id] = {
+      to: c.spec.to,
+      pos: local(c.dest.tip),
+      normal: dir(c.dest.out),
+      path: c.line.map(local),
+      from: { part: c.spec.from, pos: local(c.source.tip), normal: dir(c.source.out) },
+    }
+  }
+  // Rigid parts: measured where their mesh meets the part they attach to (its first dependency).
+  const mesh = new Map(parts.map((p) => [p.id, p.data]))
+  for (const def of computer.parts) {
+    if (connections[def.id] || !def.dependsOn.length) continue
+    const child = mesh.get(def.id)!
+    const parent = mesh.get(def.dependsOn[0])!
+    const j = junction(child, parent)
+    // Big flat panels have vertices only at their corners, so a nearest-vertex contact can land on
+    // an edge. Parts that sit in a bay or on a shelf are marked at their own centre instead.
+    if (j.gap > 0.002) {
+      const c = new Vector3(...centroid(child.positions))
+      const away = c
+        .clone()
+        .sub(new Vector3(...centroid(parent.positions)))
+        .normalize()
+      connections[def.id] = { to: def.dependsOn[0], pos: local(c), normal: dir(away) }
+    } else {
+      connections[def.id] = {
+        to: def.dependsOn[0],
+        pos: local(j.pos),
+        normal: j.normal.map((x) => +x.toFixed(4)),
+      }
+    }
+  }
+  await writePartsGlb(FILE, 'computer', parts, origin, { connections })
 }
 
 await main()
