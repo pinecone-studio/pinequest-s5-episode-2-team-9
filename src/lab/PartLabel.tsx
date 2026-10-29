@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { useTx } from '../i18n'
-import { keys } from '../models/ModelDefinition'
+import { keys, piecesAt } from '../models/ModelDefinition'
+import { pieceColorAt } from '../scene/pieceColors'
 import { labelAnchor } from '../scene/sceneShared'
+import { pieceLabel } from './pieceLabel'
 import { useModel } from './modelStore'
 
 // Floating name tag for the hovered (or selected) part. Position comes from the
@@ -12,6 +14,12 @@ export function PartLabel() {
   const def = useModel((s) => s.def)
   const id = useModel((s) => (s.mode === 'study' ? null : (s.hovered ?? s.selected)))
   const part = def?.parts.find((p) => p.id === id)
+  // In Study the tag names the hovered piece of what is shown.
+  const studyPart = useModel((s) => (s.mode === 'study' ? s.def?.parts.find((p) => p.id === s.studyPart) : undefined))
+  const studyPath = useModel((s) => s.studyPath)
+  const hoveredPiece = useModel((s) => (s.mode === 'study' ? s.hoveredPiece : null))
+  const piece = studyPart && hoveredPiece ? piecesAt(studyPart, studyPath).find((p) => p.id === hoveredPiece) : undefined
+  const pieceColor = studyPart && piece ? pieceColorAt(studyPart.color, studyPart.pieces, [...studyPath, piece.id]) : ''
 
   useEffect(() => {
     let raf = 0
@@ -29,6 +37,12 @@ export function PartLabel() {
 
   return (
     <div ref={ref} className="part-label" aria-live="polite">
+      {def && piece && (
+        <span style={{ borderColor: pieceColor }}>
+          <i style={{ background: pieceColor }} />
+          {pieceLabel(tx, def, piece)}
+        </span>
+      )}
       {def && part && (
         <span style={{ borderColor: part.color }}>
           <i style={{ background: part.color }} />

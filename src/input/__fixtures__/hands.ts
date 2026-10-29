@@ -63,3 +63,39 @@ export function makeHand({ pinch = 1, curls = [0, 0, 0, 0], offset = { x: 0, y: 
   }
   return lm.map(([x, y, z]) => ({ x: x * scale + offset.x, y: y * scale + offset.y, z: z * scale }))
 }
+
+const lerp3 = (a: Vec3, b: Vec3, k: number): Vec3 => ({
+  x: a.x + (b.x - a.x) * k,
+  y: a.y + (b.y - a.y) * k,
+  z: a.z + (b.z - a.z) * k,
+})
+
+/**
+ * A closed "bud": fingers half bent and all five fingertips gathered to one point in
+ * front of the palm, like the tips of a flower before it opens.
+ */
+export function makeBud({ offset = { x: 0, y: 0 }, scale = 1 }: Pick<HandSpec, 'offset' | 'scale'> = {}): Vec3[] {
+  const lm = makeHand({ curls: [60, 60, 60, 60], pinch: 0.3 })
+  const tips = [8, 12, 16, 20]
+  const point = tips.reduce((acc, i) => ({ x: acc.x + lm[i].x / 4, y: acc.y + lm[i].y / 4, z: acc.z + lm[i].z / 4 }), {
+    x: 0,
+    y: 0,
+    z: 0,
+  })
+  for (const tip of tips) {
+    lm[tip] = lerp3(lm[tip], point, 0.85)
+    lm[tip - 1] = lerp3(lm[tip - 1], point, 0.45)
+  }
+  // Thumb reaches the same point; its joints lie on the way there.
+  lm[4] = lerp3(lm[4], point, 0.85)
+  lm[2] = lerp3(lm[1], lm[4], 1 / 3)
+  lm[3] = lerp3(lm[1], lm[4], 2 / 3)
+  return lm.map((p) => ({ x: p.x * scale + offset.x, y: p.y * scale + offset.y, z: p.z * scale }))
+}
+
+/** In-between of a bud (open = 0) and a fully open hand (open = 1), landmark by landmark. */
+export function makeBloom(open: number, spec: Pick<HandSpec, 'offset' | 'scale'> = {}): Vec3[] {
+  const bud = makeBud(spec)
+  const flat = makeHand({ pinch: 1.1, ...spec })
+  return bud.map((p, i) => lerp3(p, flat[i], open))
+}

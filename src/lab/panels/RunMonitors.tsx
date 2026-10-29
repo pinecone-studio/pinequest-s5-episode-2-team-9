@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { play } from '../../audio/sfx'
 import { useT, type I18nKey } from '../../i18n'
 import { SCENARIOS } from '../../scene/motion/brainMotion'
+import { BREATH_DEPTH, breathVolume, lungClock } from '../../scene/motion/lungMotion'
 import { motionInfo } from '../../scene/motion/motionInfo'
 import { useModel, type BrainScenario } from '../modelStore'
 
@@ -23,7 +24,8 @@ function Gauge({ label, value, unit, max, whole }: { label: string; value: numbe
         {whole || value >= 100 ? Math.round(value).toLocaleString() : value.toFixed(1)}
         <small> {unit}</small>
       </b>
-      <i style={{ width: `${Math.min(100, (value / max) * 100)}%` }} />
+      {/* The bar shows size only, so negative readings (pressures below the air outside) fill it too. */}
+      <i style={{ width: `${Math.min(100, Math.abs(value / max) * 100)}%` }} />
     </div>
   )
 }
@@ -177,6 +179,74 @@ export function BrainMonitor() {
         ))}
       </ol>
       {step === 'done' && <p className="run-caption">{t('brain.run.done')}</p>}
+    </div>
+  )
+}
+
+/** Spirogram (lung volume over time, scrolling) and live breathing gauges. */
+export function BreathMonitor() {
+  const t = useT()
+  const info = useMotionInfo()
+  const breathDepth = useModel((s) => s.breathDepth)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const v = info.values
+  const stage = info.stage || 'pause'
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    const ctx = canvas?.getContext('2d')
+    if (!canvas || !ctx) return
+    const W = (canvas.width = canvas.clientWidth * 2)
+    const H = (canvas.height = canvas.clientHeight * 2)
+    const history: number[] = []
+    let raf = 0
+    const draw = () => {
+      const depth = BREATH_DEPTH[useModel.getState().breathDepth]
+      // Plotted against a deep breath's range, so a deep breath visibly towers over a quiet one.
+      history.push(lungClock.running ? (breathVolume(lungClock.t) * depth.volume) / BREATH_DEPTH.deep.volume : 0)
+      if (history.length > W / 3) history.shift()
+      ctx.clearRect(0, 0, W, H)
+      ctx.strokeStyle = 'rgba(94, 231, 255, 0.12)'
+      ctx.lineWidth = 1
+      for (let y = H * 0.12; y < H; y += H * 0.22) {
+        ctx.beginPath()
+        ctx.moveTo(0, y)
+        ctx.lineTo(W, y)
+        ctx.stroke()
+      }
+      ctx.strokeStyle = '#7ff3ff'
+      ctx.lineWidth = 3
+      ctx.shadowColor = '#7ff3ff'
+      ctx.shadowBlur = 8
+      ctx.beginPath()
+      history.forEach((h, i) => {
+        const x = i * 3
+        const y = H * 0.9 - h * H * 0.78
+        if (i === 0) ctx.moveTo(x, y)
+        else ctx.lineTo(x, y)
+      })
+      ctx.stroke()
+      ctx.shadowBlur = 0
+      raf = requestAnimationFrame(draw)
+    }
+    raf = requestAnimationFrame(draw)
+    return () => cancelAnimationFrame(raf)
+  }, [])
+
+  return (
+    <div className="run-monitor">
+      <span className="hud-tag">{t(`lungs.stage.${stage}` as I18nKey)}</span>
+      <canvas ref={canvasRef} className="breath-trace" aria-label={t('lungs.monitor.trace')} />
+      <p className="run-caption">{t(`lungs.stageText.${stage}` as I18nKey)}</p>
+      <div className="run-gauges">
+        <Gauge label={t('lungs.gauge.volume')} value={v.volume ?? 0} unit="mL" max={BREATH_DEPTH[breathDepth].volume} whole />
+        <Gauge label={t('lungs.gauge.flow')} value={v.flow ?? 0} unit="L/s" max={breathDepth === 'deep' ? 4 : 0.8} />
+        <Gauge label={t('lungs.gauge.diaphragm')} value={v.diaphragm ?? 0} unit="cm" max={BREATH_DEPTH[breathDepth].diaphragm * 100} />
+        <Gauge label={t('lungs.gauge.pleural')} value={v.pleural ?? -5} unit="cmH₂O" max={-40} />
+        <Gauge label={t('lungs.gauge.alveolar')} value={v.alveolar ?? 0} unit="cmH₂O" max={breathDepth === 'deep' ? 5 : 1.5} />
+      </div>
+      <p className="panel-hint">{t('lungs.monitor.legend')}</p>
+      <p className="panel-hint">{t(`lungs.monitor.fact.${breathDepth}` as I18nKey)}</p>
     </div>
   )
 }

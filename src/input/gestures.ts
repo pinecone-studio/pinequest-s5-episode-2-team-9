@@ -2,6 +2,7 @@
 //   open → pending (pinch closing, waiting pinchHoldMs) → pinched → releasing → open
 // Hysteresis (grab < release) plus hold times keep a held part from flickering
 // or dropping. A fist never starts a pinch; holding a fist emits "fistHold".
+// A five-finger bud is not a pinch either: the bloom recogniser blocks it (see bloom.ts).
 
 import type { Calibration } from './calibration'
 import type { HandTrack } from './handTracks'
@@ -47,14 +48,21 @@ export class GestureMachine {
     return this.phase === 'pinched' || this.phase === 'releasing'
   }
 
-  update(track: HandTrack, cal: Calibration, t: Tuning, now: number): { state: GestureState; events: GestureEvent[] } {
+  /** `blockPinch`: another recogniser (bloom) owns this hand shape, so no new pinch may start. */
+  update(
+    track: HandTrack,
+    cal: Calibration,
+    t: Tuning,
+    now: number,
+    blockPinch = false,
+  ): { state: GestureState; events: GestureEvent[] } {
     const events: GestureEvent[] = []
     const { pinch: ratio, fist, openPalm, curls } = track.pose
     this.lastRatio = ratio
 
     // While coasting (detection briefly lost) freeze everything.
     if (!track.coasting) {
-      const canPinch = !fist && !openPalm && curls[0] < PINCH_MAX_INDEX_CURL
+      const canPinch = !blockPinch && !fist && !openPalm && curls[0] < PINCH_MAX_INDEX_CURL
       switch (this.phase) {
         case 'open':
           if (canPinch && ratio < cal.grab) this.go('pending', now)

@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import en from '../i18n/en.json'
 import mn from '../i18n/mn.json'
 import { LOOKS } from '../scene/realisticLooks'
-import { assemblyOrder, keys, placeable, type Connection } from './ModelDefinition'
+import { assemblyOrder, keys, pieceNode, placeable, type Connection, type PieceDef } from './ModelDefinition'
 import { library } from './registry'
 
 interface GltfJson {
@@ -27,6 +27,26 @@ describe.each(library)('$id model', (def) => {
   it('has every part in its GLB', () => {
     const names = new Set(glbNodeNames(def.url))
     for (const part of def.parts) expect(names.has(part.id), part.id).toBe(true)
+  })
+
+  it('has every piece in its GLB, with unique ids and texts in English and Mongolian', () => {
+    const names = new Set(glbNodeNames(def.url))
+    const visit = (parent: string, pieces: PieceDef[] | undefined) => {
+      if (!pieces) return
+      const ids = pieces.map((p) => p.id)
+      expect(new Set(ids).size, `unique pieces under ${parent}`).toBe(ids.length)
+      for (const piece of pieces) {
+        const node = pieceNode(parent, piece.id)
+        expect(names.has(node), node).toBe(true)
+        if (piece.look) expect(LOOKS, `${node} look`).toHaveProperty([piece.look])
+        for (const key of [keys.pieceName(def.id, piece), keys.pieceDesc(def.id, piece)]) {
+          expect(en, key).toHaveProperty([key])
+          expect(mn, key).toHaveProperty([key])
+        }
+        visit(node, piece.pieces)
+      }
+    }
+    for (const part of def.parts) visit(part.id, part.pieces)
   })
 
   it('names only known realistic looks in its GLB materials', () => {

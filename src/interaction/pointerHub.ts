@@ -3,6 +3,7 @@
 // - HUD elements (buttons, links, sliders) get first claim on a press, and can
 //   be pressed by hovering a hand over them for `dwellMs` (dwell-click).
 // - Everything else is delivered to the 3D scene as down/move/up events.
+// - Hand-only gestures that are not presses (bloom scaling, palm-push reset) pass through as their own events.
 
 import type { HandInput } from '../input/handInput'
 import { tuning } from '../input/tuning'
@@ -24,6 +25,8 @@ export interface Pointer {
   captured: boolean
   /** Hand is temporarily not detected. */
   coasting: boolean
+  /** Bloom scale multiplier while a five-finger bloom/gather is active (hands), else null. */
+  bloom: number | null
 }
 
 export type HubEvent =
@@ -31,6 +34,8 @@ export type HubEvent =
   | { type: 'wheel'; deltaY: number; x: number; y: number }
   | { type: 'fist'; pointer: Pointer }
   | { type: 'doubleclick'; x: number; y: number }
+  | { type: 'bloom'; phase: 'start' | 'end'; pointer: Pointer }
+  | { type: 'reset' }
 
 type Listener = (event: HubEvent) => void
 
@@ -95,18 +100,26 @@ export class PointerHub {
           overHud: false,
           captured: false,
           coasting: false,
+          bloom: null,
         }
+        pointer.bloom = hand.bloom.phase === 'active' ? hand.bloom.factor : null
         pointer.progress = hand.gesture.pinchProgress
         pointer.fist = hand.gesture.fistProgress
         pointer.coasting = hand.coasting
         this.pointers.set(id, pointer)
       }
       for (const event of events) {
+        if (event.type === 'palmPush') {
+          this.emit({ type: 'reset' })
+          continue
+        }
         const pointer = this.pointers.get(`hand-${event.handId}`)
         if (!pointer) continue
         if (event.type === 'pinchStart') this.press(pointer)
         else if (event.type === 'pinchEnd') this.release(pointer, event.cancelled)
         else if (event.type === 'fistHold') this.emit({ type: 'fist', pointer })
+        else if (event.type === 'bloomStart') this.emit({ type: 'bloom', phase: 'start', pointer })
+        else if (event.type === 'bloomEnd') this.emit({ type: 'bloom', phase: 'end', pointer })
       }
       for (const [id, pointer] of this.pointers) {
         if (pointer.kind === 'hand' && !seen.has(id)) {
@@ -125,7 +138,7 @@ export class PointerHub {
     const ensure = (e: PointerEvent): Pointer => {
       let p = this.pointers.get('mouse')
       if (!p) {
-        p = { id: 'mouse', kind: 'mouse', x: e.clientX, y: e.clientY, pressed: false, progress: 0, fist: 0, overHud: false, captured: false, coasting: false }
+        p = { id: 'mouse', kind: 'mouse', x: e.clientX, y: e.clientY, pressed: false, progress: 0, fist: 0, overHud: false, captured: false, coasting: false, bloom: null }
         this.pointers.set('mouse', p)
       }
       p.x = e.clientX

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { assemblyOrder, placeable, type ModelDefinition } from '../models/ModelDefinition'
+import { assemblyOrder, piecesAt, placeable, type ModelDefinition } from '../models/ModelDefinition'
 
 export type ViewMode = 'explore' | 'study' | 'assembly'
 
@@ -23,6 +23,12 @@ interface ModelState {
   hovered: string | null
   selected: string | null
   studyPart: string | null
+  /** Piece ids below the studied part, outermost first: the piece now shown on its own. */
+  studyPath: string[]
+  /** Piece (of the one shown) under the pointer. */
+  hoveredPiece: string | null
+  /** 0 = the shown piece's pieces together, 1 = spread apart. */
+  pieceSpread: number
   /** 0 = off … 1 = sliced deep. */
   cutaway: number
   placed: string[]
@@ -42,6 +48,8 @@ interface ModelState {
   brainScenario: BrainScenario
   /** Robot dog gait. */
   gait: 'walk' | 'trot'
+  /** Lungs: a quiet breath at rest or a deep one. */
+  breathDepth: 'quiet' | 'deep'
   /** Guided tour: current step index, or null when no tour is running. */
   tourStep: number | null
   /** The tour turned the motion on, so ending the tour turns it off again. */
@@ -57,6 +65,10 @@ interface ModelState {
   openStudy: (partId: string) => void
   closeStudy: () => void
   stepStudy: (delta: 1 | -1) => void
+  /** Opens one of the shown piece's pieces (one level deeper). */
+  openPiece: (pieceId: string) => void
+  /** Goes one level up (closes Study from the part's own level). */
+  closePiece: () => void
   startAssembly: () => void
   exitAssembly: () => void
   /** Returns 'placed' or the reason it was refused. */
@@ -99,6 +111,13 @@ export function assemblyStage(def: ModelDefinition, placed: readonly string[]): 
   return next ? def.parts.find((p) => p.id === next)!.group : null
 }
 
+/** Store patch that shows a part (or one of its pieces): its pieces start slightly apart so they read as separate. */
+function studyPatch(def: ModelDefinition | null, partId: string, path: string[]): Partial<ModelState> {
+  const part = def?.parts.find((p) => p.id === partId)
+  const split = part ? piecesAt(part, path).length > 0 : false
+  return { studyPart: partId, studyPath: path, selected: partId, hoveredPiece: null, pieceSpread: split ? 0.25 : 0 }
+}
+
 const initial = {
   mode: 'explore' as ViewMode,
   explode: 0,
@@ -106,6 +125,9 @@ const initial = {
   hovered: null,
   selected: null,
   studyPart: null,
+  studyPath: [] as string[],
+  hoveredPiece: null,
+  pieceSpread: 0,
   cutaway: 0,
   placed: [],
   carried: null,
@@ -117,6 +139,7 @@ const initial = {
   slowMotion: false,
   brainScenario: 'see' as BrainScenario,
   gait: 'trot' as const,
+  breathDepth: 'quiet' as const,
   tourStep: null,
   tourMotion: false,
   viewTarget: null,
@@ -165,14 +188,34 @@ export const useModel = create<ModelState>()((set, get) => ({
   set: (patch) => set(patch),
 
   openStudy: (partId) =>
-    set({ ...leaveTour(get()), mode: 'study', studyPart: partId, selected: partId, hovered: null }),
-  closeStudy: () => set({ mode: 'explore', studyPart: null }),
+    set({ ...leaveTour(get()), mode: 'study', hovered: null, ...studyPatch(get().def, partId, []) }),
+  closeStudy: () => set({ mode: 'explore', studyPart: null, studyPath: [], hoveredPiece: null }),
   stepStudy: (delta) => {
-    const { def, studyPart } = get()
+    const { def, studyPart, studyPath } = get()
     if (!def || !studyPart) return
+    if (studyPath.length) {
+      // Inside a part: step through the siblings of the piece shown.
+      const part = def.parts.find((p) => p.id === studyPart)!
+      const siblings = piecesAt(part, studyPath.slice(0, -1)).map((p) => p.id)
+      const i = siblings.indexOf(studyPath[studyPath.length - 1])
+      set(studyPatch(def, studyPart, [...studyPath.slice(0, -1), siblings[(i + delta + siblings.length) % siblings.length]]))
+      return
+    }
     const ids = def.parts.map((p) => p.id)
     const next = ids[(ids.indexOf(studyPart) + delta + ids.length) % ids.length]
-    set({ studyPart: next, selected: next })
+    set(studyPatch(def, next, []))
+  },
+  openPiece: (pieceId) => {
+    const { def, studyPart, studyPath } = get()
+    const part = def?.parts.find((p) => p.id === studyPart)
+    if (!def || !part || !piecesAt(part, studyPath).some((p) => p.id === pieceId)) return
+    set(studyPatch(def, part.id, [...studyPath, pieceId]))
+  },
+  closePiece: () => {
+    const { def, studyPart, studyPath } = get()
+    if (!def || !studyPart) return
+    if (!studyPath.length) get().closeStudy()
+    else set(studyPatch(def, studyPart, studyPath.slice(0, -1)))
   },
 
   startAssembly: () => {
@@ -185,6 +228,8 @@ export const useModel = create<ModelState>()((set, get) => ({
       explode: 0,
       cutaway: 0,
       studyPart: null,
+      studyPath: [],
+      hoveredPiece: null,
       selected: null,
       carried: null,
       hintPart: null,

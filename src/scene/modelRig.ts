@@ -13,6 +13,7 @@ import {
   Group,
   Line,
   LineBasicMaterial,
+  Matrix4,
   LineDashedMaterial,
   LineSegments,
   Mesh,
@@ -30,9 +31,10 @@ import {
 } from 'three'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { acceleratedRaycast, computeBoundsTree, disposeBoundsTree } from 'three-mesh-bvh'
-import type { Connection, ModelDefinition, PartDef } from '../models/ModelDefinition'
-import { lookFor, type ModelDefinition as Def } from '../models/ModelDefinition'
+import type { Connection, ModelDefinition, PartDef, PieceDef } from '../models/ModelDefinition'
+import { lookFor, pieceNode, type ModelDefinition as Def } from '../models/ModelDefinition'
 import { createHoloMaterial } from './HoloMaterial'
+import { pieceColors } from './pieceColors'
 import { createRealisticMaterial, LOOKS, type LookId } from './realisticLooks'
 import { faceAngles } from './tourView'
 
@@ -79,6 +81,10 @@ export interface PartRig {
   /** Animated pose without motion (motion is layered on top of it each frame). */
   pose: Vector3
   poseScale: number
+  /** Smaller pieces, shown instead of the part's own surface while it is studied. */
+  pieces: PieceRig[]
+  /** Its pieces are showing (they stay until they have drifted back home). */
+  expanded: boolean
 }
 
 /** Where a part joins the part it attaches to (from the GLB's `connections` extras). */
@@ -96,6 +102,29 @@ export interface PartJoint {
   from: { part: string; pos: Vector3 } | null
 }
 
+/** A piece of a part, which may split again. Its mesh is a child of its parent's mesh, in parent space. */
+export interface PieceRig {
+  def: PieceDef
+  mesh: Mesh<BufferGeometry, Material | Material[]>
+  holo: ShaderMaterial
+  reals: MeshPhysicalMaterial[]
+  color: Color
+  /** Position inside the assembled parent. */
+  home: Vector3
+  radius: number
+  /** Offset at full spread. */
+  explodeOffset: Vector3
+  pose: Vector3
+  poseScale: number
+  opacity: number
+  highlight: number
+  pieces: PieceRig[]
+  expanded: boolean
+}
+
+/** What can hold pieces: a part or a piece. */
+type PieceOwner = Pick<PartRig, 'pieces' | 'expanded' | 'radius' | 'holo' | 'reals'>
+
 export interface RigState {
   mode: 'explore' | 'study' | 'assembly'
   explode: number
@@ -109,6 +138,10 @@ export interface RigState {
   hintPart: string | null
   /** Assembly guide's suggestion: a softer pulse than a hint. */
   guidePart?: string | null
+  /** Pieces below the studied part, outermost first (see useModel). */
+  studyPath: readonly string[]
+  hoveredPiece: string | null
+  pieceSpread: number
 }
 
 const tmpV = new Vector3()
@@ -173,6 +206,10 @@ export class ModelRig {
     for (const part of this.parts.values()) {
       part.mesh.material = on ? (part.reals.length > 1 ? part.reals : part.real) : part.holo
       part.mesh.renderOrder = on && part.reals.some((m) => (m.userData.baseOpacity as number) < 1) ? 1 : 0
+      forEachPiece(part, (p) => {
+        p.mesh.material = on ? (p.reals.length > 1 ? p.reals : p.reals[0]) : p.holo
+        p.mesh.renderOrder = on && p.reals.some((m) => (m.userData.baseOpacity as number) < 1) ? 1 : 0
+      })
     }
   }
 
@@ -186,26 +223,30 @@ export class ModelRig {
     const sphere = new Sphere()
     for (const partDef of def.parts) {
       const src = scene.getObjectByName(partDef.id)
+      if (!src) throw new Error(`Part "${partDef.id}" not found in ${def.url}`)
+      const pieceDefs = partDef.pieces ?? []
       // A node with several primitives loads as a group of meshes, one per material.
-      const srcMeshes = (
-        src instanceof Mesh ? [src] : (src?.children.filter((c) => c instanceof Mesh) ?? [])
-      ) as Mesh[]
-      if (!srcMeshes.length) throw new Error(`Part "${partDef.id}" not found in ${def.url}`)
+      const srcMeshes = ownMeshes(src, partDef.id, pieceDefs)
+      const fallback = lookFor(def as Def, partDef)
+      // A part with pieces but no surface of its own shows its pieces merged.
+      const merged = srcMeshes.length ? null : mergedPieces(src, partDef.id, pieceDefs, fallback)
+      if (!srcMeshes.length && !merged) throw new Error(`Part "${partDef.id}" has no mesh in ${def.url}`)
       const srcMesh = srcMeshes[0]
-      const layered = new Set(srcMeshes.map((m) => (m.material as Material).name)).size > 1
-      const geometry = layered ? mergeLayers(srcMeshes) : (srcMesh.geometry as BufferGeometry)
+      const layered = !merged && new Set(srcMeshes.map((m) => (m.material as Material).name)).size > 1
+      const geometry = merged ? merged.geometry : layered ? mergeLayers(srcMeshes) : (srcMesh.geometry as BufferGeometry)
       if (!geometry.boundsTree) geometry.computeBoundsTree()
       geometry.computeBoundingSphere()
       src!.updateWorldMatrix(true, false)
       const home = new Vector3().setFromMatrixPosition(src!.matrixWorld)
-      box.expandByObject(layered ? src! : srcMesh)
+      box.expandByObject(layered || merged ? src : srcMesh)
 
       const holo = createHoloMaterial({ color: partDef.color })
-      const fallback = lookFor(def as Def, partDef)
-      const reals = (layered ? srcMeshes : [srcMesh]).map((m) => {
-        const name = (m.material as Material).name
-        return createRealisticMaterial(layered && name in LOOKS ? (name as LookId) : fallback)
-      })
+      const reals = merged
+        ? merged.looks.map((look) => createRealisticMaterial(look))
+        : (layered ? srcMeshes : [srcMesh]).map((m) => {
+            const name = (m.material as Material).name
+            return createRealisticMaterial(layered && name in LOOKS ? (name as LookId) : fallback)
+          })
       const real = reals[0]
       const mesh = new Mesh<BufferGeometry, Material | Material[]>(geometry, holo)
       mesh.name = partDef.id
@@ -262,6 +303,8 @@ export class ModelRig {
         flash: 0,
         pose: home.clone(),
         poseScale: 1,
+        pieces: this.createPieces(src, partDef.id, pieceDefs, mesh, partDef.color, fallback, geometry.boundingSphere!.radius),
+        expanded: false,
       })
     }
 
@@ -344,6 +387,90 @@ export class ModelRig {
     this.root.add(this.carryLine)
 
     this.resetRotation()
+  }
+
+  /** Rigs for a node's pieces (recursively): meshes parented to `parent`, in its space. */
+  private createPieces(
+    src: Object3D,
+    name: string,
+    defs: PieceDef[],
+    parent: Mesh,
+    parentColor: string,
+    parentLook: LookId,
+    parentRadius: number,
+  ): PieceRig[] {
+    const colors = pieceColors(parentColor, defs)
+    const infos = [...new Set(defs.map((d) => d.info ?? d.id))]
+    return defs.map((d, i) => {
+      const nodeName = pieceNode(name, d.id)
+      const obj = src.getObjectByName(nodeName)
+      if (!obj) throw new Error(`Piece "${nodeName}" not found in ${this.def.url}`)
+      const look = d.look ?? parentLook
+      const subDefs = d.pieces ?? []
+      const own = ownMeshes(obj, nodeName, subDefs)
+      const merged = own.length ? null : mergedPieces(obj, nodeName, subDefs, look)
+      if (!merged && !own.length) throw new Error(`Piece "${nodeName}" has no mesh in ${this.def.url}`)
+      const geometry = merged ? merged.geometry : own.length > 1 ? mergeLayers(own) : (own[0].geometry as BufferGeometry)
+      if (!geometry.boundsTree) geometry.computeBoundsTree()
+      geometry.computeBoundingSphere()
+      const color = colors[i]
+      const holo = createHoloMaterial({ color: `#${color.getHexString()}` })
+      // Siblings get slightly different shades in the realistic view too, so they read apart.
+      const k = infos.length > 1 ? infos.indexOf(d.info ?? d.id) : i
+      const reals = (merged ? merged.looks : [look]).map((l) => {
+        const m = createRealisticMaterial(l)
+        if (!d.look) (m.userData.baseColor as Color).offsetHSL(0, 0, ((k % 5) - 2) * 0.025)
+        return m
+      })
+      const mesh = new Mesh<BufferGeometry, Material | Material[]>(geometry, holo)
+      mesh.name = nodeName
+      mesh.userData.pieceId = d.id
+      mesh.visible = false
+      const home = obj.position.clone()
+      mesh.position.copy(home)
+      parent.add(mesh)
+      const radius = geometry.boundingSphere!.radius
+      const dir = home.lengthSq() > 1e-12 ? home.clone().normalize() : new Vector3(0, 1, 0)
+      return {
+        def: d,
+        mesh,
+        holo,
+        reals,
+        color,
+        home,
+        radius,
+        explodeOffset: home.clone().multiplyScalar(0.8).addScaledVector(dir, parentRadius * 0.3),
+        pose: home.clone(),
+        poseScale: 1,
+        opacity: 1,
+        highlight: 0,
+        pieces: this.createPieces(obj, nodeName, subDefs, mesh, `#${color.getHexString()}`, look, radius),
+        expanded: false,
+      }
+    })
+  }
+
+  /** The node shown on its own in Study: the part, or the piece at the end of the path. */
+  private studied(partId: string | null, path: readonly string[]): PieceOwner | null {
+    let node: PieceOwner | undefined = partId ? this.parts.get(partId) : undefined
+    for (const id of path) node = node?.pieces.find((p) => p.def.id === id)
+    return node ?? null
+  }
+
+  /** The visible piece (of the one studied) under a ray. */
+  pickPiece(raycaster: Raycaster, partId: string, path: readonly string[]): string | null {
+    const node = this.studied(partId, path)
+    if (!node?.expanded) return null
+    const candidates = node.pieces.filter((p) => p.mesh.visible && p.opacity > 0.3).map((p) => p.mesh)
+    raycaster.firstHitOnly = true
+    const hits = raycaster.intersectObjects(candidates, false)
+    return hits.length ? (hits[0].object.userData.pieceId as string) : null
+  }
+
+  /** World position of a piece of the studied node, if it is showing. */
+  pieceWorld(partId: string, path: readonly string[], pieceId: string, out = new Vector3()): Vector3 | null {
+    const piece = this.studied(partId, path)?.pieces.find((p) => p.def.id === pieceId)
+    return piece?.mesh.visible ? piece.mesh.getWorldPosition(out) : null
   }
 
   resetRotation(): void {
@@ -597,6 +724,11 @@ export class ModelRig {
         ;(part.edges.material as LineBasicMaterial).opacity = (dimmed ? 0.12 : 0.3) * part.opacity
       }
 
+      if (part.pieces.length) {
+        this.updatePieces(part, focus === id ? s.studyPath : null, s, part.opacity, k, kFast)
+        if (part.edges) part.edges.visible = part.edges.visible && !part.expanded
+      }
+
       // Ghost outline at the slot of every unplaced part during assembly.
       const showGhost = assembling && !s.placed.has(id)
       part.ghost.visible = showGhost
@@ -615,6 +747,65 @@ export class ModelRig {
     this.updateLeaderLines(s.mode === 'explore' ? explode : 0, assembling)
     this.updateCarryLine(s.carried)
     this.updateClipping(s, camera)
+  }
+
+  /**
+   * One level of pieces. `path` is null when the owner is not on the study path; otherwise
+   * it lists the pieces still below it. On the path the owner's own surface hides and its
+   * pieces show: the next piece on the path isolated and enlarged (its siblings fade), or,
+   * at the end of the path, all of them spread apart by pieceSpread. Off the path, pieces
+   * drift home and the owner's surface comes back once they are all there.
+   */
+  private updatePieces(owner: PieceOwner, path: readonly string[] | null, s: RigState, parentOpacity: number, k: number, kFast: number) {
+    const spread = easeOut(Math.min(1, Math.max(0, s.pieceSpread)))
+    const isolated = path?.length ? path[0] : null
+    let settled = true
+    for (const p of owner.pieces) {
+      let targetScale = 1
+      let opacityTarget = 1
+      if (path && isolated === p.def.id) {
+        tmpV.set(0, 0, 0)
+        targetScale = Math.min(14, Math.max(1, (owner.radius * 0.95) / p.radius))
+      } else {
+        tmpV.copy(p.home)
+        if (path && !isolated) tmpV.addScaledVector(p.explodeOffset, spread)
+        if (isolated) opacityTarget = 0
+      }
+      p.pose.lerp(tmpV, k)
+      p.poseScale += (targetScale - p.poseScale) * k
+      p.opacity += (opacityTarget - p.opacity) * k
+      if (p.pose.distanceToSquared(p.home) > (owner.radius * 0.002) ** 2 || Math.abs(p.poseScale - 1) > 0.002 || p.opacity < 0.99) settled = false
+      const hovered = !!path && !isolated && s.hoveredPiece === p.def.id
+      p.highlight += ((hovered ? 1 : 0) - p.highlight) * kFast
+    }
+    owner.expanded = !!path || (owner.expanded && !settled)
+    for (const m of [owner.holo, ...owner.reals]) m.visible = !owner.expanded
+
+    const dimOthers = !!path && !isolated && s.hoveredPiece !== null
+    for (const p of owner.pieces) {
+      p.mesh.position.copy(p.pose)
+      p.mesh.scale.setScalar(p.poseScale)
+      p.mesh.visible = owner.expanded && p.opacity > 0.01
+      const opacity = p.opacity * parentOpacity
+      if (p.pieces.length) this.updatePieces(p, path && isolated === p.def.id ? path.slice(1) : null, s, opacity, k, kFast)
+      if (!p.mesh.visible) continue
+      const dimmed = dimOthers && p.highlight < 0.5
+      const u = p.holo.uniforms
+      u.uTime.value = this.time
+      u.uOpacity.value = opacity
+      u.uHighlight.value = p.highlight
+      u.uIntensity.value = this.def.glow * (dimmed ? 0.45 : 1)
+      if (this.realistic) {
+        tmpColor.copy(p.color).multiplyScalar(0.3 * p.highlight)
+        for (const m of p.reals) {
+          const base = m.userData.baseOpacity as number
+          m.opacity = base * opacity
+          m.depthWrite = base >= 1 && opacity > 0.98
+          m.color.copy(m.userData.baseColor as Color).multiplyScalar(dimmed ? 0.45 : 1)
+          m.emissive.copy(m.userData.baseEmissive as Color).add(tmpColor)
+        }
+      }
+    }
   }
 
   /** A part's explode offset at `amount`, in view axes: widened toward the free screen width. */
@@ -693,7 +884,9 @@ export class ModelRig {
     for (const part of this.parts.values()) {
       const planes = active && part.location === 'model' ? [this.clipPlane] : []
       if (part.holo.clippingPlanes?.length !== planes.length) {
-        for (const m of [part.holo, ...part.reals]) {
+        const pieceMaterials: Material[] = []
+        forEachPiece(part, (p) => pieceMaterials.push(p.holo, ...p.reals))
+        for (const m of [part.holo, ...part.reals, ...pieceMaterials]) {
           m.clippingPlanes = planes
           m.needsUpdate = true
         }
@@ -709,6 +902,10 @@ export class ModelRig {
     for (const part of this.parts.values()) {
       part.holo.dispose()
       for (const m of part.reals) m.dispose()
+      forEachPiece(part, (p) => {
+        p.holo.dispose()
+        for (const m of p.reals) m.dispose()
+      })
       part.ghost.material.dispose()
       if (part.edges) {
         part.edges.geometry.dispose()
@@ -722,9 +919,51 @@ export class ModelRig {
   }
 }
 
+/** Calls `fn` for every piece below a part or piece, at any depth. */
+export function forEachPiece(owner: { pieces: PieceRig[] }, fn: (p: PieceRig) => void): void {
+  for (const p of owner.pieces) {
+    fn(p)
+    forEachPiece(p, fn)
+  }
+}
+
+/** A node's own meshes: the node itself, or its primitive meshes (not its piece nodes). */
+function ownMeshes(obj: Object3D, name: string, pieces: PieceDef[]): Mesh[] {
+  if (obj instanceof Mesh) return [obj]
+  const pieceNames = new Set(pieces.map((p) => pieceNode(name, p.id)))
+  return obj.children.filter((c) => c instanceof Mesh && !pieceNames.has(c.name)) as Mesh[]
+}
+
+/** Every leaf surface below a node merged into one geometry (in the node's space), with a group and look per surface. */
+function mergedPieces(obj: Object3D, name: string, defs: PieceDef[], look: LookId): { geometry: BufferGeometry; looks: LookId[] } | null {
+  obj.updateWorldMatrix(true, true)
+  const toLocal = new Matrix4().copy(obj.matrixWorld).invert()
+  const meshes: Mesh[] = []
+  const looks: LookId[] = []
+  const collect = (node: Object3D, nodeName: string, pieces: PieceDef[], nodeLook: LookId) => {
+    for (const d of pieces) {
+      const childName = pieceNode(nodeName, d.id)
+      const child = node.getObjectByName(childName)
+      if (!child) continue
+      const own = ownMeshes(child, childName, d.pieces ?? [])
+      const childLook = d.look ?? nodeLook
+      if (own.length)
+        for (const m of own) {
+          meshes.push(m)
+          looks.push(childLook)
+        }
+      else collect(child, childName, d.pieces ?? [], childLook)
+    }
+  }
+  collect(obj, name, defs, look)
+  if (!meshes.length) return null
+  const matrices = meshes.map((m) => new Matrix4().multiplyMatrices(toLocal, m.matrixWorld))
+  return { geometry: mergeLayers(meshes, matrices), looks }
+}
+
 /** Merges the meshes of a multi-material part into one geometry with a group per mesh. */
-function mergeLayers(meshes: Mesh[]): BufferGeometry {
-  const plain = meshes.map((m) => {
+function mergeLayers(meshes: Mesh[], matrices?: Matrix4[]): BufferGeometry {
+  const plain = meshes.map((m, mi) => {
     // Rebuild with plain float attributes so quantized or interleaved data merges cleanly.
     const src = m.geometry as BufferGeometry
     const g = new BufferGeometry()
@@ -735,7 +974,11 @@ function mergeLayers(meshes: Mesh[]): BufferGeometry {
       g.setAttribute(name, new BufferAttribute(out, 3))
     }
     if (src.index) g.setIndex(new BufferAttribute(Uint32Array.from(src.index.array), 1))
-    g.applyMatrix4(m.matrix)
+    if (matrices) g.applyMatrix4(matrices[mi])
+    else {
+      m.updateMatrix()
+      g.applyMatrix4(m.matrix)
+    }
     return g
   })
   const merged = mergeGeometries(plain, true)

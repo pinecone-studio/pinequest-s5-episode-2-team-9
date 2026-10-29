@@ -1,0 +1,67 @@
+{
+  "lobules": {
+    "right_upper_lobe": {
+      "apical": 15,
+      "posterior": 27,
+      "anterior": 31
+    },
+    "right_middle_lobe": {
+      "lateral": 24,
+      "medial": 24
+    },
+    "right_lower_lobe": {
+      "superior": 28,
+      "medial_basal": 11,
+      "anterior_basal": 22,
+      "lateral_basal": 21,
+      "posterior_basal": 26
+    },
+    "left_upper_lobe": {
+      "apical": 18,
+      "posterior": 25,
+      "anterior": 38,
+      "superior_lingular": 27,
+      "inferior_lingular": 21
+    },
+    "left_lower_lobe": {
+      "superior": 27,
+      "medial_basal": 23,
+      "anterior_basal": 16,
+      "lateral_basal": 15,
+      "posterior_basal": 30
+    }
+  },
+  "tracheaRings": 18,
+  "cartilage": {
+    "right": [
+      "upper_lobe_bronchus",
+      "intermediate_bronchus",
+      "middle_lobe_bronchus",
+      "lower_lobe_bronchus",
+      "apical_bronchus",
+      "posterior_bronchus",
+      "anterior_bronchus",
+      "lateral_bronchus",
+      "medial_bronchus",
+      "superior_bronchus",
+      "medial_basal_bronchus",
+      "anterior_basal_bronchus",
+      "lateral_basal_bronchus",
+      "posterior_basal_bronchus"
+    ],
+    "left": [
+      "upper_lobe_bronchus",
+      "lower_lobe_bronchus",
+      "apicoposterior_bronchus",
+      "anterior_bronchus",
+      "lingular_bronchus",
+      "superior_lingular_bronchus",
+      "inferior_lingular_bronchus",
+      "superior_bronchus",
+      "medial_basal_bronchus",
+      "anterior_basal_bronchus",
+      "lateral_basal_bronchus",
+      "posterior_basal_bronchus"
+    ]
+  }
+}
