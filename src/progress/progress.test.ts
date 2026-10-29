@@ -7,11 +7,34 @@ import {
   parseProgress,
   summarize,
   totals,
+  toMillis,
   withAssembly,
   withStudied,
 } from './progress'
 
 describe('progress', () => {
+  it('rejects invalid stored dates so profile and subscription rendering cannot crash', () => {
+    for (const value of [
+      NaN,
+      Infinity,
+      -Infinity,
+      8.64e15 + 1,
+      { toMillis: () => NaN },
+      { toMillis: () => 'bad' },
+    ]) {
+      expect(toMillis(value)).toBeNull()
+    }
+    expect(
+      toMillis({
+        toMillis: () => {
+          throw new Error('Invalid timestamp')
+        },
+      }),
+    ).toBeNull()
+    expect(toMillis(0)).toBe(0)
+    expect(toMillis({ toMillis: () => 42 })).toBe(42)
+  })
+
   it('parses Firestore data defensively', () => {
     expect(parseProgress(undefined)).toEqual(emptyProgress)
     expect(parseProgress({ studied: ['a', 3, null], assemblies: -2, bestAssemblyMs: 'x' })).toEqual({

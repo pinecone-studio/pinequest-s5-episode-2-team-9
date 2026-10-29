@@ -2,8 +2,16 @@ import { useState, type FormEvent } from 'react'
 import { Link, Navigate, useSearchParams } from 'react-router'
 import { useLang, useT, type I18nKey } from '../i18n'
 import { LangToggle } from '../ui/LangToggle'
+import { ThemeToggle } from '../ui/ThemeToggle'
 import { authErrorKey, safeNext } from './authErrors'
-import { resetPassword, signInWithEmail, signInWithGoogle, signUpWithEmail, useAuth } from './authStore'
+import {
+  resetPassword,
+  signInWithEmail,
+  signInWithGoogle,
+  signUpWithEmail,
+  startAuth,
+  useAuth,
+} from './authStore'
 
 type Mode = 'login' | 'signup'
 type Notice = { kind: 'error' | 'info'; key: I18nKey }
@@ -61,7 +69,10 @@ export function AuthPage({ mode }: { mode: Mode }) {
           <span className="brand-mark" aria-hidden="true" />
           {t('app.name')}
         </Link>
-        <LangToggle />
+        <span className="landing-bar-actions">
+          <LangToggle />
+          <ThemeToggle />
+        </span>
       </header>
 
       <section className="auth-card">
@@ -73,6 +84,19 @@ export function AuthPage({ mode }: { mode: Mode }) {
           <p className="auth-notice" data-kind="error">
             {t('auth.unconfigured')}
           </p>
+        ) : status === 'loading' ? (
+          <p className="auth-notice" role="status" aria-busy="true">
+            {t('auth.loading')}
+          </p>
+        ) : status === 'error' ? (
+          <>
+            <p className="auth-notice" data-kind="error" role="alert">
+              {t('auth.initializationError')}
+            </p>
+            <button type="button" className="start-button auth-submit" onClick={() => void startAuth()}>
+              {t('auth.retry')}
+            </button>
+          </>
         ) : (
           <>
             <button
@@ -139,11 +163,7 @@ export function AuthPage({ mode }: { mode: Mode }) {
                 </p>
               )}
 
-              <button
-                type="submit"
-                className="start-button auth-submit"
-                disabled={busy || status === 'loading'}
-              >
+              <button type="submit" className="start-button auth-submit" disabled={busy}>
                 {t(mode === 'login' ? 'auth.loginAction' : 'auth.signupAction')}
                 <span aria-hidden="true">→</span>
               </button>

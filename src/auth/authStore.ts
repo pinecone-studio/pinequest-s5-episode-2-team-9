@@ -3,7 +3,7 @@ import { event } from '../analytics'
 import { isFirebaseConfigured } from './config'
 import type { AuthUser } from './firebase'
 
-export type AuthStatus = 'loading' | 'signedOut' | 'signedIn' | 'unconfigured'
+export type AuthStatus = 'loading' | 'signedOut' | 'signedIn' | 'unconfigured' | 'error'
 export type AuthMethod = 'google' | 'email'
 
 interface AuthState {
@@ -20,14 +20,22 @@ export const useAuth = create<AuthState>()(() => ({
 const loadFirebase = () => import('./firebase')
 
 let started = false
+let startup: Promise<void> | undefined
 
-/** Called once at startup: loads Firebase and follows the signed-in user. */
-export function startAuth(): void {
-  if (started || !isFirebaseConfigured) return
+/** Follows the signed-in user once; a failed initialization can be retried explicitly. */
+export function startAuth(): Promise<void> {
+  if (started || !isFirebaseConfigured) return startup ?? Promise.resolve()
   started = true
-  void loadFirebase().then(({ watchUser }) =>
-    watchUser((user) => useAuth.setState({ user, status: user ? 'signedIn' : 'signedOut' })),
-  )
+  useAuth.setState({ user: null, status: 'loading' })
+  startup = loadFirebase()
+    .then(({ watchUser }) => {
+      watchUser((user) => useAuth.setState({ user, status: user ? 'signedIn' : 'signedOut' }))
+    })
+    .catch(() => {
+      started = false
+      useAuth.setState({ user: null, status: 'error' })
+    })
+  return startup
 }
 
 // Analytics get the method only — never an email or uid.

@@ -4,6 +4,7 @@ import { useAuth } from '../auth/authStore'
 import { useLang, useT, useTx } from '../i18n'
 import { keys } from '../models/ModelDefinition'
 import { library, modelBySlug } from '../models/registry'
+import { ThemeToggle } from '../ui/ThemeToggle'
 import { modelAccess, picksLeft } from './access'
 import { claimPick, refreshPicks, useAccess } from './accessStore'
 import { refreshSubscription } from './billingStore'
@@ -125,7 +126,10 @@ export function AccessGate({ children }: { children: ReactNode }) {
 function Gate({ children }: { children: ReactNode }) {
   return (
     <main className="mobile-gate access-gate">
-      <div>{children}</div>
+      <div>
+        {children}
+        <ThemeToggle />
+      </div>
     </main>
   )
 }

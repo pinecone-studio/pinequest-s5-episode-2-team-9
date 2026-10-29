@@ -31,6 +31,7 @@ import { GuideLabel } from './GuideLabel'
 import { PartLabel } from './PartLabel'
 import { PortLabels } from './PortLabels'
 import { SettingsPanel } from './SettingsPanel'
+import { ThemeToggle } from '../ui/ThemeToggle'
 
 const reasonKeys: Record<CameraErrorKind, I18nKey> = {
   denied: 'lab.cameraDenied',
@@ -184,6 +185,7 @@ export default function LabPage() {
             ← {t('lab.back')}
           </Link>
           <div className="lab-bar-right">
+            <ThemeToggle />
             <button type="button" className="hud-button" onClick={() => set({ tipsOpen: !tipsOpen })}>
               {t('tips.open')}
             </button>

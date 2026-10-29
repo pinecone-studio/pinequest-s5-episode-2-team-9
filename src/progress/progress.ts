@@ -32,11 +32,17 @@ export function parseProgress(data: Record<string, unknown> | undefined): ModelP
 
 /** Accepts a Firestore Timestamp (anything with toMillis) or a number. */
 export function toMillis(value: unknown): number | null {
-  if (typeof value === 'number') return value
-  if (value && typeof value === 'object' && 'toMillis' in value && typeof value.toMillis === 'function') {
-    return (value as { toMillis: () => number }).toMillis()
+  try {
+    const ms =
+      typeof value === 'number'
+        ? value
+        : value && typeof value === 'object' && 'toMillis' in value && typeof value.toMillis === 'function'
+          ? value.toMillis()
+          : null
+    return typeof ms === 'number' && Number.isFinite(new Date(ms).getTime()) ? ms : null
+  } catch {
+    return null
   }
-  return null
 }
 
 /** Returns null when the part was already studied (nothing to save). */
