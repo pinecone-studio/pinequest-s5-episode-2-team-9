@@ -16,6 +16,48 @@ import { pickStartWord } from './startWord'
 
 const YEAR = new Date().getFullYear()
 
+const LIBRARY_CARD_CLASS = [
+  'library-card',
+  'light:transition-all light:duration-300 light:ease-[cubic-bezier(0.23,1,0.32,1)]',
+  'light:fine:motion-safe:hover:-translate-y-1.5',
+  'light:fine:hover:border-cyan-400',
+  'light:fine:hover:shadow-xl light:fine:hover:shadow-cyan-500/10',
+  'light:motion-reduce:transition-none',
+].join(' ')
+
+const STEP_ICON_PATHS = [
+  [
+    'M5 6h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z',
+    'm15 10 6-3v10l-6-3',
+  ],
+  [
+    'M8 12V6a1.5 1.5 0 0 1 3 0v5M11 11V4.5a1.5 1.5 0 0 1 3 0V11M14 11V6a1.5 1.5 0 0 1 3 0v6',
+    'M17 12V9a1.5 1.5 0 0 1 3 0v6a7 7 0 0 1-7 7h-1c-2.3 0-3.8-.9-5.2-2.8L3.5 15a1.8 1.8 0 0 1 2.8-2.2L8 15',
+  ],
+  [
+    'M12 3v18M3 12h18',
+    'm8 7 4-4 4 4M8 17l4 4 4-4M7 8l-4 4 4 4M17 8l4 4-4 4',
+  ],
+] as const
+
+function HowStepIcon({ step }: { step: number }) {
+  return (
+    <svg
+      className="how-step-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      {STEP_ICON_PATHS[step].map((path) => <path key={path} d={path} />)}
+    </svg>
+  )
+}
+
 // The 3D hero loads after first paint so the page itself stays light.
 const HeroScene = lazy(() => import('./HeroScene'))
 
@@ -46,7 +88,7 @@ function LibraryCard({ def, startWord, mobile }: { def: ModelDefinition; startWo
   const t = useT()
   const tx = useTx()
   return (
-    <motion.article className="library-card" style={{ '--accent': def.accent } as React.CSSProperties} {...reveal}>
+    <motion.article className={LIBRARY_CARD_CLASS} style={{ '--accent': def.accent } as React.CSSProperties} {...reveal}>
       <div className="library-visual">
         <ModelGlyph id={def.id} />
       </div>
@@ -78,7 +120,7 @@ function ExperienceCard({ exp, startWord, mobile }: { exp: Experience; startWord
   const t = useT()
   const tx = useTx()
   return (
-    <motion.article className="library-card" style={{ '--accent': exp.accent } as React.CSSProperties} {...reveal}>
+    <motion.article className={LIBRARY_CARD_CLASS} style={{ '--accent': exp.accent } as React.CSSProperties} {...reveal}>
       <div className="library-visual">
         <ModelGlyph id={exp.id} />
       </div>
@@ -182,7 +224,24 @@ export default function LandingPage() {
       </section>
 
       <section className="how">
-        <motion.h2 {...reveal}>{t('landing.howTitle')}</motion.h2>
+        <motion.h2 className="how-title" {...reveal}>
+          <span>{t('landing.howTitle')}</span>
+          <svg
+            className="how-title-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <rect x="3" y="3" width="6" height="6" rx="1.5" />
+            <rect x="15" y="15" width="6" height="6" rx="1.5" />
+            <path d="M9 6h6a3 3 0 0 1 3 3v6M6 9v6a3 3 0 0 0 3 3h6" />
+          </svg>
+        </motion.h2>
         <div className="how-steps">
           {(
             [
@@ -192,7 +251,10 @@ export default function LandingPage() {
             ] as const
           ).map(([title, text], i) => (
             <motion.div key={title} className="how-step" {...reveal} transition={{ ...reveal.transition, delay: i * 0.12 }}>
-              <span className="how-index">0{i + 1}</span>
+              <div className="how-step-head">
+                <span className="how-index">0{i + 1}</span>
+                <HowStepIcon step={i} />
+              </div>
               <h3>{t(title)}</h3>
               <p>{t(text)}</p>
             </motion.div>
@@ -202,7 +264,23 @@ export default function LandingPage() {
 
       <section className="library" ref={libraryRef}>
         <motion.div className="library-head" {...reveal}>
-          <h2>{t('landing.libraryTitle')}</h2>
+          <h2 className="library-title">
+            <span>{t('landing.libraryTitle')}</span>
+            <svg
+              className="library-title-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M12 6.5C9.5 4.5 6 4 3 4v15c3 0 6.5.5 9 2 2.5-1.5 6-2 9-2V4c-3 0-6.5.5-9 2.5Z" />
+              <path d="M12 6.5V21M6 8l3 1M6 12l3 1M15 9l3-1M15 13l3-1" />
+            </svg>
+          </h2>
           <p>{t('landing.librarySubtitle')}</p>
           <PicksNote />
         </motion.div>

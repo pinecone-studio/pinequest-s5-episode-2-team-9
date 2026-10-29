@@ -33,6 +33,7 @@
   --cyan-rgb: 0 107 128;
   --violet-rgb: 108 71 189;
   --line: rgb(var(--cyan-rgb) / 0.28);
+  --card-border: #4b5563;
   --panel: rgb(var(--surface-rgb) / 0.94);
   --hero-heading: linear-gradient(120deg, #18283b 30%, #006b80 60%, #6c47bd);
   --glyph-detail: #18283b;
@@ -64,6 +65,32 @@ body {
 
 a {
   color: inherit;
+}
+
+.pointer-events-none {
+  pointer-events: none;
+}
+
+.ambient-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 720px;
+  height: 720px;
+  background: radial-gradient(
+    circle,
+    rgb(var(--cyan-rgb) / 0.1) 0%,
+    rgb(var(--cyan-rgb) / 0.045) 35%,
+    rgb(var(--cyan-rgb) / 0) 70%
+  );
+  transition: transform 250ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+  .ambient-glow {
+    display: none;
+  }
 }
 
 /* HUD primitives */
@@ -206,6 +233,20 @@ a {
 .hero-visual {
   position: absolute;
   inset: 0 0 0 30%;
+}
+
+.hero-cursor-glow {
+  position: absolute;
+  inset: 12% 8% 12% 18%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse,
+    rgb(var(--cyan-rgb) / 0.18),
+    rgb(var(--violet-rgb) / 0.1) 40%,
+    transparent 70%
+  );
+  opacity: 0;
+  pointer-events: none;
 }
 
 .hero-static {
@@ -379,6 +420,23 @@ a {
   letter-spacing: 0.2em;
 }
 
+.how-step-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.how-step-icon {
+  display: block;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  color: var(--cyan);
+  opacity: 0.85;
+  filter: drop-shadow(0 0 7px rgb(var(--cyan-rgb) / 0.35));
+}
+
 .how-step h3 {
   margin: 14px 0 8px;
   font-size: 1.15rem;
@@ -393,6 +451,46 @@ a {
 .library-head p {
   margin: 0;
   color: var(--ink-dim);
+}
+
+.library-title,
+.how-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+}
+
+.library-title-icon,
+.how-title-icon {
+  width: 0.72em;
+  height: 0.72em;
+  flex-shrink: 0;
+  color: var(--cyan);
+  opacity: 0.8;
+  filter: drop-shadow(0 0 7px rgb(var(--cyan-rgb) / 0.35));
+  transition:
+    transform 180ms cubic-bezier(0.23, 1, 0.32, 1),
+    opacity 180ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .library-title:hover .library-title-icon,
+  .how-title:hover .how-title-icon {
+    transform: translateX(3px) scale(1.08);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .library-title-icon,
+  .how-title-icon {
+    transition: opacity 180ms ease;
+  }
+
+  .library-title:hover .library-title-icon,
+  .how-title:hover .how-title-icon {
+    transform: none;
+  }
 }
 
 .library-grid {
@@ -2177,16 +2275,32 @@ a {
   min-width: 0;
 }
 
-.account-name {
+.account-avatar {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  max-width: 16ch;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--panel);
   overflow: hidden;
-  color: var(--ink-dim);
-  font: 500 0.8rem/1 var(--font-mono);
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  color: var(--ink);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.account-avatar:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+.account-avatar .account-icon {
+  width: 20px;
+  height: 20px;
+  flex-basis: 20px;
 }
 
 .account-icon {
@@ -2195,15 +2309,16 @@ a {
   flex: 0 0 16px;
 }
 
-.account-label {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.account-avatar-image {
+  display: block;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 /* Quiet, editor-style controls; keep the lab's HUD styling independent. */
-.landing-bar :is(.hud-button, .account-name) {
+.landing-bar :is(.hud-button, .account-avatar) {
   position: relative;
   isolation: isolate;
   display: inline-flex;
@@ -2230,11 +2345,11 @@ a {
   transition: transform 160ms var(--header-control-ease);
 }
 
-.landing-bar :is(.hud-button, .account-name):hover {
+.landing-bar :is(.hud-button, .account-avatar):hover {
   color: var(--header-control-ink);
 }
 
-.landing-bar :is(.hud-button, .account-name)::before {
+.landing-bar :is(.hud-button, .account-avatar)::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -2246,37 +2361,42 @@ a {
   transition: opacity 160ms ease;
 }
 
-.landing-bar .account-name {
-  justify-content: flex-start;
-  min-width: 64px;
-  max-width: 18ch;
+.landing-bar .account .account-avatar {
+  justify-content: center;
+  padding: 0;
+  border-radius: 50%;
 }
 
 .landing-bar .hud-button {
   flex-shrink: 0;
 }
 
-.landing-bar :is(.hud-button, .account-name):focus-visible {
+.landing-bar :is(.hud-button, .account-avatar):focus-visible {
   outline: 2px solid var(--cyan);
   outline-offset: 3px;
 }
 
-.landing-bar :is(.hud-button, .account-name):active {
+.landing-bar :is(.hud-button, .account-avatar):active {
   transform: scale(0.97);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .landing-bar :is(.hud-button, .account-name):hover::before {
+  .landing-bar :is(.hud-button, .account-avatar):hover::before {
     opacity: 1;
   }
 
-  .landing-bar :is(.hud-button, .account-name):hover {
+  .landing-bar :is(.hud-button, .account-avatar):hover {
     color: var(--header-control-hover-ink);
   }
 }
 
 @media (pointer: coarse) {
-  .landing-bar :is(.hud-button, .account-name) {
+  .account-avatar {
+    width: 44px;
+    height: 44px;
+  }
+
+  .landing-bar :is(.hud-button, .account-avatar) {
     min-width: 44px;
     min-height: 44px;
   }
@@ -2300,22 +2420,17 @@ a {
     gap: 6px;
   }
 
-  .landing-bar .account-name {
-    min-width: 64px;
-    max-width: 14ch;
-  }
-
-  .landing-bar :is(.hud-button, .account-name) {
+  .landing-bar :is(.hud-button, .account-avatar) {
     padding-inline: 8px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .landing-bar :is(.hud-button, .account-name) {
+  .landing-bar :is(.hud-button, .account-avatar) {
     transition: none;
   }
 
-  .landing-bar :is(.hud-button, .account-name):active {
+  .landing-bar :is(.hud-button, .account-avatar):active {
     transform: none;
   }
 }
@@ -2498,11 +2613,11 @@ a {
   color: var(--ink-dim);
 }
 
-a.account-name {
+a.account-avatar {
   text-decoration: none;
 }
 
-a.account-name:hover {
+a.account-avatar:hover {
   color: var(--ink);
 }
 
@@ -2939,6 +3054,21 @@ a.account-name:hover {
 }
 
 /* Keep text and overlays readable on the lighter surfaces. Scientific colors stay in the scenes. */
+:root[data-theme='light'] :is(.how-step, .library-card, .auth-card, .profile-stat, .billing-status) {
+  border-color: var(--card-border);
+}
+
+:root[data-theme='light'] .library-card {
+  /* Tailwind's translate property handles the lift alongside the reveal transform. */
+  transform: none;
+}
+
+:root[data-theme='light'] .profile-models li {
+  border-top-color: var(--card-border);
+  border-right-color: var(--card-border);
+  border-bottom-color: var(--card-border);
+}
+
 :root[data-theme='light'] .library-meta {
   color: color-mix(in srgb, var(--accent) 35%, var(--ink));
 }

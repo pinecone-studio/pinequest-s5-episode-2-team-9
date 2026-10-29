@@ -1,0 +1,8 @@
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' source(none);
+
+@source '../landing/LandingPage.tsx';
+
+/* Keep utilities after the existing, unlayered styles without adding a reset. */
+@custom-variant light (:root[data-theme='light'] &);
+@custom-variant fine (@media (hover: hover) and (pointer: fine));

@@ -17,9 +17,14 @@ import { firebaseConfig } from './config'
 export const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 
-export type AuthUser = { uid: string; name: string | null; email: string | null }
+export type AuthUser = { uid: string; name: string | null; email: string | null; photoURL?: string | null }
 
-const toAuthUser = (u: User): AuthUser => ({ uid: u.uid, name: u.displayName, email: u.email })
+const toAuthUser = (u: User): AuthUser => ({
+  uid: u.uid,
+  name: u.displayName,
+  email: u.email,
+  photoURL: u.photoURL,
+})
 
 export function watchUser(listener: (user: AuthUser | null) => void): () => void {
   return onAuthStateChanged(auth, (u) => listener(u ? toAuthUser(u) : null))
