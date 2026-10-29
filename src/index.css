@@ -208,6 +208,20 @@ a {
   inset: 0 0 0 30%;
 }
 
+.hero-cursor-glow {
+  position: absolute;
+  inset: 12% 8% 12% 18%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse,
+    rgb(var(--cyan-rgb) / 0.18),
+    rgb(var(--violet-rgb) / 0.1) 40%,
+    transparent 70%
+  );
+  opacity: 0;
+  pointer-events: none;
+}
+
 .hero-static {
   --accent: #ff5d6c;
   display: grid;
