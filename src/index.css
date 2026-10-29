@@ -1212,6 +1212,8 @@ a {
   margin: 0;
   font-size: 0.82rem;
   color: #ffb4a8;
+}
+
 /* Where you are inside a part: Part › piece › piece (each step goes back up). */
 .study-trail {
   display: flex;
