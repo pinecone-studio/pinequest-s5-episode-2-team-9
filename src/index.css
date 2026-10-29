@@ -409,13 +409,15 @@ a {
   color: var(--ink-dim);
 }
 
-.library-title {
+.library-title,
+.how-title {
   display: inline-flex;
   align-items: center;
   gap: 0.45em;
 }
 
-.library-title-icon {
+.library-title-icon,
+.how-title-icon {
   width: 0.72em;
   height: 0.72em;
   flex-shrink: 0;
@@ -428,18 +430,21 @@ a {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .library-title:hover .library-title-icon {
+  .library-title:hover .library-title-icon,
+  .how-title:hover .how-title-icon {
     transform: translateX(3px) scale(1.08);
     opacity: 1;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .library-title-icon {
+  .library-title-icon,
+  .how-title-icon {
     transition: opacity 180ms ease;
   }
 
-  .library-title:hover .library-title-icon {
+  .library-title:hover .library-title-icon,
+  .how-title:hover .how-title-icon {
     transform: none;
   }
 }

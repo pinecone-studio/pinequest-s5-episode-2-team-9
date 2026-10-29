@@ -182,7 +182,24 @@ export default function LandingPage() {
       </section>
 
       <section className="how">
-        <motion.h2 {...reveal}>{t('landing.howTitle')}</motion.h2>
+        <motion.h2 className="how-title" {...reveal}>
+          <span>{t('landing.howTitle')}</span>
+          <svg
+            className="how-title-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <rect x="3" y="3" width="6" height="6" rx="1.5" />
+            <rect x="15" y="15" width="6" height="6" rx="1.5" />
+            <path d="M9 6h6a3 3 0 0 1 3 3v6M6 9v6a3 3 0 0 0 3 3h6" />
+          </svg>
+        </motion.h2>
         <div className="how-steps">
           {(
             [
