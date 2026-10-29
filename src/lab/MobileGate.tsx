@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
 import { useT } from '../i18n'
+import { ThemeToggle } from '../ui/ThemeToggle'
 
 // The lab needs hands in front of a laptop webcam; phones get a friendly redirect.
 export function MobileGate() {
@@ -25,6 +26,7 @@ export function MobileGate() {
         <Link to="/" className="hud-button">
           ← {t('lab.back')}
         </Link>
+        <ThemeToggle />
       </div>
     </main>
   )

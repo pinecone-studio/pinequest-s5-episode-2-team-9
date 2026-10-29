@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 import type { IncomingMessage } from 'node:http'
 import { defineConfig, loadEnv, type Plugin } from 'vite'
 
@@ -55,5 +56,5 @@ async function readBody(req: IncomingMessage): Promise<Buffer> {
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), apiRoutes()],
+  plugins: [react(), tailwindcss(), apiRoutes()],
 })
