@@ -20,9 +20,14 @@ export const db = () => getFirestore(app())
 export async function requireUser(request: Request): Promise<DecodedIdToken> {
   const token = request.headers.get('authorization')?.match(/^Bearer (.+)$/i)?.[1]
   if (!token) throw new HttpError(401, 'unauthenticated', 'Sign in first')
+  // Outside the try: a broken FIREBASE_SERVICE_ACCOUNT is our fault (500), not the caller's.
+  const auth = getAuth(app())
   try {
-    return await getAuth(app()).verifyIdToken(token)
-  } catch {
+    return await auth.verifyIdToken(token)
+  } catch (error) {
+    // The reason only (e.g. a project mismatch in `aud`), never the token itself.
+    const { code, message } = error as { code?: string; message?: string }
+    console.warn('[auth] rejected ID token:', code, message)
     throw new HttpError(401, 'unauthenticated', 'Sign in again')
   }
 }
