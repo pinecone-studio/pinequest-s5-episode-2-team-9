@@ -35,6 +35,17 @@ service cloud.firestore {
       }
     }
 
+    // The models a user chose to open for free (src/billing/access.ts). The list can only grow,
+    // to at most 2, and can't be deleted, so a pick can't be undone or swapped.
+    match /freePicks/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create, update: if isOwner(uid)
+        && request.resource.data.keys().hasOnly(['models', 'updatedAt'])
+        && request.resource.data.models is list
+        && request.resource.data.models.size() <= 2
+        && (resource == null || request.resource.data.models.hasAll(resource.data.models));
+    }
+
     match /subscriptions/{uid} {
       allow read: if isOwner(uid) || isAdmin();
     }

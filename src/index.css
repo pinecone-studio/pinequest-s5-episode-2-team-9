@@ -1589,6 +1589,39 @@ a {
   justify-self: center;
 }
 
+/* Access gate (models without a subscription or free pick) */
+.access-gate a:not([class]) {
+  color: var(--cyan);
+}
+
+.access-error {
+  color: #ff8a8a;
+}
+
+.access-badge {
+  display: inline-block;
+  vertical-align: 1px;
+  margin-left: 10px;
+  padding: 3px 7px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.6rem;
+}
+
+.access-badge--open {
+  color: var(--cyan);
+}
+
+.access-badge--locked {
+  color: var(--ink-dim);
+}
+
+.access-note {
+  margin-top: 10px;
+  color: var(--cyan);
+  font-size: 0.9rem;
+}
+
 .lab-bar-right {
   display: flex;
   gap: 8px;
