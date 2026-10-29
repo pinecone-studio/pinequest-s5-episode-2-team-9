@@ -65,7 +65,17 @@ export function AskTutor({
       setTurns(history.slice(0, -1))
       setDraft(text)
       const code = e instanceof TutorError ? e.code : 'tutor_error'
-      setError(code === 'warming_up' ? 'ask.warming' : code === 'rate_limited' ? 'ask.slowDown' : 'ask.error')
+      setError(
+        code === 'warming_up'
+          ? 'ask.warming'
+          : code === 'rate_limited'
+            ? 'ask.slowDown'
+            : code === 'busy'
+              ? 'ask.busy'
+              : code === 'not_configured'
+                ? 'ask.unavailable'
+                : 'ask.error',
+      )
     } finally {
       setBusy(false)
     }

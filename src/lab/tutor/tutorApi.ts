@@ -39,8 +39,12 @@ export async function askTutor(
     const { done, value } = await reader.read()
     if (done) break
     answer += value
-    onText(answer)
+    onText(plain(answer))
   }
+  answer = plain(answer)
   if (!answer.trim()) throw new TutorError('tutor_error')
   return answer
 }
+
+/** The panel shows plain text: drop markdown emphasis and heading marks a model may still add. */
+const plain = (text: string) => text.replace(/\*\*|__|^#+\s*/gm, '')
