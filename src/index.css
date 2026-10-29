@@ -97,6 +97,12 @@ a {
 }
 
 .landing-bar {
+  --header-control-bg: #000000;
+  --header-control-hover: #303033;
+  --header-control-border: #5ee7ff;
+  --header-control-ink: #d4d4d4;
+  --header-control-shadow: 0 1px 3px rgb(0 0 0 / 16%);
+  --header-control-ease: cubic-bezier(0.23, 1, 0.32, 1);
   position: fixed;
   top: 0;
   left: 0;
@@ -2076,13 +2082,151 @@ a {
   gap: 10px;
 }
 
+.landing-bar-actions,
+.landing-bar .account {
+  gap: 8px;
+  min-width: 0;
+}
+
 .account-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   max-width: 16ch;
   overflow: hidden;
   color: var(--ink-dim);
   font: 500 0.8rem/1 var(--font-mono);
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.account-icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+}
+
+.account-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Quiet, editor-style controls; keep the lab's HUD styling independent. */
+.landing-bar :is(.hud-button, .account-name) {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 36px;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--header-control-border);
+  border-radius: 6px;
+  background: var(--header-control-bg);
+  color: var(--header-control-ink);
+  box-shadow: var(--header-control-shadow);
+  font: 500 0.8125rem/1.2 var(--font-sans);
+  letter-spacing: normal;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  backdrop-filter: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: transform 160ms var(--header-control-ease);
+}
+
+.landing-bar :is(.hud-button, .account-name):hover {
+  color: var(--header-control-ink);
+}
+
+.landing-bar :is(.hud-button, .account-name)::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--header-control-hover);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+
+.landing-bar .account-name {
+  justify-content: flex-start;
+  min-width: 64px;
+  max-width: 18ch;
+}
+
+.landing-bar .hud-button {
+  flex-shrink: 0;
+}
+
+.landing-bar :is(.hud-button, .account-name):focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+.landing-bar :is(.hud-button, .account-name):active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .landing-bar :is(.hud-button, .account-name):hover::before {
+    opacity: 1;
+  }
+
+  .landing-bar :is(.hud-button, .account-name):hover {
+    color: #fff;
+  }
+}
+
+@media (pointer: coarse) {
+  .landing-bar :is(.hud-button, .account-name) {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 600px) {
+  .landing-bar {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .landing-bar-actions {
+    margin-left: auto;
+    max-width: 100%;
+  }
+
+  .landing-bar-actions,
+  .landing-bar .account {
+    gap: 6px;
+  }
+
+  .landing-bar .account-name {
+    min-width: 64px;
+    max-width: 14ch;
+  }
+
+  .landing-bar :is(.hud-button, .account-name) {
+    padding-inline: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-bar :is(.hud-button, .account-name) {
+    transition: none;
+  }
+
+  .landing-bar :is(.hud-button, .account-name):active {
+    transform: none;
+  }
 }
 
 .brand {
