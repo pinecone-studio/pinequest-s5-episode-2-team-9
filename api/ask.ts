@@ -3,10 +3,9 @@
 //         messages: { role, content }[] }
 // Asks the tutor about the selected part (or, while assembling, the part in hand) and streams the
 // answer back as plain text.
-// The tutor is the fine-tuned Gemma on a Hugging Face Inference Endpoint (OpenAI-compatible):
-// TUTOR_ENDPOINT_URL, TUTOR_ENDPOINT_TOKEN. Until that is deployed, Claude Haiku answers with the
-// same prompt (ANTHROPIC_API_KEY).
-import Anthropic from '@anthropic-ai/sdk'
+// The tutor is the fine-tuned Gemma on a Hugging Face Inference Endpoint: TUTOR_ENDPOINT_URL,
+// TUTOR_ENDPOINT_TOKEN. Until that is deployed, Gemini Flash's free tier answers with the same
+// prompt (GEMINI_API_KEY; GEMINI_MODEL picks one model instead of the built-in list). Both speak the OpenAI chat-completions protocol.
 import { requireUser } from './_lib/admin.js'
 import { handle, HttpError, readJson } from './_lib/http.js'
 import { cards } from './_lib/tutor/cards.js'
@@ -74,39 +73,61 @@ function textStream(body: ReadableStream<Uint8Array>): ReadableStream<Uint8Array
   )
 }
 
-/** The fallback tutor: Claude Haiku with the same system prompt, streamed as plain text. */
-function claudeStream(system: string, turns: Turn[], signal: AbortSignal): ReadableStream<Uint8Array> {
-  const encoder = new TextEncoder()
-  return new ReadableStream({
-    async start(controller) {
-      try {
-        const stream = new Anthropic().messages.stream(
-          {
-            model: 'claude-haiku-5-5',
-            max_tokens: 1024,
-            // Short, friendly answers: little thinking needed.
-            output_config: { effort: 'low' },
-            system,
-            messages: turns,
-          },
-          { signal },
-        )
-        for await (const event of stream) {
-          if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
-            controller.enqueue(encoder.encode(event.delta.text))
-          }
-        }
-        controller.close()
-      } catch (error) {
-        console.error(
-          '[ask] claude',
-          error instanceof Anthropic.APIError ? `${error.status} ${error.message}` : error,
-        )
-        controller.error(error)
-      }
-    },
-  })
+/** Gemini's OpenAI-compatible endpoint (ai.google.dev/gemini-api/docs/openai). */
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions'
+/**
+ * Free-tier models, in order of preference. Flash-Lite 3.5 starts answering in about 2 s; the full
+ * Flash models were overloaded or took minutes on the free tier. The second is used when the first
+ * is busy or rate-limited.
+ */
+const GEMINI_MODELS = ['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite']
+
+interface Backend {
+  url: string
+  token: string | undefined
+  /** Request fields for this backend (model name, sampling, thinking). */
+  options: Record<string, unknown>
+  /** Status the backend sends while it is starting up, if any. */
+  warmingStatus?: number
 }
+
+/**
+ * The fine-tuned Gemma endpoint when it is deployed, otherwise Gemini (one entry per model to try).
+ */
+function backends(): Backend[] {
+  const url = process.env.TUTOR_ENDPOINT_URL
+  if (url) {
+    return [
+      {
+        url: `${url.replace(/\/$/, '')}/v1/chat/completions`,
+        token: process.env.TUTOR_ENDPOINT_TOKEN,
+        // TGI/vLLM endpoints ignore the name; Ollama (the offline backup) needs it. Gemma's sampling.
+        options: {
+          model: process.env.TUTOR_ENDPOINT_MODEL ?? 'tgi',
+          max_tokens: 400,
+          temperature: 1.0,
+          top_p: 0.95,
+        },
+        // A scaled-to-zero endpoint answers 503 while it wakes up.
+        warmingStatus: 503,
+      },
+    ]
+  }
+  const key = process.env.GEMINI_API_KEY
+  if (key) {
+    const models = process.env.GEMINI_MODEL ? [process.env.GEMINI_MODEL] : GEMINI_MODELS
+    // Gemini 3 always thinks a little ("low" is the least these models accept); it counts toward max_tokens.
+    return models.map((model) => ({
+      url: GEMINI_URL,
+      token: key,
+      options: { model, max_tokens: 2048, reasoning_effort: 'low' },
+    }))
+  }
+  throw new HttpError(500, 'not_configured', 'No tutor endpoint or Gemini key')
+}
+
+/** Overloaded or out of quota: worth trying the next model. */
+const BUSY = new Set([429, 500, 503])
 
 export function POST(request: Request): Promise<Response> {
   return handle(async () => {
@@ -120,42 +141,31 @@ export function POST(request: Request): Promise<Response> {
     const turns = readTurns(body.messages)
     const system = systemPrompt(model, part, lang, body.assembling === true)
 
-    const url = process.env.TUTOR_ENDPOINT_URL
-    if (!url) {
-      if (!process.env.ANTHROPIC_API_KEY)
-        throw new HttpError(500, 'not_configured', 'No tutor endpoint or API key')
-      return new Response(claudeStream(system, turns, request.signal), {
-        headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' },
-      })
-    }
-    const upstream = await fetch(`${url.replace(/\/$/, '')}/v1/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(process.env.TUTOR_ENDPOINT_TOKEN && {
-          Authorization: `Bearer ${process.env.TUTOR_ENDPOINT_TOKEN}`,
+    let upstream: Response | null = null
+    for (const to of backends()) {
+      upstream = await fetch(to.url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(to.token && { Authorization: `Bearer ${to.token}` }),
+        },
+        body: JSON.stringify({
+          ...to.options,
+          stream: true,
+          messages: [{ role: 'system', content: system }, ...turns],
         }),
-      },
-      body: JSON.stringify({
-        // TGI/vLLM endpoints ignore the name; Ollama (the offline backup) needs it.
-        model: process.env.TUTOR_ENDPOINT_MODEL ?? 'tgi',
-        stream: true,
-        max_tokens: 400,
-        // Gemma's recommended sampling settings.
-        temperature: 1.0,
-        top_p: 0.95,
-        messages: [{ role: 'system', content: system }, ...turns],
-      }),
-      signal: request.signal,
-    })
-    if (!upstream.ok || !upstream.body) {
-      console.error('[ask] endpoint', upstream.status, await upstream.text().catch(() => ''))
-      // A scaled-to-zero endpoint answers 503 while it wakes up.
-      throw new HttpError(
-        upstream.status === 503 ? 503 : 502,
-        upstream.status === 503 ? 'warming_up' : 'tutor_error',
-        'Tutor unavailable',
-      )
+        signal: request.signal,
+      })
+      if (upstream.ok && upstream.body) break
+      console.error('[ask] backend', to.options.model, upstream.status, await upstream.text().catch(() => ''))
+      if (upstream.status === to.warmingStatus) throw new HttpError(503, 'warming_up', 'Tutor is starting')
+      if (upstream.status === 401 || upstream.status === 403)
+        throw new HttpError(500, 'not_configured', 'Bad API key')
+      if (!BUSY.has(upstream.status)) throw new HttpError(502, 'tutor_error', 'Tutor unavailable')
+    }
+    if (!upstream?.ok || !upstream.body) {
+      // Every model was overloaded or over the free tier's limits.
+      throw new HttpError(503, 'busy', 'The tutor is busy')
     }
     return new Response(textStream(upstream.body), {
       headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' },

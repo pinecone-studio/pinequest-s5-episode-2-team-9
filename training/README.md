@@ -10,7 +10,7 @@ What the student sees, and where it comes from:
 |---|---|
 | Ring on the opening/socket, "attaches here" label, the carry line, the flow pulse | Measured by `scripts/build-heart.ts` / `scripts/build-computer.ts` into the GLB (`connections`) — no AI, always works |
 | Guide card text for each step | `<model>.link.<part>` in `src/i18n` — no AI, always works |
-| Answers to "where exactly / why not yet / what flows through it" while assembling, and questions in Study | `/api/ask` → the fine-tuned Gemma endpoint, or Claude Haiku until it is deployed |
+| Answers to "where exactly / why not yet / what flows through it" while assembling, and questions in Study | `/api/ask` → the fine-tuned Gemma endpoint, or Gemini Flash (free tier) until it is deployed |
 
 ```
 api/_lib/tutor/knowledge.ts   facts we wrote (connections, diseases, ports)   ─┐
@@ -69,6 +69,10 @@ This writes `training/results.md`: for base Gemma vs our model, the share of ans
 in the right language, and following the rules. It's split by heart/computer and EN/MN.
 
 ## 5. Serve it
+
+Until the fine-tuned model is deployed, the tutor runs on **Gemini Flash's free tier**: set `GEMINI_API_KEY` (from
+https://aistudio.google.com/apikey) in `.env.local` and in Vercel. It has per-minute and daily limits,
+and Google may use free-tier requests to improve its products.
 
 1. huggingface.co → your `hologemma-tutor` repo → *Deploy → Inference Endpoints*.
    - Hardware: one small GPU (an L4 or A10G is enough for 4B).

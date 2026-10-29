@@ -294,6 +294,8 @@
   "ask.warming": "The tutor is waking up. Try again in a minute.",
   "ask.slowDown": "That's a lot of questions at once. Wait a moment, then ask again.",
   "ask.error": "The tutor couldn't answer just now. Try again.",
+  "ask.busy": "The tutor is busy right now. Try again in a moment.",
+  "ask.unavailable": "The AI tutor isn't switched on yet. Everything else in the lab works as usual.",
   "ask.medical": "For learning only, not medical advice. If something feels wrong with your own heart, talk to a doctor.",
   "ask.q.what": "What does this part do?",
   "ask.q.heartConnect": "How is it connected to the rest of the heart?",
