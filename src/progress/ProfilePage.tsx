@@ -6,9 +6,10 @@ import { keys } from '../models/ModelDefinition'
 import { library } from '../models/registry'
 import { AccountButton } from '../ui/AccountButton'
 import { LangToggle } from '../ui/LangToggle'
+import { ThemeToggle } from '../ui/ThemeToggle'
 import { totals } from './progress'
 import { ProgressLine } from './ProgressLine'
-import { useProgress } from './progressStore'
+import { retryProgress, useProgress } from './progressStore'
 
 export function ProfilePage() {
   const t = useT()
@@ -32,12 +33,13 @@ export function ProfilePage() {
         <span className="landing-bar-actions">
           <AccountButton />
           <LangToggle />
+          <ThemeToggle />
         </span>
       </header>
 
       <section className="profile-body">
         <span className="hud-tag">{t('profile.title')}</span>
-        <h1>{user?.name || user?.email}</h1>
+        <h1>{user?.name || user?.email || t('profile.title')}</h1>
         <p className="profile-meta">
           {user?.name && user.email}
           {since && (
@@ -49,11 +51,20 @@ export function ProfilePage() {
         </p>
         <SubscriptionStatus />
 
-        {status === 'loading' &&<p className="profile-note">{t('profile.loading')}</p>}
-        {status === 'error' && (
-          <p className="auth-notice" data-kind="error" role="alert">
-            {t('profile.error')}
+        {(status === 'loading' || status === 'off') && (
+          <p className="profile-note" role="status">
+            {t('profile.loading')}
           </p>
+        )}
+        {status === 'error' && (
+          <div className="profile-recovery">
+            <p className="auth-notice" data-kind="error" role="alert">
+              {t('profile.error')}
+            </p>
+            <button type="button" className="hud-button" onClick={() => void retryProgress()}>
+              {t('profile.retry')}
+            </button>
+          </div>
         )}
 
         {status === 'ready' && (

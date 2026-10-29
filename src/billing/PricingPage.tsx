@@ -3,6 +3,7 @@ import { useAuth } from '../auth/authStore'
 import { useLang, useT } from '../i18n'
 import { AccountButton } from '../ui/AccountButton'
 import { LangToggle } from '../ui/LangToggle'
+import { ThemeToggle } from '../ui/ThemeToggle'
 import { useSubscription } from './billingStore'
 import { Checkout } from './Checkout'
 import { formatAmount, formatPlanPrice, PLANS } from './pricing'
@@ -26,6 +27,7 @@ export function PricingPage() {
         <span className="landing-bar-actions">
           <AccountButton />
           <LangToggle />
+          <ThemeToggle />
         </span>
       </header>
 

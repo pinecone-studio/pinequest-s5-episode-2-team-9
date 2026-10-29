@@ -5,8 +5,28 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hologemma</title>
-    <meta name="description" content="A holographic 3D lab you control with your bare hands through a webcam." />
+    <meta
+      name="description"
+      content="A holographic 3D lab you control with your bare hands through a webcam."
+    />
     <meta name="theme-color" content="#04050b" />
+    <script>
+      // Resolve the theme before the app and its stylesheet load to avoid a color flash.
+      ;(() => {
+        let saved
+        try {
+          saved = localStorage.getItem('hologemma.theme')
+        } catch {}
+        const theme =
+          saved === 'light' || saved === 'dark'
+            ? saved
+            : matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light'
+        document.documentElement.dataset.theme = theme
+        document.querySelector('meta[name="theme-color"]').content = theme === 'dark' ? '#04050b' : '#f5f8fc'
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

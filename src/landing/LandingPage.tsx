@@ -10,6 +10,7 @@ import { AccountButton } from '../ui/AccountButton'
 import { ProgressLine } from '../progress/ProgressLine'
 import { isMobileDevice } from '../ui/device'
 import { LangToggle } from '../ui/LangToggle'
+import { ThemeToggle } from '../ui/ThemeToggle'
 import { ModelGlyph } from './ModelGlyph'
 import { pickStartWord } from './startWord'
 
@@ -137,6 +138,7 @@ export default function LandingPage() {
         <span className="landing-bar-actions">
           <AccountButton />
           <LangToggle />
+          <ThemeToggle />
         </span>
       </header>
 

@@ -5,6 +5,7 @@ import { formatAmount, formatPlanPrice, isAdminEmail } from '../billing/pricing'
 import { useLang, useT, type I18nKey } from '../i18n'
 import { AccountButton } from '../ui/AccountButton'
 import { LangToggle } from '../ui/LangToggle'
+import { ThemeToggle } from '../ui/ThemeToggle'
 import type { AdminData } from './adminData'
 import { planState, summarize, type PlanState } from './adminStats'
 
@@ -57,6 +58,7 @@ export default function AdminPage() {
         <span className="landing-bar-actions">
           <AccountButton />
           <LangToggle />
+          <ThemeToggle />
         </span>
       </header>
 

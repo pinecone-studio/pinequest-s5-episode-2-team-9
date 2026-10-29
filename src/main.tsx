@@ -8,10 +8,12 @@ import { startAnalytics } from './analytics'
 import { AppRoutes } from './app/routes'
 import { startAuth } from './auth/authStore'
 import { startProgress } from './progress/progressStore'
+import { startTheme } from './ui/theme'
 
 // Agentation feedback toolbar, development only: Vite drops this branch from production builds.
 const Agentation = import.meta.env.DEV ? lazy(() => import('agentation').then((m) => ({ default: m.Agentation }))) : null
 
+startTheme()
 startAnalytics()
 startAuth()
 startProgress()
