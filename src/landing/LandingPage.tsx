@@ -2,6 +2,7 @@ import { motion } from 'motion/react'
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { unlockAudio } from '../audio/sfx'
+import { AccessBadge, FreeBadge, PicksNote } from '../billing/AccessBadge'
 import { useT, useTx } from '../i18n'
 import { keys, type ModelDefinition } from '../models/ModelDefinition'
 import { experiences, library, type Experience } from '../models/registry'
@@ -51,6 +52,7 @@ function LibraryCard({ def, startWord, mobile }: { def: ModelDefinition; startWo
       <div className="library-body">
         <span className="library-meta">
           {def.parts.length} {t('landing.parts')}
+          <AccessBadge modelId={def.id} />
         </span>
         <h3>{tx(keys.title(def.id))}</h3>
         <p>{tx(keys.summary(def.id))}</p>
@@ -80,7 +82,10 @@ function ExperienceCard({ exp, startWord, mobile }: { exp: Experience; startWord
         <ModelGlyph id={exp.id} />
       </div>
       <div className="library-body">
-        <span className="library-meta">{tx(exp.metaKey)}</span>
+        <span className="library-meta">
+          {tx(exp.metaKey)}
+          <FreeBadge />
+        </span>
         <h3>{tx(exp.titleKey)}</h3>
         <p>{tx(exp.summaryKey)}</p>
         {mobile ? (
@@ -197,6 +202,7 @@ export default function LandingPage() {
         <motion.div className="library-head" {...reveal}>
           <h2>{t('landing.libraryTitle')}</h2>
           <p>{t('landing.librarySubtitle')}</p>
+          <PicksNote />
         </motion.div>
         <div className="library-grid">
           {library.map((def) => (

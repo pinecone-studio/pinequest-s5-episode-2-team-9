@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import { AuthPage } from '../auth/AuthPage'
+import { AccessGate } from '../billing/AccessGate'
 import { RequireAuth } from '../auth/RequireAuth'
 import { ProfilePage } from '../progress/ProfilePage'
 import { MobileGate } from '../lab/MobileGate'
@@ -19,9 +20,11 @@ const router = createBrowserRouter([
       <MobileGate />
     ) : (
       <RequireAuth>
-        <Suspense fallback={<div className="lab" />}>
-          <LabPage />
-        </Suspense>
+        <AccessGate>
+          <Suspense fallback={<div className="lab" />}>
+            <LabPage />
+          </Suspense>
+        </AccessGate>
       </RequireAuth>
     ),
   },
