@@ -1433,6 +1433,7 @@
   "progress.assembled": "Assembled",
   "progress.best": "Best",
   "profile.title": "Your progress",
+  "profile.openProfile": "Open your profile",
   "profile.memberSince": "Member since",
   "profile.loading": "Loading your progress…",
   "profile.error": "Couldn't load your progress. Check your connection and try again.",

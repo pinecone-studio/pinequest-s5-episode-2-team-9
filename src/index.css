@@ -2177,16 +2177,32 @@ a {
   min-width: 0;
 }
 
-.account-name {
+.account-avatar {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  max-width: 16ch;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--panel);
   overflow: hidden;
-  color: var(--ink-dim);
-  font: 500 0.8rem/1 var(--font-mono);
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  color: var(--ink);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.account-avatar:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+.account-avatar .account-icon {
+  width: 20px;
+  height: 20px;
+  flex-basis: 20px;
 }
 
 .account-icon {
@@ -2195,15 +2211,16 @@ a {
   flex: 0 0 16px;
 }
 
-.account-label {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.account-avatar-image {
+  display: block;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 /* Quiet, editor-style controls; keep the lab's HUD styling independent. */
-.landing-bar :is(.hud-button, .account-name) {
+.landing-bar :is(.hud-button, .account-avatar) {
   position: relative;
   isolation: isolate;
   display: inline-flex;
@@ -2230,11 +2247,11 @@ a {
   transition: transform 160ms var(--header-control-ease);
 }
 
-.landing-bar :is(.hud-button, .account-name):hover {
+.landing-bar :is(.hud-button, .account-avatar):hover {
   color: var(--header-control-ink);
 }
 
-.landing-bar :is(.hud-button, .account-name)::before {
+.landing-bar :is(.hud-button, .account-avatar)::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -2246,37 +2263,42 @@ a {
   transition: opacity 160ms ease;
 }
 
-.landing-bar .account-name {
-  justify-content: flex-start;
-  min-width: 64px;
-  max-width: 18ch;
+.landing-bar .account .account-avatar {
+  justify-content: center;
+  padding: 0;
+  border-radius: 50%;
 }
 
 .landing-bar .hud-button {
   flex-shrink: 0;
 }
 
-.landing-bar :is(.hud-button, .account-name):focus-visible {
+.landing-bar :is(.hud-button, .account-avatar):focus-visible {
   outline: 2px solid var(--cyan);
   outline-offset: 3px;
 }
 
-.landing-bar :is(.hud-button, .account-name):active {
+.landing-bar :is(.hud-button, .account-avatar):active {
   transform: scale(0.97);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .landing-bar :is(.hud-button, .account-name):hover::before {
+  .landing-bar :is(.hud-button, .account-avatar):hover::before {
     opacity: 1;
   }
 
-  .landing-bar :is(.hud-button, .account-name):hover {
+  .landing-bar :is(.hud-button, .account-avatar):hover {
     color: var(--header-control-hover-ink);
   }
 }
 
 @media (pointer: coarse) {
-  .landing-bar :is(.hud-button, .account-name) {
+  .account-avatar {
+    width: 44px;
+    height: 44px;
+  }
+
+  .landing-bar :is(.hud-button, .account-avatar) {
     min-width: 44px;
     min-height: 44px;
   }
@@ -2300,22 +2322,17 @@ a {
     gap: 6px;
   }
 
-  .landing-bar .account-name {
-    min-width: 64px;
-    max-width: 14ch;
-  }
-
-  .landing-bar :is(.hud-button, .account-name) {
+  .landing-bar :is(.hud-button, .account-avatar) {
     padding-inline: 8px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .landing-bar :is(.hud-button, .account-name) {
+  .landing-bar :is(.hud-button, .account-avatar) {
     transition: none;
   }
 
-  .landing-bar :is(.hud-button, .account-name):active {
+  .landing-bar :is(.hud-button, .account-avatar):active {
     transform: none;
   }
 }
@@ -2498,11 +2515,11 @@ a {
   color: var(--ink-dim);
 }
 
-a.account-name {
+a.account-avatar {
   text-decoration: none;
 }
 
-a.account-name:hover {
+a.account-avatar:hover {
   color: var(--ink);
 }
 

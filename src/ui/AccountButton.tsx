@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router'
 import { logOut, useAuth } from '../auth/authStore'
 import { isAdminEmail } from '../billing/pricing'
@@ -27,7 +28,21 @@ function AccountIcon({ kind }: { kind: 'login' | 'logout' | 'profile' }) {
   )
 }
 
-/** "Log in" when signed out; the user's name and "Log out" when signed in. */
+function ProfileAvatar({ photoURL }: { photoURL?: string | null }) {
+  const [failedURL, setFailedURL] = useState<string | null>(null)
+  if (!photoURL || photoURL === failedURL) return <AccountIcon kind="profile" />
+  return (
+    <img
+      className="account-avatar-image"
+      src={photoURL}
+      alt=""
+      referrerPolicy="no-referrer"
+      onError={() => setFailedURL(photoURL)}
+    />
+  )
+}
+
+/** "Log in" when signed out; an avatar linking to the profile and "Log out" when signed in. */
 export function AccountButton() {
   const t = useT()
   const { status, user } = useAuth()
@@ -47,9 +62,13 @@ export function AccountButton() {
           {t('admin.title')}
         </Link>
       )}
-      <Link to="/profile" className="account-name" title={user.email ?? undefined}>
-        <AccountIcon kind="profile" />
-        <span className="account-label">{user.name || user.email}</span>
+      <Link
+        to="/profile"
+        className="account-avatar"
+        aria-label={t('profile.openProfile')}
+        title={t('profile.openProfile')}
+      >
+        <ProfileAvatar photoURL={user.photoURL} />
       </Link>
       <button type="button" className="hud-button" onClick={() => void logOut()}>
         <AccountIcon kind="logout" />
