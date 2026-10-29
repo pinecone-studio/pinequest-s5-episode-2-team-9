@@ -16,6 +16,39 @@ import { pickStartWord } from './startWord'
 
 const YEAR = new Date().getFullYear()
 
+const STEP_ICON_PATHS = [
+  [
+    'M5 6h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z',
+    'm15 10 6-3v10l-6-3',
+  ],
+  [
+    'M8 12V6a1.5 1.5 0 0 1 3 0v5M11 11V4.5a1.5 1.5 0 0 1 3 0V11M14 11V6a1.5 1.5 0 0 1 3 0v6',
+    'M17 12V9a1.5 1.5 0 0 1 3 0v6a7 7 0 0 1-7 7h-1c-2.3 0-3.8-.9-5.2-2.8L3.5 15a1.8 1.8 0 0 1 2.8-2.2L8 15',
+  ],
+  [
+    'M12 3v18M3 12h18',
+    'm8 7 4-4 4 4M8 17l4 4 4-4M7 8l-4 4 4 4M17 8l4 4-4 4',
+  ],
+] as const
+
+function HowStepIcon({ step }: { step: number }) {
+  return (
+    <svg
+      className="how-step-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      {STEP_ICON_PATHS[step].map((path) => <path key={path} d={path} />)}
+    </svg>
+  )
+}
+
 // The 3D hero loads after first paint so the page itself stays light.
 const HeroScene = lazy(() => import('./HeroScene'))
 
@@ -209,7 +242,10 @@ export default function LandingPage() {
             ] as const
           ).map(([title, text], i) => (
             <motion.div key={title} className="how-step" {...reveal} transition={{ ...reveal.transition, delay: i * 0.12 }}>
-              <span className="how-index">0{i + 1}</span>
+              <div className="how-step-head">
+                <span className="how-index">0{i + 1}</span>
+                <HowStepIcon step={i} />
+              </div>
               <h3>{t(title)}</h3>
               <p>{t(text)}</p>
             </motion.div>

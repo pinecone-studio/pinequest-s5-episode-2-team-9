@@ -393,6 +393,23 @@ a {
   letter-spacing: 0.2em;
 }
 
+.how-step-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.how-step-icon {
+  display: block;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  color: var(--cyan);
+  opacity: 0.85;
+  filter: drop-shadow(0 0 7px rgb(var(--cyan-rgb) / 0.35));
+}
+
 .how-step h3 {
   margin: 14px 0 8px;
   font-size: 1.15rem;
