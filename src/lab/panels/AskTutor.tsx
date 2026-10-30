@@ -10,6 +10,7 @@ const SUGGESTIONS: Partial<Record<ModelId, I18nKey[]>> = {
   heart: ['ask.q.what', 'ask.q.heartConnect', 'ask.q.heartDisease'],
   computer: ['ask.q.what', 'ask.q.computerPort', 'ask.q.computerConnect'],
 }
+const DEFAULT_SUGGESTIONS: I18nKey[] = ['ask.q.what']
 
 /**
  * "Ask Hologemma": questions about one part, answered by the fine-tuned tutor. In the study card it
@@ -97,7 +98,7 @@ export function AskTutor({
 
       {turns.length === 0 && (
         <div className="ask-suggestions">
-          {(suggestions ?? SUGGESTIONS[model])?.map((key) => (
+          {(suggestions ?? SUGGESTIONS[model] ?? DEFAULT_SUGGESTIONS).map((key) => (
             <button key={key} type="button" className="ask-chip" disabled={busy} onClick={() => ask(t(key))}>
               {t(key)}
             </button>

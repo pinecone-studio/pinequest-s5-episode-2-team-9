@@ -3,13 +3,15 @@
 // using only the facts in api/_lib/tutor. Each example is stored in the exact chat format api/ask.ts
 // sends at runtime: the system prompt from systemPrompt(), the student's question, the answer.
 //
-// Needs ANTHROPIC_API_KEY. About 200 requests for the default 2 rounds.
+// Needs ANTHROPIC_API_KEY, or GEMINI_API_KEY with a gemini-* teacher. About 200 requests for the default 2 rounds.
 //
 // Usage: npx tsx --env-file=.env.local scripts/build-tutor-dataset.ts [--rounds 2] [--model heart] [--concurrency 4]
 //        add --limit 2 for a quick test on the first two (part, language) pairs
 //        add --resume to keep training/data and only fill parts that are missing examples
 //        rounds alternate: odd rounds write assembly-guide conversations (the part in the student's hand)
-//        add --teacher claude-haiku-5-5 for a cheaper teacher model (default claude-opus-5-5)
+//        add --teacher claude-haiku-5-5 for a cheaper teacher model (default claude-opus-5-5),
+//        or --teacher gemini-3.5-flash-lite to use Gemini's free tier
+//        add --quick for a demo set: 5 explore questions per language on one part of each model (DEMO_PART)
 // Output: training/data/train.jsonl, training/data/eval.jsonl, training/data/review.md
 import Anthropic from '@anthropic-ai/sdk'
 import { betaZodOutputFormat } from '@anthropic-ai/sdk/helpers/beta/zod'
@@ -28,6 +30,7 @@ const { values: args } = parseArgs({
     limit: { type: 'string' },
     resume: { type: 'boolean', default: false },
     teacher: { type: 'string', default: 'claude-opus-5-5' },
+    quick: { type: 'boolean', default: false },
   },
 })
 
@@ -59,7 +62,7 @@ const Batch = z.object({
 })
 type Example = z.infer<typeof Batch>['examples'][number]
 
-const KINDS: Record<TutorModelId, string> = {
+const KINDS: Partial<Record<TutorModelId, string>> = {
   heart: `- function: what the part does
 - connection: what it connects to, where blood comes from and goes to
 - condition: diseases and problems that affect it (school level, no diagnosis)
@@ -70,6 +73,24 @@ const KINDS: Record<TutorModelId, string> = {
 - condition: what happens if it fails, overheats or is plugged in wrong
 - why, compare (with another computer part), follow_up (a 2–3 turn conversation)`,
 }
+
+/** The part each model's --quick questions are about: the one to open in a demo. */
+const DEMO_PART: Record<TutorModelId, string> = {
+  heart: 'left_ventricle',
+  lungs: 'trachea',
+  brain: 'cerebellum',
+  skeleton: 'cranium',
+  muscles: 'biceps_brachii_left',
+  robotDog: 'lidar',
+  rocketEngine: 'nozzle',
+  electricMotor: 'commutator',
+  computer: 'psu',
+}
+
+/** Models with only study cards. */
+const CARD_KINDS = `- function: what the part does
+- connection: which other parts of the model it works with
+- why, compare (with another part of the same model), follow_up (a 2–3 turn conversation)`
 
 /** Assembly-guide rounds: the student is fitting the part right now. */
 const ASSEMBLY_KINDS = `- placement: where exactly the part goes (the opening, socket, slot or header) and how to fit it
@@ -94,9 +115,13 @@ ${systemPrompt(model, partId, lang, assembling)}
 </tutor_system_prompt>
 
 Mix these kinds:
-${assembling ? ASSEMBLY_KINDS : KINDS[model]}
+${assembling ? ASSEMBLY_KINDS : (KINDS[model] ?? CARD_KINDS)}${
+    args.quick
+      ? ''
+      : `
 - off_topic (2 examples): a question unrelated to the model, which the tutor politely declines and steers back
-- unknown (1 example): a fair question the facts do not cover; the tutor says what it does know and that it is not sure about the rest
+- unknown (1 example): a fair question the facts do not cover; the tutor says what it does know and that it is not sure about the rest`
+  }
 
 Rules for the examples:
 - Students write like real teenagers: short, casual, sometimes misspelled, sometimes vague ("what does this do", "where does this plug in"). Write the student's text in ${lang === 'mn' ? 'Mongolian (Cyrillic), as Mongolian students type' : 'English'}.
@@ -108,6 +133,32 @@ Rules for the examples:
 
 const client = new Anthropic()
 
+/** Gemini's OpenAI-compatible endpoint (ai.google.dev/gemini-api/docs/openai), with the same schema. */
+async function generateWithGemini(prompt: string): Promise<Example[]> {
+  for (let attempt = 0; ; attempt++) {
+    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.GEMINI_API_KEY}` },
+      body: JSON.stringify({
+        model: args.teacher,
+        messages: [{ role: 'user', content: prompt }],
+        response_format: {
+          type: 'json_schema',
+          json_schema: { name: 'examples', schema: z.toJSONSchema(Batch) },
+        },
+      }),
+    })
+    // The free tier rate-limits per minute: wait and try again.
+    if ((response.status === 429 || response.status === 503) && attempt < 5) {
+      await new Promise((resolve) => setTimeout(resolve, 15_000 * (attempt + 1)))
+      continue
+    }
+    if (!response.ok) throw new Error(`Gemini ${response.status}: ${await response.text()}`)
+    const body = (await response.json()) as { choices: { message: { content: string } }[] }
+    return Batch.parse(JSON.parse(body.choices[0].message.content)).examples
+  }
+}
+
 async function generate(
   model: TutorModelId,
   partId: string | null,
@@ -116,6 +167,9 @@ async function generate(
   avoid: string[],
   assembling: boolean,
 ) {
+  if (args.teacher.startsWith('gemini')) {
+    return generateWithGemini(teacherPrompt(model, partId, lang, count, avoid, assembling))
+  }
   const response = await client.beta.messages.parse({
     model: args.teacher,
     max_tokens: 16000,
@@ -184,10 +238,11 @@ async function pool<T>(jobs: (() => Promise<T>)[], limit: number): Promise<T[]> 
 }
 
 const models = args.model ? TUTOR_MODELS.filter((m) => m === args.model) : [...TUTOR_MODELS]
-const rounds = Number(args.rounds)
+const rounds = args.quick ? 1 : Number(args.rounds)
 const tasks = models
   .flatMap((model) => {
-    const parts: (string | null)[] = [...Object.keys(cards[model].parts), null]
+    const all = Object.keys(cards[model].parts)
+    const parts: (string | null)[] = args.quick ? [DEMO_PART[model]] : [...all, null]
     return parts.flatMap((part) => (['en', 'mn'] as const).map((lang) => ({ model, part, lang })))
   })
   .slice(0, args.limit ? Number(args.limit) : undefined)
@@ -204,7 +259,7 @@ if (args.resume) console.log(`Resuming with ${rows.length} examples`)
 
 const sameTask = (r: Row, t: (typeof tasks)[number], assembling: boolean) =>
   r.model === t.model && r.part === t.part && r.lang === t.lang && !!r.assembling === assembling
-const perRequest = (part: string | null) => (part ? 14 : 10)
+const perRequest = (part: string | null) => (args.quick ? 5 : part ? 14 : 10)
 // Once the account cannot pay, every further request fails the same way, so stop asking.
 let stopped = false
 

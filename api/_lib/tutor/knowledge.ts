@@ -1,7 +1,9 @@
 // What the tutor knows beyond the study cards: how each part connects to the rest and, for anatomy,
 // what can go wrong with it. Written in English; the tutor answers in the student's language.
 // The same text goes into the fine-tuning data and into the live prompt, so keep it accurate and short.
-// scripts/tutorCards.test.ts checks that every part of every tutor model has an entry.
+// Every model in the library has a tutor that answers from its study cards; the models in
+// KNOWLEDGE_MODELS also have these hand-written facts. scripts/tutorCards.test.ts checks that every
+// part of those models has an entry.
 
 export interface Connection {
   /** A part id of the same model, or a thing outside the model (e.g. 'lungs', 'wall socket'). */
@@ -20,8 +22,21 @@ export interface PartKnowledge {
   notes?: string[]
 }
 
-export const TUTOR_MODELS = ['heart', 'computer'] as const
+export const TUTOR_MODELS = [
+  'heart',
+  'lungs',
+  'brain',
+  'skeleton',
+  'muscles',
+  'robotDog',
+  'rocketEngine',
+  'electricMotor',
+  'computer',
+] as const
 export type TutorModelId = (typeof TUTOR_MODELS)[number]
+
+/** Models with hand-written connections and conditions below, on top of their study cards. */
+export const KNOWLEDGE_MODELS = ['heart', 'computer'] as const satisfies readonly TutorModelId[]
 
 export const isTutorModel = (id: unknown): id is TutorModelId => TUTOR_MODELS.includes(id as TutorModelId)
 
@@ -736,4 +751,4 @@ const computer: Record<string, PartKnowledge> = {
   },
 }
 
-export const knowledge: Record<TutorModelId, Record<string, PartKnowledge>> = { heart, computer }
+export const knowledge: Partial<Record<TutorModelId, Record<string, PartKnowledge>>> = { heart, computer }

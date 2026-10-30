@@ -2,9 +2,9 @@
 // Kaggle notebook (training/hologemma-tutor.ipynb). A judge model sees the system prompt (the facts), the
 // question, the reference answer and one candidate answer at a time, without knowing which model wrote it.
 //
-// Needs ANTHROPIC_API_KEY.
+// Needs ANTHROPIC_API_KEY, or GEMINI_API_KEY with a gemini-* judge.
 //
-// Usage: npx tsx scripts/judge-tutor-eval.ts path/to/eval_outputs.jsonl
+// Usage: npx tsx scripts/judge-tutor-eval.ts path/to/eval_outputs.jsonl [judge model, default claude-opus-5-5]
 // Output: training/results.md (the before/after table)
 import Anthropic from '@anthropic-ai/sdk'
 import { betaZodOutputFormat } from '@anthropic-ai/sdk/helpers/beta/zod'
@@ -39,20 +39,12 @@ const outputs: Output[] = readFileSync(file, 'utf8')
   .filter(Boolean)
   .map((line) => JSON.parse(line) as Output)
 
+const judgeModel = process.argv[3] ?? 'claude-opus-5-5'
 const client = new Anthropic()
 
-async function judge(o: Output, candidate: string): Promise<Score | null> {
+function gradePrompt(o: Output, candidate: string) {
   const [system, ...turns] = o.messages
-  const response = await client.beta.messages.parse({
-    model: 'claude-opus-5-5',
-    max_tokens: 4000,
-    betas: ['server-side-fallback-2026-07-01'],
-    fallbacks: 'default',
-    output_config: { effort: 'low', format: betaZodOutputFormat(Score) },
-    messages: [
-      {
-        role: 'user',
-        content: `Grade a tutor's answer. The tutor was given this system prompt, which holds all the facts it may use:
+  return `Grade a tutor's answer. The tutor was given this system prompt, which holds all the facts it may use:
 
 <system_prompt>
 ${system.content}
@@ -72,9 +64,40 @@ ${candidate}
 
 grounded: 2 if every claim in the candidate is supported by the system prompt or is basic school science consistent with it and it answers the question; 1 if mostly right with a small error or gap; 0 if it invents facts, contradicts the system prompt, or misses the question.
 rightLanguage: true if it is written in the language the system prompt asks for.
-followsRules: true if it is 2–5 short sentences at school level and follows the prompt's rules (no diagnosis, declines off-topic questions).`,
-      },
-    ],
+followsRules: true if it is 2–5 short sentences at school level and follows the prompt's rules (no diagnosis, declines off-topic questions).`
+}
+
+/** Gemini's OpenAI-compatible endpoint, retried while the free tier is rate-limited. */
+async function judgeWithGemini(prompt: string): Promise<Score> {
+  for (let attempt = 0; ; attempt++) {
+    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.GEMINI_API_KEY}` },
+      body: JSON.stringify({
+        model: judgeModel,
+        messages: [{ role: 'user', content: prompt }],
+        response_format: { type: 'json_schema', json_schema: { name: 'score', schema: z.toJSONSchema(Score) } },
+      }),
+    })
+    if ((response.status === 429 || response.status === 503) && attempt < 5) {
+      await new Promise((resolve) => setTimeout(resolve, 15_000 * (attempt + 1)))
+      continue
+    }
+    if (!response.ok) throw new Error(`Gemini ${response.status}: ${await response.text()}`)
+    const body = (await response.json()) as { choices: { message: { content: string } }[] }
+    return Score.parse(JSON.parse(body.choices[0].message.content))
+  }
+}
+
+async function judge(o: Output, candidate: string): Promise<Score | null> {
+  if (judgeModel.startsWith('gemini')) return judgeWithGemini(gradePrompt(o, candidate))
+  const response = await client.beta.messages.parse({
+    model: judgeModel,
+    max_tokens: 4000,
+    betas: ['server-side-fallback-2026-07-01'],
+    fallbacks: 'default',
+    output_config: { effort: 'low', format: betaZodOutputFormat(Score) },
+    messages: [{ role: 'user', content: gradePrompt(o, candidate) }],
   })
   return response.stop_reason === 'refusal' ? null : response.parsed_output
 }
@@ -102,10 +125,9 @@ function row(label: string, list: typeof scored) {
 
 const groups = [
   ['All', scored],
-  ...['heart', 'computer'].flatMap((m) =>
-    (['en', 'mn'] as const).map(
-      (l) => [`${m} · ${l}`, scored.filter((x) => x.o.model === m && x.o.lang === l)] as const,
-    ),
+  ...(['en', 'mn'] as const).map((l) => [l, scored.filter((x) => x.o.lang === l)] as const),
+  ...[...new Set(scored.map((x) => x.o.model))].map(
+    (m) => [m, scored.filter((x) => x.o.model === m)] as const,
   ),
 ] as const
 
@@ -117,6 +139,6 @@ const table = [
 
 writeFileSync(
   'training/results.md',
-  `# Tutor eval: base Gemma vs fine-tuned\n\nHeld-out student questions from ${file}, graded by Claude Opus 5.5 without knowing which model answered.\n\n${table}\n`,
+  `# Tutor eval: base Gemma vs fine-tuned\n\nHeld-out student questions from ${file}, graded by ${judgeModel} without knowing which model answered.\n\n${table}\n`,
 )
 console.log(table)

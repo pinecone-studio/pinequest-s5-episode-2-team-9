@@ -31,3 +31,4 @@ scripts/.cache
 
 # Agent worktrees
 .claude/worktrees
+training/kaggle/*.ipynb

@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { knowledge, TUTOR_MODELS } from '../api/_lib/tutor/knowledge'
+import { KNOWLEDGE_MODELS, knowledge, TUTOR_MODELS } from '../api/_lib/tutor/knowledge'
 import { partContext, systemPrompt } from '../api/_lib/tutor/prompt'
 import { library } from '../src/models/registry'
 import { buildTutorCards, renderTutorCards } from './lib/tutorCards'
@@ -11,24 +11,29 @@ describe('tutor cards', () => {
   })
 })
 
-describe.each(TUTOR_MODELS)('%s tutor knowledge', (id) => {
+describe.each(KNOWLEDGE_MODELS)('%s tutor knowledge', (id) => {
   const def = library.find((m) => m.id === id)!
   const infoIds = new Set(def.parts.map((p) => p.info ?? p.id))
   const known = new Set([...def.parts.map((p) => p.id), ...infoIds])
+  const facts = knowledge[id]!
 
   it('covers every part', () => {
-    for (const info of infoIds) expect(knowledge[id], info).toHaveProperty([info])
-    for (const key of Object.keys(knowledge[id])) expect(infoIds, `unknown entry ${key}`).toContain(key)
+    for (const info of infoIds) expect(facts, info).toHaveProperty([info])
+    for (const key of Object.keys(facts)) expect(infoIds, `unknown entry ${key}`).toContain(key)
   })
 
   it('links only to real parts (snake_case names must be part ids)', () => {
-    for (const [key, entry] of Object.entries(knowledge[id])) {
+    for (const [key, entry] of Object.entries(facts)) {
       for (const c of entry.connections) {
         for (const ref of [c.to, c.via])
           if (/^[a-z0-9]+(_[a-z0-9]+)+$/.test(ref)) expect(known, `${key} → ${ref}`).toContain(ref)
       }
     }
   })
+})
+
+describe.each(TUTOR_MODELS)('%s tutor prompt', (id) => {
+  const def = library.find((m) => m.id === id)!
 
   it('never shows raw part ids to the model', () => {
     for (const part of def.parts) {

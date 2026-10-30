@@ -1,6 +1,6 @@
 # Fine-tuning the Hologemma guide
 
-The assembly guide and the "Ask Hologemma" box are answered by our own fine-tuned **Gemma**. It knows
+The assembly guide and the "Ask Hologemma" box are answered by our own fine-tuned **Gemma 4 E4B**. It knows
 where every part of the heart and the computer attaches, what flows through it (blood, power or data),
 what can go wrong with it, and which cable plugs into which socket, in English and Mongolian.
 
@@ -17,7 +17,7 @@ api/_lib/tutor/knowledge.ts   facts we wrote (connections, diseases, ports)   �
 src/i18n/*.json → cards.ts    the study-card texts (EN + MN)                  ─┼→ prompt.ts: systemPrompt(…, assembling)
                                                                                │      │
 scripts/build-tutor-dataset.ts  Claude writes explore + assembly-guide Q&A ◄───┘      │ same prompt
-training/hologemma-tutor.ipynb  QLoRA fine-tune of Gemma on Kaggle                     │ at runtime
+training/hologemma-tutor.ipynb  QLoRA fine-tune of Gemma 4 E4B on Kaggle               │ at runtime
 Hugging Face Inference Endpoint ──────────────────────────────► api/ask.ts ◄───────────┘
 ```
 
@@ -36,6 +36,14 @@ Put `ANTHROPIC_API_KEY` in `.env.local` (the account needs credits), then:
 npx tsx --env-file=.env.local scripts/build-tutor-dataset.ts   # --rounds 2: explore questions, then assembly-guide conversations
 ```
 
+Quick demo set (about 90 examples, 10 per model, on the part named in `DEMO_PART`; a few minutes):
+
+```sh
+npx tsx --env-file=.env.local scripts/build-tutor-dataset.ts --quick --teacher gemini-3.5-flash-lite
+```
+
+`--teacher gemini-…` uses `GEMINI_API_KEY` (free tier) instead of Claude.
+
 This writes `training/data/train.jsonl`, `eval.jsonl` and `review.md` (about 3,500 examples; if it stops
 early, add credits and rerun with `--resume`). **Read `review.md`** (100 random
 examples), especially the Mongolian answers and the cable/port facts. Fix wrong facts in `knowledge.ts`, not in
@@ -45,12 +53,14 @@ the data, then rebuild.
 
 1. kaggle.com → *Create → New Dataset*, upload `training/data/` and name it **hologemma-tutor-data**.
 2. *Create → New Notebook → File → Import notebook*, then pick `training/hologemma-tutor.ipynb`.
+   Or from the command line: `kaggle datasets create -p training/data`, then copy the notebook into
+   `training/kaggle/` and run `kaggle kernels push -p training/kaggle` (both metadata files are in the repo).
 3. Notebook settings:
    - *Accelerator*: **GPU T4 x2**
    - *Internet*: **on**
    - *Add Input*: your dataset
    - *Add-ons → Secrets*: **HF_TOKEN** (a Hugging Face *write* token)
-4. On huggingface.co, accept the Gemma licence (google/gemma-3-4b-it) with the same account. In the notebook,
+4. On huggingface.co, accept the Gemma licence (google/gemma-4-E4B-it) with the same account. In the notebook,
    set `HF_REPO` to `your-username/hologemma-tutor`.
 5. *Run all*. The notebook will:
    - train the model
@@ -75,7 +85,7 @@ https://aistudio.google.com/apikey) in `.env.local` and in Vercel. It has per-mi
 and Google may use free-tier requests to improve its products.
 
 1. huggingface.co → your `hologemma-tutor` repo → *Deploy → Inference Endpoints*.
-   - Hardware: one small GPU (an L4 or A10G is enough for 4B).
+   - Hardware: one small GPU (an L4 or A10G is enough for E4B).
    - Container: the default (TGI or vLLM).
    - Scale to zero after 15 minutes, to save credits.
 2. Copy the endpoint URL. Then set it, plus an HF token that can call it, in Vercel:
