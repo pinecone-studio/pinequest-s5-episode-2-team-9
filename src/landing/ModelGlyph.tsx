@@ -39,6 +39,26 @@ export function ModelGlyph({ id }: { id: string }) {
       </svg>
     )
   }
+  if (id === 'lungs') {
+    return (
+      <svg viewBox="0 0 200 200" className="glyph">
+        <path
+          className="glyph-main"
+          d="M86 62c-24-4-46 18-54 52-6 26-2 56 8 62 12 6 32-2 44-14 6-6 8-14 8-24V72c0-6-2-10-6-10z"
+        />
+        <path
+          className="glyph-main"
+          d="M114 62c24-4 46 18 54 52 6 26 2 56-8 62-12 6-32-2-44-14-6-6-8-14-8-24V72c0-6 2-10 6-10z"
+        />
+        <path className="glyph-accent" d="M100 22v58M100 80c-8 4-16 10-22 20M100 80c8 4 16 10 22 20" />
+        <path
+          className="glyph-sub"
+          d="M92 34h16M92 46h16M92 58h16M78 100c-10 8-16 20-18 34M78 100c-2 14 0 30 6 42M122 100c10 8 16 20 18 34M122 100c2 14 0 30-6 42"
+        />
+        <circle className="glyph-dot" cx="100" cy="80" r="4" />
+      </svg>
+    )
+  }
   if (id === 'skeleton') {
     return (
       <svg viewBox="0 0 200 200" className="glyph">
