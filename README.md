@@ -59,4 +59,6 @@ src/
   audio/      synthesized sounds
   ui/         HUD components
   i18n/       en.json, mn.json (keys must match; a test enforces it)
+  auth/       Firebase sign-in (Google, email + password), login page, route guard
+  progress/   saved progress in Firestore, profile page (/profile)
 ```
