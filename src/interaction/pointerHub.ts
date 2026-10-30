@@ -211,7 +211,9 @@ export class PointerHub {
       }
       return
     }
-    pointer.captured = false
+    // Like the mouse, a pinch on the HUD's background (or a disabled control) never reaches the scene.
+    pointer.captured = isHud(document.elementFromPoint(pointer.x, pointer.y))
+    if (pointer.captured) return
     this.emit({ type: 'down', pointer })
   }
 

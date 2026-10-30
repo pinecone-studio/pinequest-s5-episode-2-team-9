@@ -215,6 +215,24 @@ describe('HUD controls', () => {
     slider.removeEventListener('input', input)
   })
 
+  it('keeps a pinch on the bare panel or a disabled button away from the scene, like the mouse', () => {
+    for (const x of [550, 450]) {
+      tracker.send([hand(0, x, 20)])
+      tick()
+      tracker.send([hand(0, x, 20)], [{ type: 'pinchStart', handId: 0, time: now }])
+      expect(hub.pointers.get('hand-0')).toMatchObject({ pressed: true, captured: true })
+      expect(hub.scenePointers()).toEqual([])
+      // Dragging the pinch out over the scene does not start a scene gesture either.
+      tracker.send([hand(0, x, 400)])
+      for (let i = 0; i < 20; i++) tick()
+      expect(hub.scenePointers()).toEqual([])
+      tracker.send([hand(0, x, 400)], [{ type: 'pinchEnd', handId: 0, time: now, cancelled: false }])
+      expect(hub.pointers.get('hand-0')).toMatchObject({ pressed: false, captured: false })
+      tracker.send([])
+    }
+    expect(events).toEqual([])
+  })
+
   it('treats a disabled button as part of the panel, not a control', () => {
     const click = vi.fn()
     el('disabled').addEventListener('click', click)
