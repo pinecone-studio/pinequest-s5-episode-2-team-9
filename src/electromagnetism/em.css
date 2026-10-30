@@ -1,0 +1,170 @@
+/* Electromagnetism lab */
+.em-panel {
+  overflow-y: auto;
+}
+
+.em-panel .tabs {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.em-panel .tabs .hud-button {
+  padding-inline: 6px;
+  font-size: 0.68rem;
+}
+
+.em-row .hud-button {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  font-size: 0.68rem;
+}
+
+.em-row--4 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.em-row-label {
+  color: var(--ink-dim);
+  font: 600 0.72rem/1 var(--font-mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.em-charge::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 6px var(--c);
+}
+
+.em-formula {
+  display: grid;
+  gap: 4px;
+  padding: 9px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgb(var(--surface-rgb) / 0.4);
+}
+
+.em-formula span {
+  color: var(--ink-dim);
+  font-size: 0.72rem;
+}
+
+.em-formula code {
+  color: var(--cyan);
+  font: 600 0.95rem/1.3 var(--font-mono);
+}
+
+.em-facts {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.em-fact {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 10px;
+  background: rgb(var(--surface-rgb) / 0.45);
+  font-size: 0.78rem;
+}
+
+.em-fact span {
+  color: var(--ink-dim);
+}
+
+.em-fact b {
+  flex: none;
+  font: 600 0.78rem/1.3 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.em-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.em-toggle {
+  padding: 5px 8px;
+  font-size: 0.66rem;
+}
+
+.em-legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 10px;
+  color: var(--ink-dim);
+  font-size: 0.72rem;
+}
+
+.em-legend span::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 3px;
+  margin-right: 6px;
+  border-radius: 2px;
+  vertical-align: middle;
+  background: var(--c);
+  box-shadow: 0 0 5px var(--c);
+}
+
+.em-spin-key {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.em-spin-key div {
+  display: grid;
+  gap: 2px;
+  color: var(--ink-dim);
+  font-size: 0.72rem;
+}
+
+/* Hue = in-plane spin direction; the centre fades to white (up), the rim to dark (down). */
+.em-wheel {
+  flex: none;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #fff 0%, rgb(255 255 255 / 0) 42%, rgb(0 0 0 / 0) 62%, #0b0d14 100%),
+    conic-gradient(from 90deg, #ff2a2a, #ff2aff, #2a2aff, #2affff, #2aff2a, #ffff2a, #ff2a2a);
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.em-note {
+  font-size: 0.72rem;
+  opacity: 0.8;
+}
+
+.em-label-wrap {
+  pointer-events: none;
+}
+
+.em-label {
+  display: inline-block;
+  transform: translate(8px, -50%);
+  padding: 2px 6px;
+  border-left: 2px solid var(--c, var(--cyan));
+  background: rgba(3, 6, 14, 0.55);
+  color: var(--ink);
+  font: 600 0.62rem/1.3 var(--font-mono);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+:root[data-theme='light'] .em-label {
+  background: var(--panel);
+}
