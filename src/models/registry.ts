@@ -10,7 +10,17 @@ import { robotDog } from './robotDog/definition'
 import { rocketEngine } from './rocketEngine/definition'
 import { skeleton } from './skeleton/definition'
 
-export const library: ModelDefinition[] = [heart, lungs, brain, skeleton, muscles, robotDog, rocketEngine, electricMotor, computer]
+export const library: ModelDefinition[] = [
+  heart,
+  lungs,
+  brain,
+  skeleton,
+  muscles,
+  robotDog,
+  rocketEngine,
+  electricMotor,
+  computer,
+]
 
 export function modelBySlug(slug: string): ModelDefinition | undefined {
   return library.find((m) => m.slug === slug)
@@ -18,7 +28,7 @@ export function modelBySlug(slug: string): ModelDefinition | undefined {
 
 /** Labs that are not take-apart models (own scene and panel). */
 export interface Experience {
-  id: 'atoms' | 'solar'
+  id: 'atoms' | 'solar' | 'electromagnetism' | 'spacetime'
   slug: string
   accent: string
   titleKey: string
@@ -28,8 +38,38 @@ export interface Experience {
 }
 
 export const experiences: Experience[] = [
-  { id: 'atoms', slug: 'atoms', accent: '#5ee7ff', titleKey: 'atoms.title', summaryKey: 'atoms.summary', metaKey: 'atoms.meta' },
-  { id: 'solar', slug: 'solar-system', accent: '#ffcf6b', titleKey: 'solar.title', summaryKey: 'solar.summary', metaKey: 'solar.meta' },
+  {
+    id: 'atoms',
+    slug: 'atoms',
+    accent: '#5ee7ff',
+    titleKey: 'atoms.title',
+    summaryKey: 'atoms.summary',
+    metaKey: 'atoms.meta',
+  },
+  {
+    id: 'solar',
+    slug: 'solar-system',
+    accent: '#ffcf6b',
+    titleKey: 'solar.title',
+    summaryKey: 'solar.summary',
+    metaKey: 'solar.meta',
+  },
+  {
+    id: 'electromagnetism',
+    slug: 'electromagnetism',
+    accent: '#7c9cff',
+    titleKey: 'electromagnetism.title',
+    summaryKey: 'electromagnetism.summary',
+    metaKey: 'electromagnetism.meta',
+  },
+  {
+    id: 'spacetime',
+    slug: 'spacetime',
+    accent: '#c58cff',
+    titleKey: 'spacetime.title',
+    summaryKey: 'spacetime.summary',
+    metaKey: 'spacetime.meta',
+  },
 ]
 
 export function experienceBySlug(slug: string): Experience | undefined {

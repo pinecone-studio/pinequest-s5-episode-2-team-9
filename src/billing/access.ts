@@ -1,6 +1,6 @@
 // Who may open which model. Pure, so it's testable.
 // Without a subscription, each account gets FREE_PICKS models of its own choosing, for good.
-// The labs (atoms, solar system) are free for everyone and never count as a pick.
+// The labs (atoms, solar system, electromagnetism, spacetime) are free for everyone and never count as a pick.
 //
 // Firestore layout (see firestore.rules): freePicks/{uid}  models[] (model ids, at most 2), updatedAt
 // The rules only let the list grow, so a pick can't be swapped or undone.

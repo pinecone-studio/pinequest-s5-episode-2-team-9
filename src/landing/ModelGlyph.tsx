@@ -23,6 +23,34 @@ export function ModelGlyph({ id }: { id: string }) {
       </svg>
     )
   }
+  if (id === 'electromagnetism') {
+    return (
+      <svg viewBox="0 0 200 200" className="glyph">
+        <path className="glyph-accent" d="M100 26v148" />
+        <ellipse className="glyph-main" cx="100" cy="100" rx="34" ry="12" />
+        <ellipse className="glyph-sub" cx="100" cy="100" rx="58" ry="22" />
+        <ellipse className="glyph-sub" cx="100" cy="100" rx="82" ry="32" />
+        <path className="glyph-accent" d="M92 38l8-12 8 12" />
+        <circle className="glyph-dot" cx="100" cy="100" r="5" />
+      </svg>
+    )
+  }
+  if (id === 'spacetime') {
+    return (
+      <svg viewBox="0 0 200 200" className="glyph">
+        <path
+          className="glyph-sub"
+          d="M24 70c40 0 56 40 76 40s36-40 76-40M24 130c40 0 56-40 76-40s36 40 76 40"
+        />
+        <path
+          className="glyph-main"
+          d="M60 30c0 40 30 50 40 70M140 30c0 40-30 50-40 70M60 170c0-40 30-50 40-70M140 170c0-40-30-50-40-70"
+        />
+        <circle className="glyph-dot" cx="100" cy="100" r="12" />
+        <path className="glyph-accent" d="M36 40c30 10 46 34 52 52" />
+      </svg>
+    )
+  }
   if (id === 'heart') {
     return (
       <svg viewBox="0 0 200 200" className="glyph">
