@@ -59,4 +59,6 @@ src/
   audio/      synthesized sounds
   ui/         HUD components
   i18n/       en.json, mn.json (keys must match; a test enforces it)
+  solar/      solar system: real Sun, planet and Moon positions for any date, panel, controls
+  atoms/      atom builder, orbitals, double-slit and spin experiments, spectrum
 ```
