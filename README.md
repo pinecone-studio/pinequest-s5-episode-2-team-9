@@ -5,6 +5,18 @@ A holographic 3D lab you control with your bare hands through an ordinary webcam
 - Spec: [`.plans/hologemma-v1-spec.md`](.plans/hologemma-v1-spec.md) · detailed design: [`PLAN.md`](PLAN.md) · status: [`PROGRESS.md`](PROGRESS.md) · licences: [`CREDITS.md`](CREDITS.md)
 - Privacy: all camera processing happens in the browser. Video is never uploaded, stored or logged.
 
+## The AI tutor: Gemma, taught by Claude
+
+Students can ask "Ask Hologemma" about the heart or computer part they are studying or fitting, in English or Mongolian. To get a small, open model that behaves like a patient teacher, we use **knowledge distillation**: a large model (Claude Opus) writes the lessons, and a small model (Gemma 3 4B) learns from them.
+
+1. **Facts.** We wrote what each part connects to and what can go wrong with it ([`knowledge.ts`](api/_lib/tutor/knowledge.ts)), alongside the lab's study cards.
+2. **Distillation.** Claude reads the exact prompt the tutor gets in the app and writes realistic student questions with ideal answers, for every part, in both languages. Examples include misspelled teenage questions, assembly help, off-topic requests the tutor should decline, and questions the facts can't answer, where it should admit it isn't sure.
+3. **Fine-tuning.** We use QLoRA with Unsloth: Gemma is loaded in 4-bit to fit on a free Kaggle GPU, its original weights stay frozen, and small LoRA adapters (rank 16) learn the new behaviour. Loss is measured only on the tutor's answers, so the model learns how to respond rather than how to repeat the prompt.
+4. **Grounding.** The model doesn't have to memorize every fact. Each request includes the selected part's facts, built by the same [`systemPrompt()`](api/_lib/tutor/prompt.ts) used for the training data, so the model sees the same format in training and in the app. Fine-tuning teaches it to stay within those facts, answer briefly, and never diagnose.
+5. **Evaluation.** Held-out questions go to the same model with its adapters off (base) and on (tuned). Claude then grades each answer without being told which model wrote it, scoring factual grounding, language and rule-following.
+
+The merged model is built to run on a Hugging Face Inference Endpoint, with a GGUF copy as an offline backup. Until `TUTOR_ENDPOINT_URL` is set, [`/api/ask`](api/ask.ts) answers with Gemini Flash-Lite using the same prompt. Full steps: [`training/README.md`](training/README.md).
+
 ## Develop
 
 ```bash
