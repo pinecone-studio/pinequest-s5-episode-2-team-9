@@ -70,6 +70,14 @@ export function AssemblyPanel() {
               </p>
             </div>
           )}
+          {message?.kind === 'apart' && (
+            <div className="assembly-message assembly-message--wrong" key={message.id}>
+              <strong>
+                {t('assembly.apart')}: {partName(message.a)} + {partName(message.b)}
+              </strong>
+              <p>{t('assembly.apartHint')}</p>
+            </div>
+          )}
           {message?.kind === 'placed' && (
             <div className="assembly-message assembly-message--placed" key={message.id}>
               <strong>

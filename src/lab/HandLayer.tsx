@@ -86,7 +86,8 @@ export function HandLayer() {
       const two = gestureHud.two
       const a = two && hub.pointers.get(two.a)
       const b = two && hub.pointers.get(two.b)
-      if (two && a && b) drawTwoHands(ctx, a, b, two.kind, two.kind === 'explode' ? model.explode : model.scale)
+      if (two && a && b)
+        drawTwoHands(ctx, a, b, two.kind, two.kind === 'explode' ? model.explode : two.kind === 'join' ? (two.pull ?? 0) : model.scale)
 
       for (const p of hub.pointers.values()) {
         if (p.kind !== 'hand') continue
