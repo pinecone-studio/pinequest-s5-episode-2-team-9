@@ -1,0 +1,176 @@
+/* Spacetime & gravity lab */
+.st-panel {
+  overflow-y: auto;
+}
+
+.st-panel .tabs {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.st-panel .tabs .hud-button {
+  padding-inline: 6px;
+  font-size: 0.68rem;
+}
+
+.st-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.st-switch .hud-button {
+  justify-content: center;
+  border: 0;
+  border-radius: 0;
+  font-size: 0.66rem;
+}
+
+.st-bodies,
+.st-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.st-bodies .hud-button,
+.st-toggle {
+  padding: 5px 8px;
+  font-size: 0.66rem;
+}
+
+.st-bodies .hud-button::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 6px var(--c);
+}
+
+.st-panel .hud-button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.st-facts {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.st-fact {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 10px;
+  background: rgb(var(--surface-rgb) / 0.45);
+  font-size: 0.78rem;
+}
+
+.st-fact span {
+  color: var(--ink-dim);
+}
+
+.st-fact b {
+  font: 600 0.78rem/1.3 var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.st-legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 10px;
+  color: var(--ink-dim);
+  font-size: 0.72rem;
+}
+
+.st-legend span::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 2px;
+  margin-right: 6px;
+  vertical-align: middle;
+  background: var(--c);
+}
+
+.st-flaws {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: flaw;
+}
+
+.st-flaws li {
+  position: relative;
+  padding: 8px 10px 8px 34px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgb(var(--surface-rgb) / 0.4);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  counter-increment: flaw;
+}
+
+.st-flaws li::before {
+  content: counter(flaw);
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgb(255 93 108 / 0.2);
+  color: #ff8a95;
+  font: 700 0.66rem/16px var(--font-mono);
+  text-align: center;
+}
+
+/* Tags pinned in the 3D scene. */
+.st-tag {
+  display: inline-block;
+  transform: translate(6px, -50%);
+  padding: 2px 6px;
+  border-left: 2px solid var(--c, var(--cyan));
+  background: rgba(3, 6, 14, 0.55);
+  color: var(--ink);
+  font: 600 0.62rem/1.3 var(--font-mono);
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.st-tag[data-align='center'] {
+  transform: translate(-50%, -50%);
+}
+
+.st-tag[data-align='left'] {
+  transform: translate(calc(-100% - 6px), -50%);
+  border-right: 2px solid var(--c, var(--cyan));
+  border-left: 0;
+}
+
+.st-tag b {
+  display: inline-block;
+  margin-right: 4px;
+  color: var(--c, var(--cyan));
+}
+
+.st-tag small {
+  display: block;
+  color: var(--ink-dim);
+  font-size: 0.56rem;
+}
+
+:root[data-theme='light'] .st-tag {
+  background: var(--panel);
+}
