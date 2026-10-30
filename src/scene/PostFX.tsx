@@ -4,6 +4,7 @@ import { useLab } from '../lab/labStore'
 import { useQuality } from './quality'
 
 const aberrationOffset = new Vector2(0.0006, 0.0004)
+const MSAA_SAMPLES = 4
 
 // Debug: ?fx=bloom,ca,vig picks effects (default all); ?fx=0 disables (see HoloCanvas).
 const enabled = (() => {
@@ -21,14 +22,14 @@ export function PostFX() {
   if (realistic) {
     // Real objects: only a faint bloom on highlights, no hologram fringing.
     return (
-      <EffectComposer multisampling={0}>
+      <EffectComposer multisampling={MSAA_SAMPLES}>
         <Bloom mipmapBlur intensity={0.3} luminanceThreshold={0.95} luminanceSmoothing={0.1} radius={0.5} />
         <Vignette offset={0.35} darkness={0.35} />
       </EffectComposer>
     )
   }
   return (
-    <EffectComposer multisampling={0}>
+    <EffectComposer multisampling={MSAA_SAMPLES}>
       <>{enabled.bloom && <Bloom mipmapBlur intensity={1.1} luminanceThreshold={0.15} luminanceSmoothing={0.3} radius={0.7} />}</>
       <>
         {enabled.ca && level === 2 && (

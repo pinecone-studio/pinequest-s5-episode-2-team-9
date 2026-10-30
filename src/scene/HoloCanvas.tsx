@@ -15,7 +15,9 @@ export function HoloCanvas({ children }: { children: ReactNode }) {
       className="holo-canvas"
       camera={{ position: [0, 0, 3.2], fov: 45 }}
       dpr={[1, 2]}
-      gl={{ alpha: true, antialias: false, powerPreference: 'high-performance' }}
+      // antialias only covers direct rendering (lowest quality level, ?fx=0);
+      // with post effects on, PostFX's multisampling does the job.
+      gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
       onCreated={({ gl, scene }) => {
         gl.setClearColor(0x000000, 0)
         gl.localClippingEnabled = true

@@ -307,7 +307,7 @@ Studio lighting is set up in `StudioLights.tsx` and `studioEnvironment.ts`.
 
 ### 7.4 Post-processing (`scene/PostFX.tsx`)
 
-`EffectComposer` with `multisampling={0}`. Effects differ by view:
+`EffectComposer` with 4× multisampling, because it renders to its own buffer and the canvas's `antialias` flag does not reach it. That flag only covers direct rendering (quality level 0 and `?fx=0`). Effects differ by view:
 
 - **Hologram:** Bloom (intensity 1.1, luminance threshold 0.15, radius 0.7), chromatic aberration (only at the highest quality level), vignette.
 - **Realistic:** a faint bloom (intensity 0.3, threshold 0.95) and a vignette. No aberration, since real objects should not fringe.
