@@ -10,8 +10,12 @@ import { HeadParallax } from '../scene/HeadParallax'
 import { HoloCanvas } from '../scene/HoloCanvas'
 import { AtomPanel } from '../atoms/AtomPanel'
 import { AtomScene } from '../atoms/scenes/AtomScene'
+import { EmPanel } from '../electromagnetism/EmPanel'
+import { EmScene } from '../electromagnetism/scenes/EmScene'
 import { SolarPanel } from '../solar/SolarPanel'
 import { SolarScene } from '../solar/scenes/SolarScene'
+import { SpacetimePanel } from '../spacetime/SpacetimePanel'
+import { SpacetimeScene } from '../spacetime/scenes/SpacetimeScene'
 import { experienceBySlug, modelBySlug } from '../models/registry'
 import { ModelScene } from '../scene/ModelScene'
 import { CalibrationOverlay } from './CalibrationOverlay'
@@ -167,7 +171,17 @@ export default function LabPage() {
         {def || experience ? (
           <HoloCanvas>
             <Suspense fallback={null}>
-              {def ? <ModelScene def={def} /> : experience?.id === 'solar' ? <SolarScene /> : <AtomScene />}
+              {def ? (
+                <ModelScene def={def} />
+              ) : experience?.id === 'solar' ? (
+                <SolarScene />
+              ) : experience?.id === 'electromagnetism' ? (
+                <EmScene />
+              ) : experience?.id === 'spacetime' ? (
+                <SpacetimeScene />
+              ) : (
+                <AtomScene />
+              )}
             </Suspense>
             {parallaxOn && <HeadParallax head={() => services.face.latest} />}
           </HoloCanvas>
@@ -226,6 +240,8 @@ export default function LabPage() {
             {def && loaded && <ModelPanel />}
             {experience?.id === 'atoms' && <AtomPanel />}
             {experience?.id === 'solar' && <SolarPanel />}
+            {experience?.id === 'electromagnetism' && <EmPanel />}
+            {experience?.id === 'spacetime' && <SpacetimePanel />}
           </>
         )}
         <CalibrationOverlay />
