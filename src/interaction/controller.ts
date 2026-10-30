@@ -63,6 +63,13 @@ const STRETCH_TO_STUDY = 1.35
 /** User zoom limits, shared by wheel, two-hand scale and bloom. */
 const MIN_SCALE = 0.5
 const MAX_SCALE = 2.5
+/** In assembly the model sits above the bench, so it cannot grow as far. */
+const MAX_ASSEMBLY_SCALE = 1.6
+
+function clampScale(scale: number): number {
+  const max = useModel.getState().mode === 'assembly' ? MAX_ASSEMBLY_SCALE : MAX_SCALE
+  return clamp(scale, MIN_SCALE, max)
+}
 const TAP_PX = 10
 const TAP_MS = 400
 /** Two pinches on the same part within this time open it in Study. */
@@ -126,7 +133,7 @@ export class InteractionController {
   private handle(e: HubEvent): void {
     const store = useModel.getState()
     if (e.type === 'wheel') {
-      if (store.mode !== 'assembly') store.set({ scale: clamp(store.scale * Math.exp(-e.deltaY * 0.0012), MIN_SCALE, MAX_SCALE) })
+      store.set({ scale: clampScale(store.scale * Math.exp(-e.deltaY * 0.0012)) })
       return
     }
     if (e.type === 'doubleclick') {
@@ -151,7 +158,7 @@ export class InteractionController {
     }
     if (e.type === 'bloom') {
       if (e.phase === 'end') this.blooms.delete(e.pointer.id)
-      else if (store.mode !== 'assembly' && !this.two) this.blooms.set(e.pointer.id, store.scale)
+      else if (!this.two) this.blooms.set(e.pointer.id, store.scale)
       return
     }
     if (e.type === 'reset') {
@@ -205,7 +212,6 @@ export class InteractionController {
       if (other.kind === 'carry') return
       this.singles.delete(other.pointerId)
       this.stopMomentum()
-      if (store.mode === 'assembly') return
       const center = this.rig.screenCenter(this.camera, this.viewport())
       const radius = this.rig.screenRadius(this.camera, this.viewport().height) * tuning.get().explodeNearRadius
       const near = [a, p].every((q) => Math.hypot(q.x - center.x, q.y - center.y) < radius)
@@ -394,7 +400,7 @@ export class InteractionController {
           const amount = clamp(this.two.explode0 + (ratio - 1) * tuning.get().explodeGain, 0, 1)
           store.set(store.mode === 'study' ? { pieceSpread: amount } : { explode: amount })
         } else if (this.two.kind === 'scale') {
-          store.set({ scale: clamp(this.two.scale0 * ratio, MIN_SCALE, MAX_SCALE) })
+          store.set({ scale: clampScale(this.two.scale0 * ratio) })
         } else if (this.two.kind === 'stretch' && this.two.partId && ratio > STRETCH_TO_STUDY) {
           const id = this.two.partId
           this.singles.delete(this.two.a)
@@ -414,7 +420,7 @@ export class InteractionController {
       for (const [id, base] of this.blooms) {
         const factor = this.hub.pointers.get(id)?.bloom
         if (factor == null) this.blooms.delete(id)
-        else store.set({ scale: clamp(base * factor, MIN_SCALE, MAX_SCALE) })
+        else store.set({ scale: clampScale(base * factor) })
       }
     }
     gestureHud.two = this.two ? { kind: this.two.kind, a: this.two.a, b: this.two.b } : null

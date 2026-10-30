@@ -225,6 +225,7 @@ export const useModel = create<ModelState>()((set, get) => ({
       ...leaveTour(get()),
       mode: 'assembly',
       placed: [...def.baseParts],
+      scale: 1,
       explode: 0,
       cutaway: 0,
       studyPart: null,
@@ -236,7 +237,7 @@ export const useModel = create<ModelState>()((set, get) => ({
       message: null,
     })
   },
-  exitAssembly: () => set({ mode: 'explore', carried: null, hintPart: null, message: null, placed: [] }),
+  exitAssembly: () => set({ mode: 'explore', scale: 1, carried: null, hintPart: null, message: null, placed: [] }),
 
   tryPlace: (partId) => {
     const { def, placed } = get()
