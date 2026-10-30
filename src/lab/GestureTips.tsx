@@ -11,6 +11,7 @@ const TIPS: [string, I18nKey, I18nKey][] = [
   ['❁', 'tips.gather', 'tips.gatherText'],
   ['🙌', 'tips.push', 'tips.pushText'],
   ['✋', 'tips.grab', 'tips.grabText'],
+  ['🧲', 'tips.join', 'tips.joinText'],
   ['⁑', 'tips.double', 'tips.doubleText'],
   ['◔', 'tips.dwell', 'tips.dwellText'],
   ['✊', 'tips.fist', 'tips.fistText'],

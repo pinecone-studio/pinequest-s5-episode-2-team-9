@@ -135,6 +135,8 @@ export interface RigState {
   cutaway: number
   placed: ReadonlySet<string>
   carried: string | null
+  /** Assembly: the part in the other hand, when both hands carry one. */
+  carriedOther?: string | null
   hintPart: string | null
   /** Assembly guide's suggestion: a softer pulse than a hint. */
   guidePart?: string | null
@@ -178,7 +180,8 @@ export class ModelRig {
   readonly clipPlane = new Plane(new Vector3(0, 0, -1), 100)
 
   private leaderLines: LineSegments
-  private carryLine: Line
+  /** Guide lines from each carried part to its opening (one per hand). */
+  private carryLines: Line[]
   private time = 0
   /** Horizontal shift so the model sits left of the side panel. */
   private layoutShift = 0
@@ -189,6 +192,12 @@ export class ModelRig {
   realistic = false
   /** Wide, screen-filling explode (lab); off keeps the original compact spread (landing hero). */
   wideExplode = true
+  /** A hand holds the assembled model and moves it by this much (world units). */
+  readonly holdOffset = new Vector3()
+  /** 0..1: how strongly a carried part is pulled into place; brightens its guide line. */
+  magnet = 0
+  /** A loose part joined to the carried one: it rides along and shows as carried. */
+  joined: string | null = null
   /** Extra data stored on the GLB root (e.g. the robot dog's joint positions). */
   extras: Record<string, unknown> = {}
   /** Where each part attaches, for models whose GLB measures it (see `connected` on the definition). */
@@ -368,23 +377,26 @@ export class ModelRig {
     this.leaderLines.raycast = () => {}
     this.inner.add(this.leaderLines)
 
-    const carryGeometry = new BufferGeometry()
-    carryGeometry.setAttribute('position', new BufferAttribute(new Float32Array(6), 3))
-    this.carryLine = new Line(
-      carryGeometry,
-      new LineDashedMaterial({
-        color: '#dff8ff',
-        dashSize: 0.05,
-        gapSize: 0.04,
-        transparent: true,
-        opacity: 0.8,
-        depthWrite: false,
-      }),
-    )
-    this.carryLine.frustumCulled = false
-    this.carryLine.visible = false
-    this.carryLine.raycast = () => {}
-    this.root.add(this.carryLine)
+    this.carryLines = [0, 1].map(() => {
+      const geometry = new BufferGeometry()
+      geometry.setAttribute('position', new BufferAttribute(new Float32Array(6), 3))
+      const line = new Line(
+        geometry,
+        new LineDashedMaterial({
+          color: '#dff8ff',
+          dashSize: 0.05,
+          gapSize: 0.04,
+          transparent: true,
+          opacity: 0.8,
+          depthWrite: false,
+        }),
+      )
+      line.frustumCulled = false
+      line.visible = false
+      line.raycast = () => {}
+      this.root.add(line)
+      return line
+    })
 
     this.resetRotation()
   }
@@ -640,14 +652,18 @@ export class ModelRig {
       : 1 / (1 + 0.5 * Math.min(1, Math.max(0, s.explode)))
     const modelScale = assembling ? 0.56 * s.scale : s.scale * (s.mode === 'explore' ? explodeShrink : 1)
     const modelY = assembling ? 0.5 : 0
-    this.model.position.x += (this.layoutShift - this.model.position.x) * k
-    this.model.position.y += (modelY - this.model.position.y) * k
+    // A held model follows the hand closely; let go and it eases back.
+    const kHold = this.holdOffset.lengthSq() > 0 ? kFast : k
+    this.model.position.x += (this.layoutShift + this.holdOffset.x - this.model.position.x) * kHold
+    this.model.position.y += (modelY + this.holdOffset.y - this.model.position.y) * kHold
     const sc = this.model.scale.x + (modelScale - this.model.scale.x) * k
     this.model.scale.setScalar(sc)
     this.model.quaternion.slerp(this.rotation, kFast)
 
     const explode = assembling ? 0 : easeOut(Math.min(1, Math.max(0, s.explode)))
     const focus = s.mode === 'study' ? s.studyPart : null
+    const carriedOther = s.carriedOther ?? null
+    const carriedNow = (id: string) => s.carried === id || carriedOther === id || this.joined === id
     const dimOthers = s.selected !== null || s.carried !== null
 
     for (const [id, part] of this.parts) {
@@ -685,7 +701,7 @@ export class ModelRig {
       part.highlightTarget =
         focus === id
           ? 0
-          : s.hovered === id || s.selected === id || s.carried === id
+          : s.hovered === id || s.selected === id || carriedNow(id)
             ? 1
             : hinted
               ? 0.6 + 0.4 * Math.sin(this.time * 6)
@@ -703,7 +719,7 @@ export class ModelRig {
       part.flash = Math.max(0, part.flash - dt * 1.8)
       mesh.visible = part.opacity > 0.01
 
-      const dimmed = dimOthers && s.selected !== id && s.carried !== id && part.highlight < 0.5
+      const dimmed = dimOthers && s.selected !== id && !carriedNow(id) && part.highlight < 0.5
       if (this.realistic) {
         tmpColor.set(part.def.color).multiplyScalar(0.28 * (part.highlight + part.flash * 2))
         for (const m of part.reals) {
@@ -733,7 +749,7 @@ export class ModelRig {
       const showGhost = assembling && !s.placed.has(id)
       part.ghost.visible = showGhost
       if (showGhost) {
-        const strong = s.carried === id || hinted
+        const strong = carriedNow(id) || hinted
         part.ghost.material.uniforms.uOpacity.value = strong
           ? 0.45 + 0.2 * Math.sin(this.time * 5)
           : guided
@@ -745,7 +761,8 @@ export class ModelRig {
 
     if (this.motion) this.motion.update(dt, this, s.mode === 'explore' && !s.carried)
     this.updateLeaderLines(s.mode === 'explore' ? explode : 0, assembling)
-    this.updateCarryLine(s.carried)
+    this.updateCarryLine(this.carryLines[0], s.carried)
+    this.updateCarryLine(this.carryLines[1], carriedOther === this.joined ? null : carriedOther)
     this.updateClipping(s, camera)
   }
 
@@ -856,18 +873,22 @@ export class ModelRig {
     attr.needsUpdate = true
   }
 
-  private updateCarryLine(carried: string | null) {
+  private updateCarryLine(line: Line, carried: string | null) {
     const part = carried ? this.parts.get(carried) : null
-    this.carryLine.visible = !!part && part.location === 'carry'
-    if (!part || !this.carryLine.visible) return
+    line.visible = !!part && part.location === 'carry'
+    if (!part || !line.visible) return
+    // The magnet pulls the dashes together into a solid line.
+    const material = line.material as LineDashedMaterial
+    material.opacity = 0.8 + 0.2 * this.magnet
+    material.gapSize = 0.04 * (1 - this.magnet)
     // From the part's own connecting end to the opening it joins (centres for unmeasured models).
     const from = this.attachWorld(part.def.id, tmpV)
     const to = this.openingWorld(part.def.id, tmpV2)
-    const attr = this.carryLine.geometry.getAttribute('position') as BufferAttribute
+    const attr = line.geometry.getAttribute('position') as BufferAttribute
     attr.setXYZ(0, from.x, from.y, from.z)
     attr.setXYZ(1, to.x, to.y, to.z)
     attr.needsUpdate = true
-    this.carryLine.computeLineDistances()
+    line.computeLineDistances()
   }
 
   /** Cut-away: a camera-facing plane that slices off the front of whatever is in view. */
@@ -914,8 +935,10 @@ export class ModelRig {
     }
     this.leaderLines.geometry.dispose()
     ;(this.leaderLines.material as LineBasicMaterial).dispose()
-    this.carryLine.geometry.dispose()
-    ;(this.carryLine.material as LineDashedMaterial).dispose()
+    for (const line of this.carryLines) {
+      line.geometry.dispose()
+      ;(line.material as LineDashedMaterial).dispose()
+    }
   }
 }
 

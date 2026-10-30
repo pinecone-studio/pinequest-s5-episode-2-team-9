@@ -80,9 +80,24 @@ export function drawTwoHands(
   ctx: CanvasRenderingContext2D,
   a: Pointer,
   b: Pointer,
-  kind: 'explode' | 'scale' | 'stretch',
+  kind: 'explode' | 'scale' | 'stretch' | 'join',
   value: number,
 ) {
+  if (kind === 'join') {
+    // Assembly tether: the dashes close into a glowing line as the magnet pulls (value 0..1).
+    ctx.lineWidth = 2 + 2 * value
+    ctx.strokeStyle = `rgba(${CYAN}, ${0.35 + 0.6 * value})`
+    ctx.shadowColor = `rgba(${CYAN}, 0.9)`
+    ctx.shadowBlur = 16 * value
+    ctx.setLineDash([6, 6 * (1 - value)])
+    ctx.beginPath()
+    ctx.moveTo(a.x, a.y)
+    ctx.lineTo(b.x, b.y)
+    ctx.stroke()
+    ctx.setLineDash([])
+    ctx.shadowBlur = 0
+    return
+  }
   ctx.lineWidth = 2
   ctx.strokeStyle = `rgba(${CYAN}, 0.55)`
   ctx.setLineDash([6, 6])

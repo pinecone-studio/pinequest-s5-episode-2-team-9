@@ -11,22 +11,31 @@
 //   bloom:       five fingertips gathered then opened (or the reverse) = scale the model,
 //                following the fingertip spread live. A blooming hand holds nothing (a bud is
 //                not a pinch), so it scales what is on screen: the model, or the part in Study.
+//   assembly:   each hand works on its own. Pinch the model = hold it (it follows the hand);
+//                pinch a bench part = carry it. While one hand holds the model, a carried part
+//                is pulled in like a magnet and clicks into place; a part that is not next is
+//                pushed back. Two carried parts that attach to each other join into a pair
+//                (the child rides on the parent); parts that do not attach push apart.
+//                The mouse and a single hand keep plain drag and drop.
 // Hands are stabilized: small jitter is ignored, and letting go restores the pose from just
 // before the fingers opened, so the model stays exactly where it was left.
 
 import { Plane, Quaternion, Raycaster, Vector2, Vector3, type PerspectiveCamera } from 'three'
+import { event } from '../analytics'
 import { play } from '../audio/sfx'
 import { tuning } from '../input/tuning'
 import { PinchPair } from '../input/twoHands'
 import { useLab } from '../lab/labStore'
 import { useModel } from '../lab/modelStore'
-import { piecesAt } from '../models/ModelDefinition'
+import { piecesAt, placeable } from '../models/ModelDefinition'
 import type { ModelRig } from '../scene/modelRig'
 import { gestureHud } from './gestureHud'
+import { jointOf, magnetPull, pairPlaceable, REPEL_PX, SNAP_PULL } from './magnet'
 import type { HubEvent, Pointer, PointerHub } from './pointerHub'
 
 interface SingleGesture {
-  kind: 'rotate' | 'partDrag' | 'carry'
+  /** 'hold': a hand holds the model in assembly. 'done': its part clicked in; the rest of the pinch does nothing. */
+  kind: 'rotate' | 'partDrag' | 'carry' | 'hold' | 'done'
   pointerId: string
   hand: boolean
   partId: string | null
@@ -39,6 +48,10 @@ interface SingleGesture {
   startTime: number
   vx: number
   vy: number
+  /** Hold: the point grabbed, minus the model's offset at the time (world). */
+  anchor: Vector3 | null
+  /** Carry: the wrong-part push-back was already reported for this approach. */
+  repelled: boolean
 }
 
 interface TwoHandGesture {
@@ -76,6 +89,8 @@ const TAP_MS = 400
 const DOUBLE_PINCH_MS = 450
 /** Hand movement inside this band is ignored (tracking jitter). */
 const HAND_BAND_PX = 3
+/** A held model moves at most this far from its place (world units). */
+const MAX_HOLD_OFFSET = 1.4
 /** On release, the pose is restored from this long before (opening the fingers moves the hand). */
 const RELEASE_SETTLE_MS = 180
 
@@ -90,6 +105,13 @@ export class InteractionController {
   private plane = new Plane()
   private hit = new Vector3()
   private tmp = new Vector3()
+  private tmp2 = new Vector3()
+  /** Two carried parts joined by the magnet: the child rides on the parent. */
+  private pair: { parent: string; child: string } | null = null
+  /** Two parts that do not attach were reported as such (until they move apart). */
+  private apartShown = false
+  /** Strongest magnet pull this frame (0..1), for the guide line and the hand overlay. */
+  private magnet = 0
   private lastHovered: string | null = null
   private lastHoveredPiece: string | null = null
   private lastTap: { part: string; time: number } | null = null
@@ -194,7 +216,7 @@ export class InteractionController {
 
     // A second hand joins: start a two-hand gesture.
     const other = [...this.singles.values()].find((g) => g.pointerId !== p.id && g.pointerId.startsWith('hand'))
-    if (other && p.kind === 'hand') {
+    if (other && p.kind === 'hand' && !(store.mode === 'assembly' && this.independent(other, p))) {
       const a = this.hub.pointers.get(other.pointerId)
       if (!a) return
       const pair = new PinchPair(a, p)
@@ -238,6 +260,8 @@ export class InteractionController {
       startTime: performance.now(),
       vx: 0,
       vy: 0,
+      anchor: null,
+      repelled: false,
     }
     this.stopMomentum()
     this.history = []
@@ -248,7 +272,12 @@ export class InteractionController {
         gesture.kind = 'carry'
         gesture.partId = id
         this.rig.relocate(id, 'carry')
-        store.set({ carried: id, hovered: null })
+        // The second hand's part goes in carriedOther; the guide follows the first.
+        store.set(store.carried ? { carriedOther: id, hovered: null } : { carried: id, hovered: null })
+        play('pick')
+      } else if (p.kind === 'hand' && this.onModel(p) && this.holdPoint(p.x, p.y)) {
+        gesture.kind = 'hold'
+        gesture.anchor = this.hit.clone().sub(this.rig.holdOffset)
         play('pick')
       }
     } else if (store.mode === 'study' && store.studyPart) {
@@ -288,6 +317,7 @@ export class InteractionController {
     const g = this.singles.get(pointerId)
     if (!g) return
     this.singles.delete(pointerId)
+    if (g.kind === 'done' || g.kind === 'hold') return
 
     const now = performance.now()
     const tap = Math.hypot(g.lastX - g.startX, g.lastY - g.startY) < TAP_PX && now - g.startTime < TAP_MS
@@ -330,9 +360,8 @@ export class InteractionController {
 
     if (g.kind === 'carry' && g.partId) {
       const id = g.partId
-      store.set({ carried: null })
       if (cancelled) {
-        this.rig.relocate(id, 'bench')
+        this.toBench(id)
         return
       }
       const vp = this.viewport()
@@ -340,19 +369,193 @@ export class InteractionController {
       const slot = this.rig.toScreen(this.rig.slotWorld(id, this.hit), this.camera, vp)
       const tolerance = Math.max(56, this.rig.screenRadius(this.camera, vp.height) * 0.3)
       if (Math.hypot(at.x - slot.x, at.y - slot.y) > tolerance) {
-        this.rig.relocate(id, 'bench')
+        this.toBench(id)
         return
       }
-      if (store.tryPlace(id) === 'placed') {
-        this.rig.relocate(id, 'model')
-        this.rig.flash(id)
+      if (this.placeCarried(id)) {
         const done = useModel.getState().message?.kind === 'complete'
         play(done ? 'success' : 'snap')
       } else {
-        this.rig.relocate(id, 'bench')
+        this.toBench(id)
         play('wrong')
       }
     }
+  }
+
+  /** In assembly a second hand works on its own when either hand holds the model or a part. */
+  private independent(other: SingleGesture, p: Pointer): boolean {
+    if (other.kind !== 'rotate') return true
+    return !!this.rig.pick(this.ray(p.x, p.y), ['bench']) || this.onModel(p)
+  }
+
+  /** The pointer is on the assembled model (or close to its centre). */
+  private onModel(p: Pointer): boolean {
+    if (this.rig.pick(this.ray(p.x, p.y), ['model'])) return true
+    const vp = this.viewport()
+    const c = this.rig.screenCenter(this.camera, vp)
+    return Math.hypot(p.x - c.x, p.y - c.y) < this.rig.screenRadius(this.camera, vp.height) * 0.7
+  }
+
+  /** Puts the hand's point on the camera-facing plane through the model centre into this.hit. */
+  private holdPoint(x: number, y: number): boolean {
+    const center = this.rig.model.getWorldPosition(this.tmp2)
+    this.plane.set(new Vector3(0, 0, 1), -center.z)
+    return !!this.ray(x, y).ray.intersectPlane(this.plane, this.hit)
+  }
+
+  /** The hands no longer carry this part (nor its joined child). */
+  private release(id: string): void {
+    if (this.pair?.parent === id) {
+      const child = this.pair.child
+      this.pair = null
+      this.rig.joined = null
+      this.release(child)
+    }
+    const s = useModel.getState()
+    if (s.carried === id) s.set(s.carriedOther ? { carried: s.carriedOther, carriedOther: null } : { carried: null })
+    else if (s.carriedOther === id) s.set({ carriedOther: null })
+  }
+
+  /** Sends a carried part (and its joined child) back to the bench. */
+  private toBench(id: string): void {
+    const child = this.pair?.parent === id ? this.pair.child : null
+    this.release(id)
+    this.rig.relocate(id, 'bench')
+    if (child) this.rig.relocate(child, 'bench')
+  }
+
+  /** Places a carried part, with its joined child. False (and the reason shown) if it is not next. */
+  private placeCarried(id: string): boolean {
+    const store = useModel.getState()
+    const def = store.def
+    const child = this.pair?.parent === id ? this.pair.child : null
+    if (!def) return false
+    if (child && !pairPlaceable(def, store.placed, id, child)) {
+      // Name whichever part is not ready yet.
+      store.tryPlace(placeable(def, new Set(store.placed)).includes(id) ? child : id)
+      return false
+    }
+    if (store.tryPlace(id) !== 'placed') return false
+    this.release(id)
+    this.rig.relocate(id, 'model')
+    this.rig.flash(id)
+    if (child) {
+      useModel.getState().tryPlace(child)
+      this.rig.relocate(child, 'model')
+      this.rig.flash(child)
+    }
+    return true
+  }
+
+  /**
+   * One hand holds the model, the other carries a part: the part is pulled toward its slot and
+   * clicks in, or pushed back if it is not next. Adjusts the carry target in `target`.
+   */
+  private magnetize(g: SingleGesture, target: Vector3): void {
+    const id = g.partId!
+    const store = useModel.getState()
+    const def = store.def!
+    const vp = this.viewport()
+    // Part centre to slot, like the drop check: carried parts are not rotated with the model,
+    // so their connecting end only meets the opening once placed.
+    const end = this.rig.toScreen(this.rig.partWorld(id, this.tmp), this.camera, vp)
+    const opening = this.rig.toScreen(this.rig.slotWorld(id, this.tmp2), this.camera, vp)
+    const d = Math.hypot(end.x - opening.x, end.y - opening.y)
+    const radius = Math.max(70, this.rig.screenRadius(this.camera, vp.height) * 0.45)
+    const child = this.pair?.parent === id ? this.pair.child : null
+    const ready = child ? pairPlaceable(def, store.placed, id, child) : placeable(def, new Set(store.placed)).includes(id)
+
+    if (ready) {
+      const pull = magnetPull(d, radius)
+      this.magnet = Math.max(this.magnet, pull)
+      target.lerp(this.rig.slotWorld(id, this.tmp2), pull)
+      if (pull < SNAP_PULL) return
+      if (!this.placeCarried(id)) return
+      const done = useModel.getState().message?.kind === 'complete'
+      play(done ? 'success' : 'snap')
+      event('two_hand_join', { kind: child ? 'pair' : 'base', model: def.id })
+      g.kind = 'done'
+      g.partId = null
+      return
+    }
+
+    if (d > radius) {
+      g.repelled = false
+      return
+    }
+    // Not next: push it back out from the opening, harder the closer it gets.
+    const worldPerPx = this.rig.model.scale.x / this.rig.screenRadius(this.camera, vp.height)
+    const away = this.tmp.set(end.x - opening.x, opening.y - end.y, 0)
+    if (away.lengthSq() < 1) away.set(0, 1, 0)
+    target.addScaledVector(away.normalize(), REPEL_PX * worldPerPx * (1 - d / radius))
+    if (!g.repelled) {
+      g.repelled = true
+      store.tryPlace(child && placeable(def, new Set(store.placed)).includes(id) ? child : id)
+      play('wrong')
+    }
+  }
+
+  /**
+   * Both hands carry a part: parts that attach to each other pull together and join into a pair
+   * (the child then rides on the parent and its hand is free); parts that do not push apart.
+   */
+  private joinCarried(a: SingleGesture, b: SingleGesture): void {
+    const store = useModel.getState()
+    const def = store.def!
+    const vp = this.viewport()
+    const radius = Math.max(70, this.rig.screenRadius(this.camera, vp.height) * 0.45)
+    const joint = jointOf(def, a.partId!, b.partId!)
+    const pa = this.rig.parts.get(a.partId!)!
+    const pb = this.rig.parts.get(b.partId!)!
+
+    if (!joint) {
+      const sa = this.rig.toScreen(this.rig.partWorld(a.partId!, this.tmp), this.camera, vp)
+      const sb = this.rig.toScreen(this.rig.partWorld(b.partId!, this.tmp), this.camera, vp)
+      const d = Math.hypot(sa.x - sb.x, sa.y - sb.y)
+      if (d > radius * 1.2) {
+        this.apartShown = false
+        return
+      }
+      if (d > radius) return
+      // Push both away from each other.
+      const worldPerPx = this.rig.model.scale.x / this.rig.screenRadius(this.camera, vp.height)
+      const away = this.tmp.set(sb.x - sa.x, sa.y - sb.y, 0)
+      if (away.lengthSq() < 1) away.set(1, 0, 0)
+      away.normalize().multiplyScalar(REPEL_PX * worldPerPx * (1 - d / radius))
+      pb.targetPos.add(away)
+      pa.targetPos.sub(away)
+      if (!this.apartShown) {
+        this.apartShown = true
+        store.apart(a.partId!, b.partId!)
+        play('wrong')
+      }
+      return
+    }
+
+    const childG = joint.child === a.partId ? a : b
+    const parent = this.rig.parts.get(joint.parent)!
+    const child = this.rig.parts.get(joint.child)!
+    const docked = this.dockedPosition(parent, child, this.tmp2)
+    const at = this.rig.toScreen(this.rig.partWorld(joint.child, this.tmp), this.camera, vp)
+    const dock = this.rig.toScreen(docked, this.camera, vp)
+    const pull = magnetPull(Math.hypot(at.x - dock.x, at.y - dock.y), radius)
+    this.magnet = Math.max(this.magnet, pull)
+    child.targetPos.lerp(docked, pull)
+    if (pull < SNAP_PULL) return
+
+    this.pair = { parent: joint.parent, child: joint.child }
+    this.rig.joined = joint.child
+    store.set({ carried: joint.parent, carriedOther: joint.child })
+    childG.kind = 'done'
+    childG.partId = null
+    play('snap')
+    event('two_hand_join', { kind: 'link', model: def.id })
+  }
+
+  /** Where a child sits on its carried parent: their assembled offset, at the carried size. */
+  private dockedPosition(parent: { targetPos: Vector3; home: Vector3 }, child: { home: Vector3 }, out: Vector3): Vector3 {
+    const scale = this.rig.normScale * this.rig.model.scale.x
+    return out.copy(child.home).sub(parent.home).multiplyScalar(scale).add(parent.targetPos)
   }
 
   /** A hand let go: restore the pose from just before its fingers started to open. */
@@ -385,6 +588,7 @@ export class InteractionController {
   update(dt: number): void {
     const store = useModel.getState()
     const vp = this.viewport()
+    this.magnet = 0
 
     // Two-hand gestures.
     if (this.two) {
@@ -423,10 +627,9 @@ export class InteractionController {
         else store.set({ scale: clampScale(base * factor) })
       }
     }
-    gestureHud.two = this.two ? { kind: this.two.kind, a: this.two.a, b: this.two.b } : null
-
     // Single-pointer gestures.
     let rotating = false
+    const holding = store.mode === 'assembly' && [...this.singles.values()].some((g) => g.kind === 'hold')
     for (const g of this.singles.values()) {
       const p = this.hub.pointers.get(g.pointerId)
       if (!p) continue
@@ -449,13 +652,46 @@ export class InteractionController {
           g.vx += ((dx * k) / dt - g.vx) * 0.35
           g.vy += ((dy * k) / dt - g.vy) * 0.35
         }
+      } else if (g.kind === 'hold' && g.anchor) {
+        if (holding && this.holdPoint(g.lastX, g.lastY))
+          this.rig.holdOffset.copy(this.hit).sub(g.anchor).setZ(0).clampLength(0, MAX_HOLD_OFFSET)
       } else if (g.partId) {
         // Drag the part on a camera-facing plane through its slot (2.5D).
         const slot = this.rig.slotWorld(g.partId, this.tmp)
         this.plane.set(new Vector3(0, 0, 1), -slot.z)
-        if (this.ray(p.x, p.y).ray.intersectPlane(this.plane, this.hit)) this.rig.carryTo(g.partId, this.hit)
+        if (this.ray(p.x, p.y).ray.intersectPlane(this.plane, this.hit)) {
+          // Only two hands get the magnet: one holds the model, the other brings the part.
+          if (g.kind === 'carry' && g.hand && holding) this.magnetize(g, this.hit)
+          if (g.partId) this.rig.carryTo(g.partId, this.hit)
+        }
       }
     }
+    if (!holding) this.rig.holdOffset.set(0, 0, 0)
+
+    // A joined child rides on its parent; two loose parts in two hands may join.
+    if (store.mode !== 'assembly' && this.pair) {
+      this.pair = null
+      this.rig.joined = null
+    } else if (store.mode === 'assembly') {
+      if (this.pair) {
+        const parent = this.rig.parts.get(this.pair.parent)!
+        const child = this.rig.parts.get(this.pair.child)!
+        if (parent.location === 'carry') this.rig.carryTo(child.def.id, this.dockedPosition(parent, child, this.tmp))
+      } else {
+        const carries = [...this.singles.values()].filter((g) => g.kind === 'carry' && g.hand && g.partId)
+        if (carries.length === 2) this.joinCarried(carries[0], carries[1])
+        else this.apartShown = false
+      }
+    }
+    this.rig.magnet = this.magnet
+
+    // Hand overlay: the two-hand gesture, or a tether between two hands working on the assembly.
+    const busy = store.mode === 'assembly' ? [...this.singles.values()].filter((g) => g.hand && (g.kind === 'hold' || g.kind === 'carry')) : []
+    gestureHud.two = this.two
+      ? { kind: this.two.kind, a: this.two.a, b: this.two.b }
+      : busy.length === 2
+        ? { kind: 'join', a: busy[0].pointerId, b: busy[1].pointerId, pull: this.magnet }
+        : null
 
     const handGesture = this.two ? this.two.kind !== 'stretch' : [...this.singles.values()].some((g) => g.hand && g.kind === 'rotate')
     if (handGesture) this.record()

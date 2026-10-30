@@ -166,6 +166,7 @@ export function ModelScene({ def }: { def: ModelDefinition }) {
         cutaway: s.cutaway,
         placed,
         carried: s.carried,
+        carriedOther: s.carriedOther,
         hintPart: s.hintPart,
         guidePart: s.mode === 'assembly' && def.connected && s.guide ? nextPart(def, s.placed) : null,
         studyPath: s.studyPath,

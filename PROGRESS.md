@@ -9,6 +9,7 @@ Spec: `.plans/hologemma-v1-spec.md` · Design: `PLAN.md`.
 |---|---|---|
 | Computer hardware | ✅ | Original mid-tower PC built in code from ATX, PCIe, DIMM and drive sizes (`scripts/build-computer.ts`), ~160k triangles. 20 assembly parts, realistic view only (no hologram switch), assembly chain from case to side panel. Mongolian text needs review. |
 | Multi-material parts | ✅ | A part can carry several looks (GLB primitives named by look id); the rig merges them into one geometry with a material per group. Used for gold contacts, chips, labels, LEDs, copper, sleeved wires |
+| Two-hand magnetic assembly | ✅ | Hold the model with one hand and bring a part with the other: the right part is pulled in and clicks into place, a part that is not next is pushed back. Two loose parts that attach join into a pair first; parts that do not push apart. Mouse and one hand keep drag and drop (`src/interaction/magnet.ts`, controller). Mongolian tip text needs review |
 
 Details: LGA socket with contact field, load plate and lever; CPU with heat spreader and land pads; tower cooler with U heat pipes and 48 fins; DDR5 modules with edge contacts and light bars; GPU with stepped PCB, gold fingers, backplate, fin stack, three fans and output bracket; modular PSU with grille and honeycomb rear; individually modelled 24-pin, 8-pin CPU, 8-pin PCIe and SATA power wires routed behind the tray through grommets.
 

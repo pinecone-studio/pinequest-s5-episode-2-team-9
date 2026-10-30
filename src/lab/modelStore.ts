@@ -9,6 +9,8 @@ export type BrainScenario = 'see' | 'smell' | 'touch'
 export type AssemblyMessage =
   | { kind: 'wrong'; partId: string; id: number }
   | { kind: 'placed'; partId: string; id: number }
+  /** Two loose parts held together that do not attach to each other. */
+  | { kind: 'apart'; a: string; b: string; id: number }
   | { kind: 'complete'; id: number }
 
 interface ModelState {
@@ -33,6 +35,8 @@ interface ModelState {
   cutaway: number
   placed: string[]
   carried: string | null
+  /** Assembly: the part in the other hand, when both hands carry one. */
+  carriedOther: string | null
   hintPart: string | null
   /** Assembly guide: points at the next part and where it attaches (models with connections). */
   guide: boolean
@@ -73,6 +77,8 @@ interface ModelState {
   exitAssembly: () => void
   /** Returns 'placed' or the reason it was refused. */
   tryPlace: (partId: string) => 'placed' | 'wrong'
+  /** Shows that two loose parts do not attach to each other. */
+  apart: (a: string, b: string) => void
   hint: () => void
   resetView: () => void
   startTour: () => void
@@ -95,6 +101,8 @@ export function guideTarget(s: {
   mode: ViewMode
   placed: readonly string[]
   carried: string | null
+  /** Assembly: the part in the other hand, when both hands carry one. */
+  carriedOther: string | null
   hintPart: string | null
   guide: boolean
 }): string | null {
@@ -131,6 +139,7 @@ const initial = {
   cutaway: 0,
   placed: [],
   carried: null,
+  carriedOther: null,
   hintPart: null,
   guide: true,
   message: null,
@@ -233,11 +242,12 @@ export const useModel = create<ModelState>()((set, get) => ({
       hoveredPiece: null,
       selected: null,
       carried: null,
+      carriedOther: null,
       hintPart: null,
       message: null,
     })
   },
-  exitAssembly: () => set({ mode: 'explore', scale: 1, carried: null, hintPart: null, message: null, placed: [] }),
+  exitAssembly: () => set({ mode: 'explore', scale: 1, carried: null, carriedOther: null, hintPart: null, message: null, placed: [] }),
 
   tryPlace: (partId) => {
     const { def, placed } = get()
@@ -255,6 +265,8 @@ export const useModel = create<ModelState>()((set, get) => ({
     })
     return 'placed'
   },
+
+  apart: (a, b) => set({ message: { kind: 'apart', a, b, id: ++messageId } }),
 
   hint: () => {
     const { def, placed, hintPart } = get()
