@@ -67,7 +67,8 @@ export function createDogMotion(rig: ModelRig): RigMotion {
       const g = GAITS[gait]
       t += dt * (0.5 + 1.8 * (tempo / 100))
       for (const leg of LEGS) {
-        const phase = (t + g.offsets[leg]) % 1
+        // A leg's offset is how far behind the first leg it runs.
+        const phase = (((t - g.offsets[leg]) % 1) + 1) % 1
         let dx: number
         let dy = 0
         if (phase < g.duty) {
