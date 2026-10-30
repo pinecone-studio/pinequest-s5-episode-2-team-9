@@ -2,6 +2,8 @@
 
 A holographic 3D lab you control with your bare hands through an ordinary webcam. Take a human heart and a robot dog apart in mid-air, study every piece, then put them back together.
 
+> **Монголоор:** Энгийн вэбкамераар гараараа удирддаг голограм 3D лаборатори. Хүний зүрх, робот нохойг агаарт задалж, хэсэг бүрийг нь судлаад, буцааж угсарна.
+
 - Spec: [`.plans/hologemma-v1-spec.md`](.plans/hologemma-v1-spec.md) · detailed design: [`PLAN.md`](PLAN.md) · status: [`PROGRESS.md`](PROGRESS.md) · licences: [`CREDITS.md`](CREDITS.md)
 - Privacy: all camera processing happens in the browser. Video is never uploaded, stored or logged.
 
