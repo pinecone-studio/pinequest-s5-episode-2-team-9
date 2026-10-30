@@ -673,6 +673,3035 @@ export const cards: Record<TutorModelId, { title: { en: string; mn: string }; pa
       }
     }
   },
+  "lungs": {
+    "title": {
+      "en": "Human lungs",
+      "mn": "Хүний уушги"
+    },
+    "parts": {
+      "trachea": {
+        "info": "trachea",
+        "dependsOn": [],
+        "en": {
+          "name": "Trachea",
+          "group": "Airways",
+          "desc": "The trachea (windpipe) carries air from the larynx down into the chest, where it splits into the two main bronchi at the carina. It is about 10–12 cm long and 2 cm wide, held open by 16–20 C-shaped rings of cartilage.",
+          "fact": "Its lining is covered in cilia that beat about 15 times a second, sweeping a layer of sticky mucus — and the dust and germs caught in it — up to your throat."
+        },
+        "mn": {
+          "name": "Цагаан мөгөөрсөн хоолой",
+          "group": "Амьсгалын зам",
+          "desc": "Цагаан мөгөөрсөн хоолой нь агаарыг мөгөөрсөн хоолойноос цээж рүү дамжуулж, карина гэдэг хэсэгт хоёр гол гуурсан хоолой болон салаалдаг. 10–12 см урт, 2 см өргөн бөгөөд 16–20 ширхэг С хэлбэрийн мөгөөрсөн цагираг нээлттэй байлгадаг.",
+          "fact": "Дотор талын салст бүрхүүлийн сормоснууд секундэд 15 орчим удаа цохилж, тоос, нянг барьсан наалдамхай салсыг хоолой руу түлхэн гаргадаг."
+        }
+      },
+      "right_bronchial_tree": {
+        "info": "right_bronchial_tree",
+        "dependsOn": [
+          "trachea"
+        ],
+        "en": {
+          "name": "Right bronchial tree",
+          "group": "Airways",
+          "desc": "From the carina, the right main bronchus divides into three lobar bronchi (upper, middle, lower) and then ten segmental bronchi, one for each segment — the real branching of this lung, from the atlas scan.",
+          "fact": "The right main bronchus is wider, shorter and steeper than the left, so inhaled objects such as peanuts end up on the right far more often."
+        },
+        "mn": {
+          "name": "Баруун гуурсан хоолойн мод",
+          "group": "Амьсгалын зам",
+          "desc": "Каринаас баруун гол гуурсан хоолой гурван дэлбэнгийн (дээд, дунд, доод), дараа нь сегмент бүрд нэг гэсэн арван сегментийн гуурсан хоолой болон салаалдаг. Энэ бол атласын сканаас авсан энэ уушгины бодит салаалалт юм.",
+          "fact": "Баруун гол гуурсан хоолой зүүнээсээ өргөн, богино, илүү босоо тул залгисан самар зэрэг жижиг биет ихэвчлэн баруун тийш ордог."
+        }
+      },
+      "left_bronchial_tree": {
+        "info": "left_bronchial_tree",
+        "dependsOn": [
+          "trachea"
+        ],
+        "en": {
+          "name": "Left bronchial tree",
+          "group": "Airways",
+          "desc": "The left main bronchus is about 5 cm long. It runs under the aortic arch to the left lung, where it divides into the upper and lower lobar bronchi and their segmental bronchi.",
+          "fact": "Before air reaches the alveoli, the airways branch about 23 times — from one trachea into roughly 8 million tiny alveolar ducts."
+        },
+        "mn": {
+          "name": "Зүүн гуурсан хоолойн мод",
+          "group": "Амьсгалын зам",
+          "desc": "Зүүн гол гуурсан хоолой 5 см орчим урт. Гол судасны нумын доогуур зүүн уушги руу орж, дээд ба доод дэлбэнгийн гуурсан хоолой, тэдгээрийн сегментийн салаа болон хуваагддаг.",
+          "fact": "Агаар цулцанд хүрэхээсээ өмнө амьсгалын зам 23 орчим удаа салаалдаг, нэг цагаан мөгөөрсөн хоолойгоос 8 сая орчим цулцангийн жижиг суваг үүсдэг."
+        }
+      },
+      "right_upper_lobe": {
+        "info": "right_upper_lobe",
+        "dependsOn": [
+          "right_bronchial_tree"
+        ],
+        "en": {
+          "name": "Right upper lobe",
+          "group": "Lobes",
+          "desc": "The top of the right lung. The horizontal fissure separates it from the middle lobe and the oblique fissure from the lower lobe. It has three segments: apical, posterior and anterior.",
+          "fact": "Its apex rises 2–3 cm above the collarbone, into the root of the neck."
+        },
+        "mn": {
+          "name": "Баруун дээд дэлбэн",
+          "group": "Дэлбэнүүд",
+          "desc": "Баруун уушгины дээд хэсэг. Хэвтээ ан цав түүнийг дунд дэлбэнгээс, ташуу ан цав доод дэлбэнгээс тусгаарладаг. Оройн, арын, урд гэсэн гурван сегменттэй.",
+          "fact": "Түүний орой эгэмнээс 2–3 см дээш, хүзүүний ёроол руу цухуйдаг."
+        }
+      },
+      "right_middle_lobe": {
+        "info": "right_middle_lobe",
+        "dependsOn": [
+          "right_bronchial_tree"
+        ],
+        "en": {
+          "name": "Right middle lobe",
+          "group": "Lobes",
+          "desc": "A wedge at the front of the right lung, between the horizontal and oblique fissures, with a lateral and a medial segment. It rests against the right side of the heart.",
+          "fact": "Because it touches the heart, pneumonia here blurs the heart's right border on an X-ray — doctors call this the silhouette sign."
+        },
+        "mn": {
+          "name": "Баруун дунд дэлбэн",
+          "group": "Дэлбэнүүд",
+          "desc": "Хэвтээ ба ташуу ан цавын хооронд, баруун уушгины урд талд байрлах шаантаг хэлбэрийн дэлбэн. Хажуугийн ба дотор сегменттэй бөгөөд зүрхний баруун талд наалдаж байдаг.",
+          "fact": "Зүрхэнд шүргэдэг тул энд уушгины үрэвсэл гарвал рентген зураг дээр зүрхний баруун хүрээ бүдгэрдэг, эмч нар үүнийг «сүүдрийн шинж» гэдэг."
+        }
+      },
+      "right_lower_lobe": {
+        "info": "right_lower_lobe",
+        "dependsOn": [
+          "right_bronchial_tree"
+        ],
+        "en": {
+          "name": "Right lower lobe",
+          "group": "Lobes",
+          "desc": "The largest lobe of the right lung, behind and below the oblique fissure, resting on the diaphragm. It has five segments: superior and four basal ones.",
+          "fact": "The lung bases move the most when you breathe in, so the lower lobes get the most fresh air with each breath — and, when you stand, the most blood too."
+        },
+        "mn": {
+          "name": "Баруун доод дэлбэн",
+          "group": "Дэлбэнүүд",
+          "desc": "Баруун уушгины хамгийн том дэлбэн. Ташуу ан цавын ард, доор, өрцөн дээр тулж байрладаг. Дээд сегмент ба суурийн дөрвөн сегменттэй.",
+          "fact": "Амьсгал авахад уушгины суурь хамгийн их хөдөлдөг тул доод дэлбэнгүүд амьсгал бүрт хамгийн их цэвэр агаар авдаг. Зогсож байхад хамгийн их цус ч мөн тэнд очдог."
+        }
+      },
+      "left_upper_lobe": {
+        "info": "left_upper_lobe",
+        "dependsOn": [
+          "left_bronchial_tree"
+        ],
+        "en": {
+          "name": "Left upper lobe",
+          "group": "Lobes",
+          "desc": "The upper lobe of the left lung, separated from the lower lobe by the oblique fissure. Its front edge has the cardiac notch, where the heart pushes the lung aside, and below it the lingula.",
+          "fact": "The lingula (Latin for 'little tongue') is the left lung's version of the right middle lobe."
+        },
+        "mn": {
+          "name": "Зүүн дээд дэлбэн",
+          "group": "Дэлбэнүүд",
+          "desc": "Зүүн уушгины дээд дэлбэн, доод дэлбэнгээс ташуу ан цаваар тусгаарлагдана. Урд ирмэгт нь зүрх уушгийг түлхсэн зүрхний хонхор, түүний доор хэлэнцэр байдаг.",
+          "fact": "Хэлэнцэр (латинаар «жижиг хэл») бол баруун уушгины дунд дэлбэнтэй адил үүрэгтэй зүүн уушгины хэсэг юм."
+        }
+      },
+      "left_lower_lobe": {
+        "info": "left_lower_lobe",
+        "dependsOn": [
+          "left_bronchial_tree"
+        ],
+        "en": {
+          "name": "Left lower lobe",
+          "group": "Lobes",
+          "desc": "The lower lobe of the left lung, behind and below the oblique fissure, resting on the left dome of the diaphragm. It has a superior segment and four basal segments.",
+          "fact": "Much of it lies behind the heart, so on a chest X-ray it is partly hidden in the heart's shadow."
+        },
+        "mn": {
+          "name": "Зүүн доод дэлбэн",
+          "group": "Дэлбэнүүд",
+          "desc": "Зүүн уушгины доод дэлбэн. Ташуу ан цавын ард, доор, өрцний зүүн бөмбөгөр дээр байрладаг. Дээд сегмент ба суурийн дөрвөн сегменттэй.",
+          "fact": "Ихэнх хэсэг нь зүрхний ард байдаг тул цээжний рентген зураг дээр зүрхний сүүдэрт хэсэгчлэн далдлагддаг."
+        }
+      },
+      "pulmonary_arteries": {
+        "info": "pulmonary_arteries",
+        "dependsOn": [
+          "right_bronchial_tree",
+          "left_bronchial_tree"
+        ],
+        "en": {
+          "name": "Pulmonary arteries",
+          "group": "Pulmonary vessels",
+          "desc": "The pulmonary trunk carries oxygen-poor blood from the right ventricle and divides into the right and left pulmonary arteries. Inside the lungs their branches follow the bronchi, one artery for every segment.",
+          "fact": "They are the only arteries carrying oxygen-poor blood, and their pressure is low: about 15 mmHg on average, a sixth of the pressure in the body's arteries."
+        },
+        "mn": {
+          "name": "Уушгины артериуд",
+          "group": "Уушгины судас",
+          "desc": "Уушгины их бие баруун ховдлоос хүчилтөрөгч багатай цусыг гаргаж, баруун ба зүүн уушгины артери болон хуваагддаг. Уушги дотор салаанууд нь гуурсан хоолойг дагаж, сегмент бүрд нэг артери очдог.",
+          "fact": "Хүчилтөрөгч багатай цус зөөдөг цорын ганц артери. Даралт нь бага: дунджаар 15 мм.муб орчим, биеийн артерийн даралтын зургааны нэг."
+        }
+      },
+      "pulmonary_veins": {
+        "info": "pulmonary_veins",
+        "dependsOn": [
+          "pulmonary_arteries"
+        ],
+        "en": {
+          "name": "Pulmonary veins",
+          "group": "Pulmonary vessels",
+          "desc": "Four pulmonary veins, two from each lung, bring freshly oxygenated blood back to the left atrium.",
+          "fact": "Inside the lung the veins run between the segments, not alongside the bronchi — which is why a surgeon can remove a single segment."
+        },
+        "mn": {
+          "name": "Уушгины венүүд",
+          "group": "Уушгины судас",
+          "desc": "Уушги бүрээс хоёр, нийт дөрвөн уушгины вен хүчилтөрөгчөөр баяжсан цусыг зүүн тосгуур руу буцааж авчирдаг.",
+          "fact": "Уушги дотор венүүд гуурсан хоолойг дагалгүй сегментүүдийн хооронд явдаг, тиймээс мэс засалч ганц сегментийг авах боломжтой."
+        }
+      },
+      "diaphragm": {
+        "info": "diaphragm",
+        "dependsOn": [
+          "right_lower_lobe",
+          "left_lower_lobe"
+        ],
+        "en": {
+          "name": "Diaphragm",
+          "group": "Breathing muscle",
+          "desc": "The dome-shaped sheet of muscle under the lungs and your main breathing muscle. When it contracts it flattens and moves down — about 1.5 cm in a quiet breath, up to 6–10 cm in a deep one — so the chest grows and air flows in. It is driven by the phrenic nerves (from spinal levels C3–C5).",
+          "fact": "At rest it does about two-thirds of the work of breathing without you thinking about it — roughly 20,000 times a day."
+        },
+        "mn": {
+          "name": "Өрц",
+          "group": "Амьсгалын булчин",
+          "desc": "Уушгины доорх бөмбөгөр хэлбэрийн булчингийн хавтас, амьсгалын гол булчин. Агших үедээ хавтгайрч доошилдог, тайван амьсгалд 1.5 см, гүн амьсгалд 6–10 см хүртэл, ингэснээр цээж томорч агаар ордог. Өрцний мэдрэл (нугасны C3–C5 түвшин) удирддаг.",
+          "fact": "Тайван үед амьсгалын ажлын гуравны хоёрыг та бодолгүйгээр хийдэг, өдөрт 20,000 орчим удаа."
+        }
+      }
+    }
+  },
+  "brain": {
+    "title": {
+      "en": "Human brain",
+      "mn": "Хүний тархи"
+    },
+    "parts": {
+      "brainstem": {
+        "info": "brainstem",
+        "dependsOn": [],
+        "en": {
+          "name": "Brainstem",
+          "group": "Cerebellum & brainstem",
+          "desc": "The brainstem — midbrain, pons and medulla — connects the brain to the spinal cord. It runs automatic life functions such as breathing, heart rate, blood pressure and swallowing, and it controls sleep and waking.",
+          "fact": "Most of the nerves of the head and face (the cranial nerves) start in the brainstem."
+        },
+        "mn": {
+          "name": "Тархины иш",
+          "group": "Бага тархи ба тархины иш",
+          "desc": "Тархины иш, дунд тархи, гүүр, уртавтар тархи, тархийг нугастай холбодог. Амьсгал, зүрхний цохилт, цусны даралт, залгих зэрэг автомат амин үйл ажиллагаа болон нойр, сэрүүнийг удирддаг.",
+          "fact": "Толгой, нүүрний мэдрэлүүдийн (гавлын мэдрэлүүд) ихэнх нь тархины ишнээс эхэлдэг."
+        }
+      },
+      "cerebellum": {
+        "info": "cerebellum",
+        "dependsOn": [
+          "brainstem"
+        ],
+        "en": {
+          "name": "Cerebellum",
+          "group": "Cerebellum & brainstem",
+          "desc": "The cerebellum ('little brain') at the back coordinates balance, posture and smooth, precise movement. It also helps you learn movement skills like riding a bike.",
+          "fact": "It is only about a tenth of the brain's volume, but it holds more than half of all its neurons."
+        },
+        "mn": {
+          "name": "Бага тархи",
+          "group": "Бага тархи ба тархины иш",
+          "desc": "Ар талд байрлах бага тархи тэнцвэр, биеийн байрлал, жигд нарийн хөдөлгөөнийг зохицуулдаг. Дугуй унах гэх мэт хөдөлгөөний ур чадвар сурахад бас тусалдаг.",
+          "fact": "Тархины эзлэхүүний аравны нэг орчим хэрнээ нийт нейроны талаас илүүг агуулдаг."
+        }
+      },
+      "thalamus": {
+        "info": "thalamus",
+        "dependsOn": [
+          "brainstem"
+        ],
+        "en": {
+          "name": "Thalamus",
+          "group": "Deep structures",
+          "desc": "The thalamus is the brain's relay station. Almost all signals from the senses — except smell — pass through it on their way to the cortex.",
+          "fact": "There is one thalamus in each half of the brain, each about the size of a walnut."
+        },
+        "mn": {
+          "name": "Харааны толгод (таламус)",
+          "group": "Гүн бүтцүүд",
+          "desc": "Таламус бол тархины дамжуулах төв. Үнэрээс бусад бараг бүх мэдрэхүйн дохио бор давхарга руу явахдаа түүгээр дамждаг.",
+          "fact": "Тархины тал бүрт нэг таламус байдаг бөгөөд тус бүр нь хушганы самрын хэмжээтэй."
+        }
+      },
+      "hypothalamus": {
+        "info": "hypothalamus",
+        "dependsOn": [
+          "thalamus"
+        ],
+        "en": {
+          "name": "Hypothalamus",
+          "group": "Deep structures",
+          "desc": "The hypothalamus, just below the thalamus, controls body temperature, hunger, thirst and sleep. It also commands the pituitary gland, the body's 'master gland' for hormones.",
+          "fact": "It is smaller than an almond, yet it steers much of the body's hormone system."
+        },
+        "mn": {
+          "name": "Харааны толгодын доод хэсэг (гипоталамус)",
+          "group": "Гүн бүтцүүд",
+          "desc": "Гипоталамус таламусын яг доор байрлаж, биеийн температур, өлсөх, цангах, нойрыг зохицуулдаг. Мөн дааврын \"гол булчирхай\" болох өнчин тархийг удирддаг.",
+          "fact": "Бүйлснээс жижиг хэрнээ биеийн дааврын системийн ихэнхийг жолооддог."
+        }
+      },
+      "pineal_gland": {
+        "info": "pineal_gland",
+        "dependsOn": [
+          "thalamus"
+        ],
+        "en": {
+          "name": "Pineal gland",
+          "group": "Deep structures",
+          "desc": "The pineal gland is a tiny gland in the middle of the brain. It releases melatonin, the hormone that helps control your sleep–wake cycle.",
+          "fact": "It makes most of its melatonin in the dark, which is why bright screens at night can delay sleep."
+        },
+        "mn": {
+          "name": "Нарсан булчирхай",
+          "group": "Гүн бүтцүүд",
+          "desc": "Нарсан булчирхай нь тархины голд байрлах жижигхэн булчирхай. Нойр, сэрүүний хэмнэлийг зохицуулахад тусалдаг мелатонин дааврыг ялгаруулдаг.",
+          "fact": "Мелатонины ихэнхийг харанхуйд гаргадаг тул шөнө гэрэлтэй дэлгэц харах нь нойрыг хойшлуулж болно."
+        }
+      },
+      "basal_ganglia": {
+        "info": "basal_ganglia",
+        "dependsOn": [
+          "thalamus"
+        ],
+        "en": {
+          "name": "Basal ganglia",
+          "group": "Deep structures",
+          "desc": "The basal ganglia are deep clusters of nerve cells (the caudate, putamen, globus pallidus and others). They help start smooth movements, stop unwanted ones and build habits.",
+          "fact": "Parkinson's disease happens when the dopamine cells that feed the basal ganglia, in the substantia nigra, die."
+        },
+        "mn": {
+          "name": "Суурь зангилаанууд",
+          "group": "Гүн бүтцүүд",
+          "desc": "Суурь зангилаанууд нь мэдрэлийн эсийн гүн бөөгнөрөл (сүүлт цөм, хальс, цайвар бөмбөлөг гэх мэт). Жигд хөдөлгөөнийг эхлүүлж, хүсээгүй хөдөлгөөнийг зогсоож, зуршил бий болгоход тусалдаг.",
+          "fact": "Паркинсоны өвчин нь суурь зангилааг дофаминаар хангадаг хар бодисын эсүүд үхэх үед үүсдэг."
+        }
+      },
+      "hippocampus": {
+        "info": "hippocampus",
+        "dependsOn": [
+          "thalamus"
+        ],
+        "en": {
+          "name": "Hippocampus and fornix",
+          "group": "Deep structures",
+          "desc": "The hippocampus is a curved structure deep in the temporal lobe. It turns new experiences into long-term memories and helps you find your way. The fornix carries its signals onward.",
+          "fact": "Its name means 'seahorse' in Greek, because of its curled shape."
+        },
+        "mn": {
+          "name": "Гиппокамп ба форникс",
+          "group": "Гүн бүтцүүд",
+          "desc": "Гиппокамп чамархайн дэлбэнгийн гүнд байрлах муруй бүтэц юм. Шинэ туршлагыг урт хугацааны дурсамж болгож, зам олоход тусалдаг. Форникс түүний дохиог цааш дамжуулдаг.",
+          "fact": "Мушгирсан хэлбэрээсээ болж грекээр \"далайн морь\" гэсэн утгатай нэр авсан."
+        }
+      },
+      "amygdala": {
+        "info": "amygdala",
+        "dependsOn": [
+          "hippocampus"
+        ],
+        "en": {
+          "name": "Amygdala",
+          "group": "Deep structures",
+          "desc": "The amygdala is an almond-shaped group of nuclei in front of the hippocampus. It detects threats, drives fear and other strong emotions, and helps emotional memories stick.",
+          "fact": "'Amygdala' comes from the Greek word for almond."
+        },
+        "mn": {
+          "name": "Бүйлсэн булчирхай (амигдала)",
+          "group": "Гүн бүтцүүд",
+          "desc": "Амигдала бол гиппокампын урд байрлах бүйлс хэлбэртэй цөмүүдийн бүлэг. Аюулыг илрүүлж, айдас болон бусад хүчтэй сэтгэл хөдлөлийг өдөөж, сэтгэлд хоногшсон дурсамжийг бататгадаг.",
+          "fact": "\"Амигдала\" нь грекээр бүйлс гэсэн үгнээс гаралтай."
+        }
+      },
+      "ventricles": {
+        "info": "ventricles",
+        "dependsOn": [
+          "thalamus"
+        ],
+        "en": {
+          "name": "Ventricles",
+          "group": "Pathways & fluid",
+          "desc": "The ventricles are connected spaces filled with cerebrospinal fluid. The fluid cushions the brain, carries away waste and keeps the chemical balance right.",
+          "fact": "Your body makes about half a litre of this fluid every day, replacing it several times a day."
+        },
+        "mn": {
+          "name": "Тархины ховдлууд",
+          "group": "Зам ба шингэн",
+          "desc": "Ховдлууд нь тархи нугасны шингэнээр дүүрсэн, хоорондоо холбогдсон хөндийнүүд. Шингэн тархийг дэвтээж хамгаалж, хаягдлыг зайлуулж, химийн тэнцвэрийг хадгалдаг.",
+          "fact": "Таны бие өдөрт хагас литр орчим ийм шингэн гаргадаг бөгөөд өдөрт хэд хэдэн удаа шинэчилдэг."
+        }
+      },
+      "visual_pathway": {
+        "info": "visual_pathway",
+        "dependsOn": [
+          "thalamus"
+        ],
+        "en": {
+          "name": "Visual pathway",
+          "group": "Pathways & fluid",
+          "desc": "The optic chiasm, optic tracts and optic radiations carry signals from the eyes to the visual cortex in the occipital lobes.",
+          "fact": "At the optic chiasm, the fibres from the inner half of each eye cross over to the other side of the brain."
+        },
+        "mn": {
+          "name": "Харааны зам",
+          "group": "Зам ба шингэн",
+          "desc": "Харааны огтлолцол, харааны зам, харааны цацраг нь нүднээс ирэх дохиог дагзны дэлбэн дэх харааны бор давхарга руу дамжуулдаг.",
+          "fact": "Харааны огтлолцол дээр нүд бүрийн дотор талын ширхэгүүд тархины эсрэг тал руу шилждэг."
+        }
+      },
+      "corpus_callosum": {
+        "info": "corpus_callosum",
+        "dependsOn": [
+          "ventricles"
+        ],
+        "en": {
+          "name": "Corpus callosum",
+          "group": "Deep structures",
+          "desc": "The corpus callosum is a thick band of about 200 million nerve fibres that connects the left and right hemispheres so they can share information.",
+          "fact": "Rarely, surgeons cut it to stop severe epilepsy; afterwards the two halves of the brain can act surprisingly independently."
+        },
+        "mn": {
+          "name": "Мозолист бие",
+          "group": "Гүн бүтцүүд",
+          "desc": "Мозолист бие нь 200 сая орчим мэдрэлийн ширхэгээс тогтсон зузаан тууз бөгөөд зүүн, баруун тархины хагасыг холбож мэдээлэл солилцох боломж олгодог.",
+          "fact": "Хүнд хэлбэрийн эпилепсийг зогсоохын тулд мэс засалчид ховор тохиолдолд үүнийг тасалдаг; дараа нь тархины хоёр хагас гайхмаар бие даан ажиллаж чаддаг."
+        }
+      },
+      "limbic_cortex": {
+        "info": "limbic_cortex",
+        "dependsOn": [
+          "corpus_callosum"
+        ],
+        "en": {
+          "name": "Limbic cortex",
+          "group": "Cerebral cortex",
+          "desc": "The limbic cortex — mainly the cingulate gyrus and the parahippocampal gyrus — curves around the middle of the brain. It links emotion, attention and memory.",
+          "fact": "The cingulate gyrus becomes active when you notice you made a mistake, and when something hurts."
+        },
+        "mn": {
+          "name": "Лимбийн бор давхарга",
+          "group": "Их тархины бор давхарга",
+          "desc": "Лимбийн бор давхарга, гол төлөв бүслүүр атираа ба гиппокампын хажуугийн атираа, тархины голыг тойрон нугалагддаг. Сэтгэл хөдлөл, анхаарал, ой санамжийг холбодог.",
+          "fact": "Алдаа гаргаснаа анзаарах болон ямар нэг зүйл өвдөх үед бүслүүр атираа идэвхждэг."
+        }
+      },
+      "olfactory_pathway": {
+        "info": "olfactory_pathway",
+        "dependsOn": [
+          "limbic_cortex"
+        ],
+        "en": {
+          "name": "Olfactory bulbs and tracts",
+          "group": "Pathways & fluid",
+          "desc": "The olfactory bulbs and tracts carry smell signals from the nose to the brain.",
+          "fact": "Smell is the only sense that does not pass through the thalamus first — it goes almost straight to emotion and memory areas, which is why smells can bring back memories so strongly."
+        },
+        "mn": {
+          "name": "Үнэрлэх булцуу ба зам",
+          "group": "Зам ба шингэн",
+          "desc": "Үнэрлэх булцуу ба зам нь хамраас ирэх үнэрийн дохиог тархи руу дамжуулдаг.",
+          "fact": "Үнэр бол таламусаар дамждаггүй цорын ганц мэдрэхүй, сэтгэл хөдлөл, ой санамжийн хэсэгт бараг шууд очдог тул үнэр дурсамжийг маш хүчтэй сэргээдэг."
+        }
+      },
+      "insula": {
+        "info": "insula",
+        "dependsOn": [
+          "basal_ganglia"
+        ],
+        "en": {
+          "name": "Insula",
+          "group": "Cerebral cortex",
+          "desc": "The insula is a hidden lobe folded deep inside the side of the brain. It senses the body's inner state — heartbeat, hunger, pain — and links it to feelings.",
+          "fact": "It contains the main taste area of the cortex, and it is active when you feel disgust."
+        },
+        "mn": {
+          "name": "Арал (инсула)",
+          "group": "Их тархины бор давхарга",
+          "desc": "Арал бол тархины хажуу талд гүн нугалагдсан нуугдмал дэлбэн. Биеийн дотоод байдлыг, зүрхний цохилт, өлсөх, өвдөх, мэдэрч, мэдрэмжтэй холбодог.",
+          "fact": "Бор давхаргын амт мэдрэх гол хэсэг энд байдаг бөгөөд жигшин зэвүүцэх үед идэвхждэг."
+        }
+      },
+      "frontal_lobe_left": {
+        "info": "frontal_lobe",
+        "dependsOn": [
+          "corpus_callosum",
+          "insula"
+        ],
+        "en": {
+          "name": "Frontal lobe (left)",
+          "group": "Cerebral cortex",
+          "desc": "The frontal lobe sits behind your forehead. It plans, makes decisions and controls movement — its back strip, the motor cortex, sends commands to your muscles. It also helps control behaviour and emotions.",
+          "fact": "The very front part (the prefrontal cortex) is the last brain area to fully mature — often not until your mid-20s."
+        },
+        "mn": {
+          "name": "Духны дэлбэн (зүүн)",
+          "group": "Их тархины бор давхарга",
+          "desc": "Духны дэлбэн духны ард байрладаг. Төлөвлөх, шийдвэр гаргах, хөдөлгөөнийг удирдах үүрэгтэй, ар талын зурвас буюу хөдөлгөөний бор давхарга булчинд тушаал илгээдэг. Мөн зан төлөв, сэтгэл хөдлөлийг хянахад тусалдаг.",
+          "fact": "Хамгийн урд хэсэг (духны өмнөх бор давхарга) хамгийн сүүлд бүрэн төлөвшдөг, ихэвчлэн 25 орчим нас хүртэл."
+        }
+      },
+      "parietal_lobe_left": {
+        "info": "parietal_lobe",
+        "dependsOn": [
+          "frontal_lobe_left"
+        ],
+        "en": {
+          "name": "Parietal lobe (left)",
+          "group": "Cerebral cortex",
+          "desc": "The parietal lobe processes touch, temperature, pain and the position of your body. It combines the senses to tell you where things are around you.",
+          "fact": "Its front strip holds a 'map' of the body — the hands and lips take up a surprisingly large part of it."
+        },
+        "mn": {
+          "name": "Оройн дэлбэн (зүүн)",
+          "group": "Их тархины бор давхарга",
+          "desc": "Оройн дэлбэн хүрэлцэх, температур, өвдөлт болон биеийн байрлалын мэдээллийг боловсруулдаг. Мэдрэхүйнүүдийг нэгтгэж, эргэн тойрны зүйлс хаана байгааг танд хэлдэг.",
+          "fact": "Түүний урд зурваст биеийн \"газрын зураг\" байдаг, гар, уруул түүний гайхмаар том хэсгийг эзэлдэг."
+        }
+      },
+      "temporal_lobe_left": {
+        "info": "temporal_lobe",
+        "dependsOn": [
+          "insula",
+          "hippocampus",
+          "amygdala"
+        ],
+        "en": {
+          "name": "Temporal lobe (left)",
+          "group": "Cerebral cortex",
+          "desc": "The temporal lobes, beside your ears, handle hearing, understanding language and recognising faces and objects. Together with the hippocampus they help store memories.",
+          "fact": "In most people the left temporal lobe contains Wernicke's area, which is key for understanding speech."
+        },
+        "mn": {
+          "name": "Чамархайн дэлбэн (зүүн)",
+          "group": "Их тархины бор давхарга",
+          "desc": "Чихний хажууд байрлах чамархайн дэлбэн сонсох, хэл ойлгох, нүүр царай болон эд зүйлсийг танихад оролцдог. Гиппокамптай хамт дурсамж хадгалахад тусалдаг.",
+          "fact": "Ихэнх хүмүүст зүүн чамархайн дэлбэнд ярианы утгыг ойлгоход чухал Вернике-гийн хэсэг байрладаг."
+        }
+      },
+      "occipital_lobe_left": {
+        "info": "occipital_lobe",
+        "dependsOn": [
+          "parietal_lobe_left"
+        ],
+        "en": {
+          "name": "Occipital lobe (left)",
+          "group": "Cerebral cortex",
+          "desc": "The occipital lobe at the back of the head is the main visual centre. It turns signals from the eyes into shapes, colours and movement.",
+          "fact": "Each side of the brain sees the opposite half of the world: the left occipital lobe processes what is to your right."
+        },
+        "mn": {
+          "name": "Дагзны дэлбэн (зүүн)",
+          "group": "Их тархины бор давхарга",
+          "desc": "Дагзны дэлбэн толгойн ар талд байрлах харааны гол төв юм. Нүднээс ирсэн дохиог хэлбэр, өнгө, хөдөлгөөн болгон хувиргадаг.",
+          "fact": "Тархины тал бүр ертөнцийн эсрэг талын хагасыг хардаг: зүүн дагзны дэлбэн таны баруун талд байгаа зүйлийг боловсруулдаг."
+        }
+      },
+      "frontal_lobe_right": {
+        "info": "frontal_lobe",
+        "dependsOn": [
+          "corpus_callosum",
+          "insula"
+        ],
+        "en": {
+          "name": "Frontal lobe (right)",
+          "group": "Cerebral cortex",
+          "desc": "The frontal lobe sits behind your forehead. It plans, makes decisions and controls movement — its back strip, the motor cortex, sends commands to your muscles. It also helps control behaviour and emotions.",
+          "fact": "The very front part (the prefrontal cortex) is the last brain area to fully mature — often not until your mid-20s."
+        },
+        "mn": {
+          "name": "Духны дэлбэн (баруун)",
+          "group": "Их тархины бор давхарга",
+          "desc": "Духны дэлбэн духны ард байрладаг. Төлөвлөх, шийдвэр гаргах, хөдөлгөөнийг удирдах үүрэгтэй, ар талын зурвас буюу хөдөлгөөний бор давхарга булчинд тушаал илгээдэг. Мөн зан төлөв, сэтгэл хөдлөлийг хянахад тусалдаг.",
+          "fact": "Хамгийн урд хэсэг (духны өмнөх бор давхарга) хамгийн сүүлд бүрэн төлөвшдөг, ихэвчлэн 25 орчим нас хүртэл."
+        }
+      },
+      "parietal_lobe_right": {
+        "info": "parietal_lobe",
+        "dependsOn": [
+          "frontal_lobe_right"
+        ],
+        "en": {
+          "name": "Parietal lobe (right)",
+          "group": "Cerebral cortex",
+          "desc": "The parietal lobe processes touch, temperature, pain and the position of your body. It combines the senses to tell you where things are around you.",
+          "fact": "Its front strip holds a 'map' of the body — the hands and lips take up a surprisingly large part of it."
+        },
+        "mn": {
+          "name": "Оройн дэлбэн (баруун)",
+          "group": "Их тархины бор давхарга",
+          "desc": "Оройн дэлбэн хүрэлцэх, температур, өвдөлт болон биеийн байрлалын мэдээллийг боловсруулдаг. Мэдрэхүйнүүдийг нэгтгэж, эргэн тойрны зүйлс хаана байгааг танд хэлдэг.",
+          "fact": "Түүний урд зурваст биеийн \"газрын зураг\" байдаг, гар, уруул түүний гайхмаар том хэсгийг эзэлдэг."
+        }
+      },
+      "temporal_lobe_right": {
+        "info": "temporal_lobe",
+        "dependsOn": [
+          "insula",
+          "hippocampus",
+          "amygdala"
+        ],
+        "en": {
+          "name": "Temporal lobe (right)",
+          "group": "Cerebral cortex",
+          "desc": "The temporal lobes, beside your ears, handle hearing, understanding language and recognising faces and objects. Together with the hippocampus they help store memories.",
+          "fact": "In most people the left temporal lobe contains Wernicke's area, which is key for understanding speech."
+        },
+        "mn": {
+          "name": "Чамархайн дэлбэн (баруун)",
+          "group": "Их тархины бор давхарга",
+          "desc": "Чихний хажууд байрлах чамархайн дэлбэн сонсох, хэл ойлгох, нүүр царай болон эд зүйлсийг танихад оролцдог. Гиппокамптай хамт дурсамж хадгалахад тусалдаг.",
+          "fact": "Ихэнх хүмүүст зүүн чамархайн дэлбэнд ярианы утгыг ойлгоход чухал Вернике-гийн хэсэг байрладаг."
+        }
+      },
+      "occipital_lobe_right": {
+        "info": "occipital_lobe",
+        "dependsOn": [
+          "parietal_lobe_right"
+        ],
+        "en": {
+          "name": "Occipital lobe (right)",
+          "group": "Cerebral cortex",
+          "desc": "The occipital lobe at the back of the head is the main visual centre. It turns signals from the eyes into shapes, colours and movement.",
+          "fact": "Each side of the brain sees the opposite half of the world: the left occipital lobe processes what is to your right."
+        },
+        "mn": {
+          "name": "Дагзны дэлбэн (баруун)",
+          "group": "Их тархины бор давхарга",
+          "desc": "Дагзны дэлбэн толгойн ар талд байрлах харааны гол төв юм. Нүднээс ирсэн дохиог хэлбэр, өнгө, хөдөлгөөн болгон хувиргадаг.",
+          "fact": "Тархины тал бүр ертөнцийн эсрэг талын хагасыг хардаг: зүүн дагзны дэлбэн таны баруун талд байгаа зүйлийг боловсруулдаг."
+        }
+      }
+    }
+  },
+  "skeleton": {
+    "title": {
+      "en": "Human skeleton",
+      "mn": "Хүний араг яс"
+    },
+    "parts": {
+      "sacrum": {
+        "info": "sacrum",
+        "dependsOn": [],
+        "en": {
+          "name": "Sacrum",
+          "group": "Spine",
+          "desc": "The sacrum is a triangle-shaped bone at the bottom of the spine, made of five vertebrae that fuse together as you grow. It joins the spine to the hips and carries the weight of the upper body.",
+          "fact": "Below it sits the coccyx, the tailbone — a tiny leftover of the tail our distant ancestors had."
+        },
+        "mn": {
+          "name": "Ууц",
+          "group": "Нуруу",
+          "desc": "Ууц бол нурууны доод хэсэгт байрлах гурвалжин хэлбэртэй яс бөгөөд таныг өсөхөд нийлдэг таван нугаламаас тогтдог. Нурууг аарцагтай холбож, биеийн дээд хэсгийн жинг даадаг.",
+          "fact": "Түүний доор сүүжний яс байрладаг, алс холын өвөг дээдсийн сүүлний жижиг үлдэгдэл."
+        }
+      },
+      "lumbar_spine": {
+        "info": "lumbar_spine",
+        "dependsOn": [
+          "sacrum"
+        ],
+        "en": {
+          "name": "Lumbar spine",
+          "group": "Spine",
+          "desc": "The five lumbar vertebrae in the lower back are the biggest and strongest in the spine, because they carry the most weight. Soft discs between them absorb shocks.",
+          "fact": "Lower back pain is one of the most common health problems in the world — strong core muscles help protect these bones."
+        },
+        "mn": {
+          "name": "Бүсэлхийн нугалам",
+          "group": "Нуруу",
+          "desc": "Нурууны доод хэсгийн таван бүсэлхийн нугалам нурууны хамгийн том, бат бөх нугаламууд бөгөөд хамгийн их жин даадаг. Тэдгээрийн хоорондох зөөлөн жийргэвч цохилтыг шингээдэг.",
+          "fact": "Нурууны доод хэсгийн өвдөлт дэлхийн хамгийн түгээмэл эрүүл мэндийн асуудлын нэг, бат бөх гэдэс, нурууны булчин эдгээр ясыг хамгаалдаг."
+        }
+      },
+      "thoracic_spine": {
+        "info": "thoracic_spine",
+        "dependsOn": [
+          "lumbar_spine"
+        ],
+        "en": {
+          "name": "Thoracic spine",
+          "group": "Spine",
+          "desc": "The twelve thoracic vertebrae form the middle of the back. Each one is joined to a pair of ribs, building the cage that protects the heart and lungs.",
+          "fact": "The spinal cord runs through a hole in every vertebra, like a cable through a stack of rings."
+        },
+        "mn": {
+          "name": "Цээжний нугалам",
+          "group": "Нуруу",
+          "desc": "Арван хоёр цээжний нугалам нурууны дунд хэсгийг бүрдүүлдэг. Тус бүр нэг хос хавиргатай холбогдож, зүрх, уушгийг хамгаалах торыг үүсгэдэг.",
+          "fact": "Нугасны мэдрэл нугалам бүрийн нүхээр, цагиргуудын овоолгоор дамжсан кабель шиг, явдаг."
+        }
+      },
+      "cervical_spine": {
+        "info": "cervical_spine",
+        "dependsOn": [
+          "thoracic_spine"
+        ],
+        "en": {
+          "name": "Cervical spine",
+          "group": "Spine",
+          "desc": "The seven cervical vertebrae form the neck. The top two, the atlas and the axis, are special: they let your head nod and turn.",
+          "fact": "A giraffe also has just seven neck vertebrae — they are simply much longer."
+        },
+        "mn": {
+          "name": "Хүзүүний нугалам",
+          "group": "Нуруу",
+          "desc": "Долоон хүзүүний нугалам хүзүүг бүрдүүлдэг. Дээд хоёр нь, атлас ба тэнхлэг нугалам, онцгой: толгойг дохих, эргүүлэх боломж олгодог.",
+          "fact": "Анааш ч бас долоон хүзүүний нугаламтай, зүгээр л хамаагүй урт."
+        }
+      },
+      "cranium": {
+        "info": "cranium",
+        "dependsOn": [
+          "cervical_spine"
+        ],
+        "en": {
+          "name": "Cranium",
+          "group": "Skull",
+          "desc": "The cranium is the part of the skull that surrounds and protects the brain. It is made of eight bones joined by wavy seams called sutures.",
+          "fact": "A newborn baby's skull has soft gaps between the bones (fontanelles) so the head can squeeze through birth and the brain can grow."
+        },
+        "mn": {
+          "name": "Гавлын хайрцаг",
+          "group": "Гавал",
+          "desc": "Гавлын хайрцаг нь тархийг хүрээлж хамгаалдаг гавлын хэсэг юм. Оёдол гэж нэрлэгддэг долгионтой заадсаар холбогдсон найман яснаас тогтдог.",
+          "fact": "Нярай хүүхдийн гавлын ясны хооронд зөөлөн зай (зулай) байдаг тул төрөх үед толгой шахагдаж, тархи өсөх боломжтой."
+        }
+      },
+      "facial_bones": {
+        "info": "facial_bones",
+        "dependsOn": [
+          "cranium"
+        ],
+        "en": {
+          "name": "Facial bones",
+          "group": "Skull",
+          "desc": "The facial bones shape your face: the cheekbones, the upper jaw (maxilla), the nose bones and the walls of the eye sockets.",
+          "fact": "Your upper teeth are held in the maxilla, which does not move — all chewing comes from the lower jaw."
+        },
+        "mn": {
+          "name": "Нүүрний яс",
+          "group": "Гавал",
+          "desc": "Нүүрний яснууд таны нүүрний хэлбэрийг бүрдүүлдэг: хацрын яс, дээд эрүү, хамрын яс, нүдний хонхорын хана.",
+          "fact": "Дээд шүд хөдөлдөггүй дээд эрүүнд бэхлэгддэг, бүх зажлах хөдөлгөөн доод эрүүнээс гардаг."
+        }
+      },
+      "mandible": {
+        "info": "mandible",
+        "dependsOn": [
+          "cranium"
+        ],
+        "en": {
+          "name": "Mandible and hyoid",
+          "group": "Skull",
+          "desc": "The mandible is the lower jaw, the only bone in the skull that moves. The small hyoid bone in the neck anchors the tongue.",
+          "fact": "The hyoid is the only bone in the body that does not connect to any other bone."
+        },
+        "mn": {
+          "name": "Доод эрүү ба хэлэн яс",
+          "group": "Гавал",
+          "desc": "Доод эрүү бол гавлын цорын ганц хөдөлдөг яс. Хүзүүн дэх жижиг хэлэн яс хэлийг бэхэлдэг.",
+          "fact": "Хэлэн яс бол биеийн өөр ямар ч ястай холбогддоггүй цорын ганц яс юм."
+        }
+      },
+      "ribs_left": {
+        "info": "ribs",
+        "dependsOn": [
+          "thoracic_spine"
+        ],
+        "en": {
+          "name": "Ribs (left)",
+          "group": "Chest",
+          "desc": "Twelve pairs of ribs curve around the chest. They protect the heart and lungs, and they move up and out each time you breathe in.",
+          "fact": "The bottom two pairs are \"floating ribs\": they are not attached to the sternum at the front."
+        },
+        "mn": {
+          "name": "Хавирга (зүүн)",
+          "group": "Цээж",
+          "desc": "Арван хоёр хос хавирга цээжийг тойрон муруйдаг. Зүрх, уушгийг хамгаалж, амьсгал авах бүрд дээш, гадагш хөдөлдөг.",
+          "fact": "Доод хоёр хос нь \"чөлөөт хавирга\": урд талдаа өвчүүтэй холбогддоггүй."
+        }
+      },
+      "ribs_right": {
+        "info": "ribs",
+        "dependsOn": [
+          "thoracic_spine"
+        ],
+        "en": {
+          "name": "Ribs (right)",
+          "group": "Chest",
+          "desc": "Twelve pairs of ribs curve around the chest. They protect the heart and lungs, and they move up and out each time you breathe in.",
+          "fact": "The bottom two pairs are \"floating ribs\": they are not attached to the sternum at the front."
+        },
+        "mn": {
+          "name": "Хавирга (баруун)",
+          "group": "Цээж",
+          "desc": "Арван хоёр хос хавирга цээжийг тойрон муруйдаг. Зүрх, уушгийг хамгаалж, амьсгал авах бүрд дээш, гадагш хөдөлдөг.",
+          "fact": "Доод хоёр хос нь \"чөлөөт хавирга\": урд талдаа өвчүүтэй холбогддоггүй."
+        }
+      },
+      "sternum": {
+        "info": "sternum",
+        "dependsOn": [
+          "ribs_left",
+          "ribs_right"
+        ],
+        "en": {
+          "name": "Sternum",
+          "group": "Chest",
+          "desc": "The sternum, or breastbone, is a flat bone in the middle of the chest. The ribs attach to it with flexible cartilage.",
+          "fact": "In CPR you press on the sternum to squeeze the heart behind it."
+        },
+        "mn": {
+          "name": "Өвчүүний яс",
+          "group": "Цээж",
+          "desc": "Өвчүүний яс бол цээжний голд байрлах хавтгай яс. Хавиргууд түүнд уян мөгөөрсөөр холбогддог.",
+          "fact": "Зүрх-уушгины сэхээн амьдруулалтын үед ард нь байрлах зүрхийг шахахын тулд өвчүүний яс дээр дардаг."
+        }
+      },
+      "clavicle_left": {
+        "info": "clavicle",
+        "dependsOn": [
+          "sternum"
+        ],
+        "en": {
+          "name": "Clavicle (left)",
+          "group": "Arms & hands",
+          "desc": "The clavicle, or collarbone, is a slim bone that holds the shoulder out to the side so the arm can move freely.",
+          "fact": "It is one of the most commonly broken bones, often from falling onto an outstretched hand."
+        },
+        "mn": {
+          "name": "Эгэм (зүүн)",
+          "group": "Гар",
+          "desc": "Эгэм бол мөрийг хажуу тийш нь барьж, гарыг чөлөөтэй хөдлөх боломж олгодог нарийн яс.",
+          "fact": "Хамгийн их хугардаг ясны нэг, ихэвчлэн сунгасан гар дээрээ унаснаас болдог."
+        }
+      },
+      "scapula_left": {
+        "info": "scapula",
+        "dependsOn": [
+          "clavicle_left",
+          "ribs_left"
+        ],
+        "en": {
+          "name": "Scapula (left)",
+          "group": "Arms & hands",
+          "desc": "The scapula, or shoulder blade, is a flat triangular bone on the back. Seventeen muscles attach to it and move the arm.",
+          "fact": "It is held to the body almost only by muscles, which is why the shoulder can move so far in every direction."
+        },
+        "mn": {
+          "name": "Далны яс (зүүн)",
+          "group": "Гар",
+          "desc": "Далны яс нь нуруун дээрх хавтгай гурвалжин яс. Арван долоон булчин түүнд бэхлэгдэж, гарыг хөдөлгөдөг.",
+          "fact": "Бараг зөвхөн булчингаар биед бэхлэгддэг тул мөр бүх чиглэлд маш их хөдөлж чаддаг."
+        }
+      },
+      "humerus_left": {
+        "info": "humerus",
+        "dependsOn": [
+          "scapula_left"
+        ],
+        "en": {
+          "name": "Humerus (left)",
+          "group": "Arms & hands",
+          "desc": "The humerus is the long bone of the upper arm. Its round head fits into a shallow socket on the scapula to form the shoulder joint.",
+          "fact": "The 'funny bone' is not a bone: it is a nerve passing over the bottom of the humerus at the elbow."
+        },
+        "mn": {
+          "name": "Бугалганы яс (зүүн)",
+          "group": "Гар",
+          "desc": "Бугалганы яс бол дээд гарын урт яс. Бөөрөнхий толгой нь далны ясны гүехэн хонхорт орж мөрний үеийг үүсгэдэг.",
+          "fact": "\"Инээдтэй яс\" гэдэг нь яс биш: тохойн хэсэгт бугалганы ясны доод талаар явдаг мэдрэл юм."
+        }
+      },
+      "radius_left": {
+        "info": "radius",
+        "dependsOn": [
+          "humerus_left"
+        ],
+        "en": {
+          "name": "Radius (left)",
+          "group": "Arms & hands",
+          "desc": "The radius is the forearm bone on the thumb side. It can roll around the ulna, which lets you turn your palm up and down.",
+          "fact": "A broken wrist is very often a break at the end of the radius."
+        },
+        "mn": {
+          "name": "Шууны гадна яс (зүүн)",
+          "group": "Гар",
+          "desc": "Шууны гадна яс эрхий хурууны талд байрладаг. Дотор ясыг тойрон эргэж, алгаа дээш доош эргүүлэх боломж олгодог.",
+          "fact": "Бугуй хугарах нь ихэвчлэн шууны гадна ясны үзүүр хугарах явдал байдаг."
+        }
+      },
+      "ulna_left": {
+        "info": "ulna",
+        "dependsOn": [
+          "humerus_left"
+        ],
+        "en": {
+          "name": "Ulna (left)",
+          "group": "Arms & hands",
+          "desc": "The ulna is the forearm bone on the little-finger side. Its top end forms the point of your elbow.",
+          "fact": "Together the radius and ulna let the forearm both bend and twist."
+        },
+        "mn": {
+          "name": "Шууны дотор яс (зүүн)",
+          "group": "Гар",
+          "desc": "Шууны дотор яс чигчий хурууны талд байрладаг. Дээд үзүүр нь тохойн шовгор хэсгийг үүсгэдэг.",
+          "fact": "Шууны хоёр яс хамтдаа шууг нугалж, мушгих боломж олгодог."
+        }
+      },
+      "hand_left": {
+        "info": "hand",
+        "dependsOn": [
+          "radius_left",
+          "ulna_left"
+        ],
+        "en": {
+          "name": "Hand bones (left)",
+          "group": "Arms & hands",
+          "desc": "Each hand has 27 bones: 8 small wrist bones (carpals), 5 palm bones (metacarpals) and 14 finger bones (phalanges).",
+          "fact": "Your two hands contain about a quarter of all the bones in your body."
+        },
+        "mn": {
+          "name": "Сарвууны яс (зүүн)",
+          "group": "Гар",
+          "desc": "Гар бүр 27 ястай: 8 жижиг бугуйн яс, 5 сарвууны яс, 14 хурууны яс.",
+          "fact": "Таны хоёр гарт биеийн нийт ясны дөрөвний нэг орчим нь байдаг."
+        }
+      },
+      "hip_bone_left": {
+        "info": "hip_bone",
+        "dependsOn": [
+          "sacrum"
+        ],
+        "en": {
+          "name": "Hip bone (left)",
+          "group": "Hips & legs",
+          "desc": "The hip bone is a large, curved bone made of three bones fused together (ilium, ischium and pubis). The two hip bones and the sacrum form the pelvis.",
+          "fact": "The deep socket where the thigh bone fits is called the acetabulum — Latin for 'vinegar cup'."
+        },
+        "mn": {
+          "name": "Аарцгийн яс (зүүн)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Аарцгийн яс нь нийлсэн гурван яснаас (тахимын, суудлын, умдагны яс) тогтсон том муруй яс. Хоёр аарцгийн яс ба ууц аарцгийг үүсгэдэг.",
+          "fact": "Гуяны яс суудаг гүн хонхорыг ацетабулум гэдэг, латинаар \"цуунд зориулсан аяга\" гэсэн утгатай."
+        }
+      },
+      "femur_left": {
+        "info": "femur",
+        "dependsOn": [
+          "hip_bone_left"
+        ],
+        "en": {
+          "name": "Femur (left)",
+          "group": "Hips & legs",
+          "desc": "The femur, or thigh bone, is the longest and strongest bone in the body. It runs from the hip to the knee.",
+          "fact": "It is roughly a quarter of your height — doctors can estimate how tall someone was from the femur alone."
+        },
+        "mn": {
+          "name": "Гуяны яс (зүүн)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Гуяны яс бол биеийн хамгийн урт, хамгийн бат бөх яс. Түнхнээс өвдөг хүртэл үргэлжилдэг.",
+          "fact": "Таны өндрийн дөрөвний нэг орчим, эмч нар зөвхөн гуяны ясаар хүний өндрийг тооцоолж чаддаг."
+        }
+      },
+      "patella_left": {
+        "info": "patella",
+        "dependsOn": [
+          "femur_left"
+        ],
+        "en": {
+          "name": "Kneecap (left)",
+          "group": "Hips & legs",
+          "desc": "The patella, or kneecap, sits inside the tendon at the front of the knee. It protects the joint and gives the thigh muscles better leverage.",
+          "fact": "Babies are born with kneecaps made of cartilage that only turns into bone over the first years of life."
+        },
+        "mn": {
+          "name": "Тойгны яс (зүүн)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Тойгны яс өвдөгний урд талын шөрмөсний дотор байрладаг. Үеийг хамгаалж, гуяны булчинд илүү хүчтэй хөшүүрэг өгдөг.",
+          "fact": "Нярай хүүхдийн тойгны яс мөгөөрсөн байдаг бөгөөд эхний хэдэн жилд л яс болдог."
+        }
+      },
+      "tibia_left": {
+        "info": "tibia",
+        "dependsOn": [
+          "femur_left"
+        ],
+        "en": {
+          "name": "Tibia (left)",
+          "group": "Hips & legs",
+          "desc": "The tibia, or shinbone, is the large bone of the lower leg that carries your weight from the knee to the ankle.",
+          "fact": "You can feel its front edge right under the skin of your shin — that is why a knock there hurts so much."
+        },
+        "mn": {
+          "name": "Шилбэний яс (зүүн)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Шилбэний яс бол биеийн жинг өвдөгнөөс шагай хүртэл даадаг доод хөлийн том яс.",
+          "fact": "Түүний урд ирмэгийг шилбэний арьсны яг доор тэмтэрч болно, тиймээс тэнд цохиулахад маш их өвддөг."
+        }
+      },
+      "fibula_left": {
+        "info": "fibula",
+        "dependsOn": [
+          "tibia_left"
+        ],
+        "en": {
+          "name": "Fibula (left)",
+          "group": "Hips & legs",
+          "desc": "The fibula is the thin bone beside the tibia. It carries little weight but anchors muscles and forms the outer ankle bone.",
+          "fact": "Surgeons sometimes use a piece of the fibula to rebuild a damaged jaw."
+        },
+        "mn": {
+          "name": "Тахилзуур яс (зүүн)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Тахилзуур яс бол шилбэний ясны хажуугийн нарийн яс. Бага жин даадаг ч булчинг бэхэлж, шагайн гадна ясыг үүсгэдэг.",
+          "fact": "Мэс засалчид гэмтсэн эрүүг сэргээхийн тулд тахилзуур ясны хэсгийг заримдаа ашигладаг."
+        }
+      },
+      "foot_left": {
+        "info": "foot",
+        "dependsOn": [
+          "tibia_left",
+          "fibula_left"
+        ],
+        "en": {
+          "name": "Foot bones (left)",
+          "group": "Hips & legs",
+          "desc": "Each foot has 26 bones that form arches. The arches act like springs, spreading your weight and absorbing the shock of every step.",
+          "fact": "The calcaneus, the heel bone, is the largest bone in the foot."
+        },
+        "mn": {
+          "name": "Хөлийн тавхайн яс (зүүн)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Хөл бүр нуман хэлбэр үүсгэдэг 26 ястай. Нуман хэлбэр пүрш шиг ажиллаж, жинг тарааж, алхам бүрийн цохилтыг шингээдэг.",
+          "fact": "Өсгийн яс бол хөлийн тавхайн хамгийн том яс."
+        }
+      },
+      "clavicle_right": {
+        "info": "clavicle",
+        "dependsOn": [
+          "sternum"
+        ],
+        "en": {
+          "name": "Clavicle (right)",
+          "group": "Arms & hands",
+          "desc": "The clavicle, or collarbone, is a slim bone that holds the shoulder out to the side so the arm can move freely.",
+          "fact": "It is one of the most commonly broken bones, often from falling onto an outstretched hand."
+        },
+        "mn": {
+          "name": "Эгэм (баруун)",
+          "group": "Гар",
+          "desc": "Эгэм бол мөрийг хажуу тийш нь барьж, гарыг чөлөөтэй хөдлөх боломж олгодог нарийн яс.",
+          "fact": "Хамгийн их хугардаг ясны нэг, ихэвчлэн сунгасан гар дээрээ унаснаас болдог."
+        }
+      },
+      "scapula_right": {
+        "info": "scapula",
+        "dependsOn": [
+          "clavicle_right",
+          "ribs_right"
+        ],
+        "en": {
+          "name": "Scapula (right)",
+          "group": "Arms & hands",
+          "desc": "The scapula, or shoulder blade, is a flat triangular bone on the back. Seventeen muscles attach to it and move the arm.",
+          "fact": "It is held to the body almost only by muscles, which is why the shoulder can move so far in every direction."
+        },
+        "mn": {
+          "name": "Далны яс (баруун)",
+          "group": "Гар",
+          "desc": "Далны яс нь нуруун дээрх хавтгай гурвалжин яс. Арван долоон булчин түүнд бэхлэгдэж, гарыг хөдөлгөдөг.",
+          "fact": "Бараг зөвхөн булчингаар биед бэхлэгддэг тул мөр бүх чиглэлд маш их хөдөлж чаддаг."
+        }
+      },
+      "humerus_right": {
+        "info": "humerus",
+        "dependsOn": [
+          "scapula_right"
+        ],
+        "en": {
+          "name": "Humerus (right)",
+          "group": "Arms & hands",
+          "desc": "The humerus is the long bone of the upper arm. Its round head fits into a shallow socket on the scapula to form the shoulder joint.",
+          "fact": "The 'funny bone' is not a bone: it is a nerve passing over the bottom of the humerus at the elbow."
+        },
+        "mn": {
+          "name": "Бугалганы яс (баруун)",
+          "group": "Гар",
+          "desc": "Бугалганы яс бол дээд гарын урт яс. Бөөрөнхий толгой нь далны ясны гүехэн хонхорт орж мөрний үеийг үүсгэдэг.",
+          "fact": "\"Инээдтэй яс\" гэдэг нь яс биш: тохойн хэсэгт бугалганы ясны доод талаар явдаг мэдрэл юм."
+        }
+      },
+      "radius_right": {
+        "info": "radius",
+        "dependsOn": [
+          "humerus_right"
+        ],
+        "en": {
+          "name": "Radius (right)",
+          "group": "Arms & hands",
+          "desc": "The radius is the forearm bone on the thumb side. It can roll around the ulna, which lets you turn your palm up and down.",
+          "fact": "A broken wrist is very often a break at the end of the radius."
+        },
+        "mn": {
+          "name": "Шууны гадна яс (баруун)",
+          "group": "Гар",
+          "desc": "Шууны гадна яс эрхий хурууны талд байрладаг. Дотор ясыг тойрон эргэж, алгаа дээш доош эргүүлэх боломж олгодог.",
+          "fact": "Бугуй хугарах нь ихэвчлэн шууны гадна ясны үзүүр хугарах явдал байдаг."
+        }
+      },
+      "ulna_right": {
+        "info": "ulna",
+        "dependsOn": [
+          "humerus_right"
+        ],
+        "en": {
+          "name": "Ulna (right)",
+          "group": "Arms & hands",
+          "desc": "The ulna is the forearm bone on the little-finger side. Its top end forms the point of your elbow.",
+          "fact": "Together the radius and ulna let the forearm both bend and twist."
+        },
+        "mn": {
+          "name": "Шууны дотор яс (баруун)",
+          "group": "Гар",
+          "desc": "Шууны дотор яс чигчий хурууны талд байрладаг. Дээд үзүүр нь тохойн шовгор хэсгийг үүсгэдэг.",
+          "fact": "Шууны хоёр яс хамтдаа шууг нугалж, мушгих боломж олгодог."
+        }
+      },
+      "hand_right": {
+        "info": "hand",
+        "dependsOn": [
+          "radius_right",
+          "ulna_right"
+        ],
+        "en": {
+          "name": "Hand bones (right)",
+          "group": "Arms & hands",
+          "desc": "Each hand has 27 bones: 8 small wrist bones (carpals), 5 palm bones (metacarpals) and 14 finger bones (phalanges).",
+          "fact": "Your two hands contain about a quarter of all the bones in your body."
+        },
+        "mn": {
+          "name": "Сарвууны яс (баруун)",
+          "group": "Гар",
+          "desc": "Гар бүр 27 ястай: 8 жижиг бугуйн яс, 5 сарвууны яс, 14 хурууны яс.",
+          "fact": "Таны хоёр гарт биеийн нийт ясны дөрөвний нэг орчим нь байдаг."
+        }
+      },
+      "hip_bone_right": {
+        "info": "hip_bone",
+        "dependsOn": [
+          "sacrum"
+        ],
+        "en": {
+          "name": "Hip bone (right)",
+          "group": "Hips & legs",
+          "desc": "The hip bone is a large, curved bone made of three bones fused together (ilium, ischium and pubis). The two hip bones and the sacrum form the pelvis.",
+          "fact": "The deep socket where the thigh bone fits is called the acetabulum — Latin for 'vinegar cup'."
+        },
+        "mn": {
+          "name": "Аарцгийн яс (баруун)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Аарцгийн яс нь нийлсэн гурван яснаас (тахимын, суудлын, умдагны яс) тогтсон том муруй яс. Хоёр аарцгийн яс ба ууц аарцгийг үүсгэдэг.",
+          "fact": "Гуяны яс суудаг гүн хонхорыг ацетабулум гэдэг, латинаар \"цуунд зориулсан аяга\" гэсэн утгатай."
+        }
+      },
+      "femur_right": {
+        "info": "femur",
+        "dependsOn": [
+          "hip_bone_right"
+        ],
+        "en": {
+          "name": "Femur (right)",
+          "group": "Hips & legs",
+          "desc": "The femur, or thigh bone, is the longest and strongest bone in the body. It runs from the hip to the knee.",
+          "fact": "It is roughly a quarter of your height — doctors can estimate how tall someone was from the femur alone."
+        },
+        "mn": {
+          "name": "Гуяны яс (баруун)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Гуяны яс бол биеийн хамгийн урт, хамгийн бат бөх яс. Түнхнээс өвдөг хүртэл үргэлжилдэг.",
+          "fact": "Таны өндрийн дөрөвний нэг орчим, эмч нар зөвхөн гуяны ясаар хүний өндрийг тооцоолж чаддаг."
+        }
+      },
+      "patella_right": {
+        "info": "patella",
+        "dependsOn": [
+          "femur_right"
+        ],
+        "en": {
+          "name": "Kneecap (right)",
+          "group": "Hips & legs",
+          "desc": "The patella, or kneecap, sits inside the tendon at the front of the knee. It protects the joint and gives the thigh muscles better leverage.",
+          "fact": "Babies are born with kneecaps made of cartilage that only turns into bone over the first years of life."
+        },
+        "mn": {
+          "name": "Тойгны яс (баруун)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Тойгны яс өвдөгний урд талын шөрмөсний дотор байрладаг. Үеийг хамгаалж, гуяны булчинд илүү хүчтэй хөшүүрэг өгдөг.",
+          "fact": "Нярай хүүхдийн тойгны яс мөгөөрсөн байдаг бөгөөд эхний хэдэн жилд л яс болдог."
+        }
+      },
+      "tibia_right": {
+        "info": "tibia",
+        "dependsOn": [
+          "femur_right"
+        ],
+        "en": {
+          "name": "Tibia (right)",
+          "group": "Hips & legs",
+          "desc": "The tibia, or shinbone, is the large bone of the lower leg that carries your weight from the knee to the ankle.",
+          "fact": "You can feel its front edge right under the skin of your shin — that is why a knock there hurts so much."
+        },
+        "mn": {
+          "name": "Шилбэний яс (баруун)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Шилбэний яс бол биеийн жинг өвдөгнөөс шагай хүртэл даадаг доод хөлийн том яс.",
+          "fact": "Түүний урд ирмэгийг шилбэний арьсны яг доор тэмтэрч болно, тиймээс тэнд цохиулахад маш их өвддөг."
+        }
+      },
+      "fibula_right": {
+        "info": "fibula",
+        "dependsOn": [
+          "tibia_right"
+        ],
+        "en": {
+          "name": "Fibula (right)",
+          "group": "Hips & legs",
+          "desc": "The fibula is the thin bone beside the tibia. It carries little weight but anchors muscles and forms the outer ankle bone.",
+          "fact": "Surgeons sometimes use a piece of the fibula to rebuild a damaged jaw."
+        },
+        "mn": {
+          "name": "Тахилзуур яс (баруун)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Тахилзуур яс бол шилбэний ясны хажуугийн нарийн яс. Бага жин даадаг ч булчинг бэхэлж, шагайн гадна ясыг үүсгэдэг.",
+          "fact": "Мэс засалчид гэмтсэн эрүүг сэргээхийн тулд тахилзуур ясны хэсгийг заримдаа ашигладаг."
+        }
+      },
+      "foot_right": {
+        "info": "foot",
+        "dependsOn": [
+          "tibia_right",
+          "fibula_right"
+        ],
+        "en": {
+          "name": "Foot bones (right)",
+          "group": "Hips & legs",
+          "desc": "Each foot has 26 bones that form arches. The arches act like springs, spreading your weight and absorbing the shock of every step.",
+          "fact": "The calcaneus, the heel bone, is the largest bone in the foot."
+        },
+        "mn": {
+          "name": "Хөлийн тавхайн яс (баруун)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Хөл бүр нуман хэлбэр үүсгэдэг 26 ястай. Нуман хэлбэр пүрш шиг ажиллаж, жинг тарааж, алхам бүрийн цохилтыг шингээдэг.",
+          "fact": "Өсгийн яс бол хөлийн тавхайн хамгийн том яс."
+        }
+      }
+    }
+  },
+  "muscles": {
+    "title": {
+      "en": "Human muscles",
+      "mn": "Хүний булчин"
+    },
+    "parts": {
+      "skeleton_base": {
+        "info": "skeleton_base",
+        "dependsOn": [],
+        "en": {
+          "name": "Skeleton",
+          "group": "Skeleton",
+          "desc": "The skeleton is the frame the muscles pull on. Muscles are fixed to bones by tendons; when a muscle shortens, it pulls a bone and moves a joint.",
+          "fact": "Muscles can only pull, never push — that is why they work in opposite pairs."
+        },
+        "mn": {
+          "name": "Араг яс",
+          "group": "Араг яс",
+          "desc": "Араг яс бол булчингийн татдаг хүрээ. Булчин шөрмөсөөр ясанд бэхлэгддэг; булчин агшихад ясыг татаж, үеийг хөдөлгөдөг.",
+          "fact": "Булчин зөвхөн татаж чаддаг, хэзээ ч түлхдэггүй, тиймээс эсрэг хосоор ажилладаг."
+        }
+      },
+      "intercostals": {
+        "info": "intercostals",
+        "dependsOn": [
+          "skeleton_base"
+        ],
+        "en": {
+          "name": "Intercostal muscles",
+          "group": "Neck & trunk",
+          "desc": "The intercostal muscles fill the spaces between the ribs. They lift and lower the ribcage, helping you breathe.",
+          "fact": "Different layers run in crossing directions, like the layers of plywood."
+        },
+        "mn": {
+          "name": "Хавирга хоорондын булчин",
+          "group": "Хүзүү ба их бие",
+          "desc": "Хавирга хоорондын булчин хавиргын хоорондох зайг дүүргэдэг. Хавирганы торыг өргөж, буулгаж амьсгалахад тусалдаг.",
+          "fact": "Өөр өөр давхаргууд нь фанерын давхарга шиг хөндлөн огтлолцсон чиглэлтэй."
+        }
+      },
+      "diaphragm": {
+        "info": "diaphragm",
+        "dependsOn": [
+          "skeleton_base"
+        ],
+        "en": {
+          "name": "Diaphragm",
+          "group": "Neck & trunk",
+          "desc": "The diaphragm is a dome-shaped sheet of muscle under the lungs. When it contracts and flattens, air is drawn into the lungs.",
+          "fact": "Hiccups are sudden, involuntary twitches of the diaphragm."
+        },
+        "mn": {
+          "name": "Өрц",
+          "group": "Хүзүү ба их бие",
+          "desc": "Өрц бол уушгины доор байрлах бөмбөгөр хэлбэрийн булчин хавтан. Агшиж хавтгайрахад агаар уушги руу сорогддог.",
+          "fact": "Зогиур бол өрцний гэнэтийн, өөрийн эрхгүй татагдалт юм."
+        }
+      },
+      "back_muscles": {
+        "info": "back_muscles",
+        "dependsOn": [
+          "skeleton_base"
+        ],
+        "en": {
+          "name": "Deep back muscles",
+          "group": "Neck & trunk",
+          "desc": "The deep back muscles run along the spine; quadratus lumborum joins the lowest rib to the pelvis. They keep you upright, bend you backwards and sideways and twist your back.",
+          "fact": "They are working almost all the time you are awake, even when you just stand still."
+        },
+        "mn": {
+          "name": "Нурууны гүн булчин",
+          "group": "Хүзүү ба их бие",
+          "desc": "Нурууны гүн булчингууд нурууны дагуу явдаг; бүсэлхийн дөрвөлжин булчин хамгийн доод хавиргыг аарцагтай холбодог. Таныг босоо байлгаж, хойш, хажуу тийш нугалж, нурууг мушгидаг.",
+          "fact": "Та зүгээр зогсож байхад ч сэрүүн байх бараг бүх хугацаанд ажиллаж байдаг."
+        }
+      },
+      "pelvic_floor": {
+        "info": "pelvic_floor",
+        "dependsOn": [
+          "skeleton_base"
+        ],
+        "en": {
+          "name": "Pelvic floor",
+          "group": "Neck & trunk",
+          "desc": "The pelvic floor is a hammock of muscles across the bottom of the pelvis. It supports the organs of the belly and helps control the bladder and bowel.",
+          "fact": "You use it every time you cough or laugh, to stop pressure pushing things downwards."
+        },
+        "mn": {
+          "name": "Аарцагны ёроолын булчин",
+          "group": "Хүзүү ба их бие",
+          "desc": "Аарцагны ёроол бол аарцагны доод хэсгийг хөндлөн дайрсан булчингийн дүүжин ор юм. Хэвлийн эрхтнүүдийг тулж, давсаг, гэдсийг хянахад тусалдаг.",
+          "fact": "Ханиах, инээх бүрд даралт доош түлхэхээс сэргийлж үүнийг ашигладаг."
+        }
+      },
+      "neck_muscles": {
+        "info": "neck_muscles",
+        "dependsOn": [
+          "skeleton_base"
+        ],
+        "en": {
+          "name": "Neck muscles",
+          "group": "Neck & trunk",
+          "desc": "Neck muscles hold up and turn the head — about 5 kg — and help you swallow and breathe. The big sternocleidomastoid runs from behind the ear to the collarbone.",
+          "fact": "Looking down at a phone makes the head feel several times heavier to these muscles."
+        },
+        "mn": {
+          "name": "Хүзүүний булчин",
+          "group": "Хүзүү ба их бие",
+          "desc": "Хүзүүний булчин 5 кг орчим жинтэй толгойг барьж, эргүүлж, залгих, амьсгалахад тусалдаг. Том өвчүү-эгэм-хөхлөг булчин чихний арын хэсгээс эгэм хүртэл явдаг.",
+          "fact": "Утас руу доош харах үед толгой эдгээр булчинд хэд дахин хүнд мэдрэгддэг."
+        }
+      },
+      "rhomboids": {
+        "info": "rhomboids",
+        "dependsOn": [
+          "back_muscles"
+        ],
+        "en": {
+          "name": "Rhomboids",
+          "group": "Neck & trunk",
+          "desc": "The rhomboids sit between the shoulder blades. They pull the shoulder blades together and towards the spine.",
+          "fact": "They help you keep good posture and stop your shoulders rolling forward."
+        },
+        "mn": {
+          "name": "Ромбо булчин",
+          "group": "Хүзүү ба их бие",
+          "desc": "Ромбо булчин далны ясны хооронд байрладаг. Далны ясыг нуруу руу ойртуулж татдаг.",
+          "fact": "Зөв байрлал хадгалж, мөрөө урагш бөгтийлгөхөөс сэргийлэхэд тусалдаг."
+        }
+      },
+      "trapezius": {
+        "info": "trapezius",
+        "dependsOn": [
+          "rhomboids",
+          "neck_muscles"
+        ],
+        "en": {
+          "name": "Trapezius",
+          "group": "Neck & trunk",
+          "desc": "The trapezius is a large kite-shaped muscle across the upper back and neck. It lifts, lowers and rotates the shoulder blades.",
+          "fact": "You use its top part every time you shrug your shoulders."
+        },
+        "mn": {
+          "name": "Трапец булчин",
+          "group": "Хүзүү ба их бие",
+          "desc": "Трапец булчин нурууны дээд хэсэг, хүзүүг хөндлөн дайрсан, цаасан шувуу хэлбэртэй том булчин. Далны ясыг өргөж, буулгаж, эргүүлдэг.",
+          "fact": "Мөрөө хавчих бүрдээ түүний дээд хэсгийг ашигладаг."
+        }
+      },
+      "abdominal_wall": {
+        "info": "abdominal_wall",
+        "dependsOn": [
+          "intercostals"
+        ],
+        "en": {
+          "name": "Abdominal muscles",
+          "group": "Neck & trunk",
+          "desc": "The abdominal wall has four muscles: the rectus abdominis (the \"six-pack\") at the front and three layers on the sides — external oblique, internal oblique and transversus abdominis. They bend and twist the trunk and squeeze the belly to protect the organs and help you breathe out hard.",
+          "fact": "The \"six-pack\" look comes from bands of tendon that cross the rectus abdominis — everyone has them, but fat usually hides them."
+        },
+        "mn": {
+          "name": "Хэвлийн булчин",
+          "group": "Хүзүү ба их бие",
+          "desc": "Хэвлийн хана дөрвөн булчинтай: урд талд хэвлийн шулуун булчин (\"зургаан хэсэг\"), хажуу талд гурван давхарга, гадна ташуу, дотор ташуу, хөндлөн булчин. Их биеийг нугалж, мушгиж, эрхтнүүдийг хамгаалахын тулд хэвлийг шахаж, хүчтэй амьсгал гаргахад тусалдаг.",
+          "fact": "\"Зургаан хэсэг\" харагдах нь хэвлийн шулуун булчинг хөндлөн дайрсан шөрмөсөн туузаас үүсдэг, хүн бүрт байдаг ч ихэвчлэн өөхөнд далдлагддаг."
+        }
+      },
+      "jaw_muscles": {
+        "info": "jaw_muscles",
+        "dependsOn": [
+          "skeleton_base"
+        ],
+        "en": {
+          "name": "Jaw muscles",
+          "group": "Neck & trunk",
+          "desc": "The chewing muscles — masseter, temporalis and the two pterygoids — close the jaw and slide it side to side to grind food.",
+          "fact": "For its size, the masseter is one of the strongest muscles in the body: your back teeth can bite with a force of several hundred newtons."
+        },
+        "mn": {
+          "name": "Зажлуурын булчин",
+          "group": "Хүзүү ба их бие",
+          "desc": "Зажлах булчингууд, зажлуурын, чамархайн, хоёр далавчлаг булчин, эрүүг хааж, хоолыг нухахын тулд хажуу тийш гулсуулдаг.",
+          "fact": "Хэмжээндээ харьцуулахад зажлуурын булчин биеийн хамгийн хүчтэй булчингийн нэг: араа шүд хэдэн зуун ньютоны хүчээр хазаж чадна."
+        }
+      },
+      "face_muscles": {
+        "info": "face_muscles",
+        "dependsOn": [
+          "jaw_muscles"
+        ],
+        "en": {
+          "name": "Face muscles",
+          "group": "Neck & trunk",
+          "desc": "Face muscles attach to the skin rather than to another bone, so they can pull it into expressions: raising the eyebrows, closing the eyes, smiling and frowning.",
+          "fact": "A real smile uses the zygomaticus major and also the orbicularis oculi, which crinkles the skin around the eyes — that is hard to fake."
+        },
+        "mn": {
+          "name": "Нүүрний булчин",
+          "group": "Хүзүү ба их бие",
+          "desc": "Нүүрний булчингууд өөр ясанд биш арьсанд бэхлэгддэг тул арьсыг татаж, хөмсөг өргөх, нүд анних, инээмсэглэх, хөмсөг зангидах зэрэг илэрхийлэл гаргадаг.",
+          "fact": "Жинхэнэ инээмсэглэл хацрын том булчингаас гадна нүдний тойргийн булчинг ашиглаж, нүдний орчмын арьсыг үрчийлгэдэг, үүнийг хуурамчаар хийхэд хэцүү."
+        }
+      },
+      "rotator_cuff_left": {
+        "info": "rotator_cuff",
+        "dependsOn": [
+          "skeleton_base"
+        ],
+        "en": {
+          "name": "Rotator cuff (left)",
+          "group": "Shoulders & arms",
+          "desc": "Four muscles wrap around the shoulder joint and hold the ball of the humerus in its shallow socket while the arm moves.",
+          "fact": "Throwing a ball hard puts huge strain on these muscles — rotator cuff injuries are common in sports."
+        },
+        "mn": {
+          "name": "Эргүүлэгч ханцуйвч (зүүн)",
+          "group": "Мөр ба гар",
+          "desc": "Дөрвөн булчин мөрний үеийг ороож, гарыг хөдлөх үед бугалганы ясны бөмбөрцгийг гүехэн хонхорт нь барьдаг.",
+          "fact": "Бөмбөг хүчтэй шидэх нь эдгээр булчинд асар их ачаалал өгдөг, спортод түгээмэл гэмтэл юм."
+        }
+      },
+      "latissimus_dorsi_left": {
+        "info": "latissimus_dorsi",
+        "dependsOn": [
+          "back_muscles"
+        ],
+        "en": {
+          "name": "Latissimus dorsi (left)",
+          "group": "Neck & trunk",
+          "desc": "The latissimus dorsi is the widest muscle of the back. It runs from the lower spine and pelvis up to the upper arm and pulls the arm down and back — as in pull-ups, rowing and swimming.",
+          "fact": "Its name is Latin for \"widest muscle of the back\"; swimmers often have very large ones."
+        },
+        "mn": {
+          "name": "Нурууны өргөн булчин (зүүн)",
+          "group": "Хүзүү ба их бие",
+          "desc": "Нурууны өргөн булчин бол нурууны хамгийн өргөн булчин. Нурууны доод хэсэг, аарцагнаас дээд гар хүртэл явж, гарыг доош, хойш татдаг, суниалт, сэлүүрдэх, усанд сэлэх үед.",
+          "fact": "Нэр нь латинаар \"нурууны хамгийн өргөн булчин\" гэсэн утгатай; усанд сэлэгчдийнх ихэвчлэн маш том байдаг."
+        }
+      },
+      "pectoral_left": {
+        "info": "pectoral",
+        "dependsOn": [
+          "intercostals"
+        ],
+        "en": {
+          "name": "Chest muscles (left)",
+          "group": "Neck & trunk",
+          "desc": "The chest muscles — pectoralis major and minor, plus serratus anterior on the side of the ribs — pull the arm across the body and move the shoulder blade forward.",
+          "fact": "Serratus anterior looks like a row of fingers on the side of the ribs — boxers use it to punch."
+        },
+        "mn": {
+          "name": "Цээжний булчин (зүүн)",
+          "group": "Хүзүү ба их бие",
+          "desc": "Цээжний булчингууд, цээжний том, жижиг булчин, хавирганы хажуугийн шүдлэг булчин, гарыг биеийн урдуур татаж, далны ясыг урагш хөдөлгөдөг.",
+          "fact": "Урд шүдлэг булчин хавирганы хажууд хурууны эгнээ шиг харагддаг, боксчид цохихдоо ашигладаг."
+        }
+      },
+      "deltoid_left": {
+        "info": "deltoid",
+        "dependsOn": [
+          "rotator_cuff_left"
+        ],
+        "en": {
+          "name": "Deltoid (left)",
+          "group": "Shoulders & arms",
+          "desc": "The deltoid is the rounded muscle that caps the shoulder. Its three parts lift the arm forwards, sideways and backwards.",
+          "fact": "It is named after the Greek letter delta (Δ), because of its triangle shape."
+        },
+        "mn": {
+          "name": "Гурвалжин булчин (зүүн)",
+          "group": "Мөр ба гар",
+          "desc": "Гурвалжин булчин мөрийг бүрхсэн бөөрөнхий булчин. Гурван хэсэг нь гарыг урагш, хажуу тийш, хойш өргөдөг.",
+          "fact": "Гурвалжин хэлбэрийнхээ учир грек үсэг дельта (Δ)-гийн нэрээр нэрлэгдсэн."
+        }
+      },
+      "biceps_brachii_left": {
+        "info": "biceps_brachii",
+        "dependsOn": [
+          "rotator_cuff_left"
+        ],
+        "en": {
+          "name": "Biceps and brachialis (left)",
+          "group": "Shoulders & arms",
+          "desc": "The biceps at the front of the upper arm bends the elbow and turns the palm up. The brachialis beneath it is the elbow’s strongest bender.",
+          "fact": "The biceps works hardest when you turn a screwdriver clockwise — the reason most screws tighten that way."
+        },
+        "mn": {
+          "name": "Хоёр толгойт булчин (зүүн)",
+          "group": "Мөр ба гар",
+          "desc": "Дээд гарын урд талын хоёр толгойт булчин тохойг нугалж, алгыг дээш эргүүлдэг. Доор нь байрлах мөрний булчин тохойн хамгийн хүчтэй нугалагч юм.",
+          "fact": "Халив цагийн зүүний дагуу эргүүлэхэд хоёр толгойт булчин хамгийн их ажилладаг, ихэнх эрэг тийш чангардгийн шалтгаан."
+        }
+      },
+      "triceps_left": {
+        "info": "triceps",
+        "dependsOn": [
+          "rotator_cuff_left"
+        ],
+        "en": {
+          "name": "Triceps (left)",
+          "group": "Shoulders & arms",
+          "desc": "The triceps at the back of the upper arm straightens the elbow. It works opposite the biceps.",
+          "fact": "It makes up about two thirds of the muscle in the upper arm."
+        },
+        "mn": {
+          "name": "Гурван толгойт булчин (зүүн)",
+          "group": "Мөр ба гар",
+          "desc": "Дээд гарын арын гурван толгойт булчин тохойг тэнийлгэдэг. Хоёр толгойт булчинтай эсрэгээр ажилладаг.",
+          "fact": "Дээд гарын булчингийн гуравны хоёр орчмыг эзэлдэг."
+        }
+      },
+      "forearm_flexors_left": {
+        "info": "forearm_flexors",
+        "dependsOn": [
+          "biceps_brachii_left"
+        ],
+        "en": {
+          "name": "Forearm flexors (left)",
+          "group": "Shoulders & arms",
+          "desc": "The forearm flexors on the palm side bend the wrist and fingers and turn the palm down. You use them to grip.",
+          "fact": "Watch the inside of your forearm while you wiggle your fingers — you can see these muscles move."
+        },
+        "mn": {
+          "name": "Шууны нугалагч булчин (зүүн)",
+          "group": "Мөр ба гар",
+          "desc": "Алганы талын шууны нугалагч булчингууд бугуй, хурууг нугалж, алгыг доош эргүүлдэг. Атгахдаа ашигладаг.",
+          "fact": "Хуруугаа хөдөлгөхдөө шууныхаа дотор талыг ажиглаарай, эдгээр булчин хөдлөхийг харж болно."
+        }
+      },
+      "forearm_extensors_left": {
+        "info": "forearm_extensors",
+        "dependsOn": [
+          "triceps_left"
+        ],
+        "en": {
+          "name": "Forearm extensors (left)",
+          "group": "Shoulders & arms",
+          "desc": "The forearm extensors on the back of the forearm straighten the wrist and fingers and help turn the palm up.",
+          "fact": "\"Tennis elbow\" is pain where these muscles attach at the outside of the elbow."
+        },
+        "mn": {
+          "name": "Шууны тэнийлгэгч булчин (зүүн)",
+          "group": "Мөр ба гар",
+          "desc": "Шууны ар талын тэнийлгэгч булчингууд бугуй, хурууг тэнийлгэж, алгыг дээш эргүүлэхэд тусалдаг.",
+          "fact": "\"Теннисний тохой\" бол эдгээр булчин тохойн гадна талд бэхлэгдэх хэсгийн өвдөлт юм."
+        }
+      },
+      "hip_flexors_left": {
+        "info": "hip_flexors",
+        "dependsOn": [
+          "skeleton_base"
+        ],
+        "en": {
+          "name": "Iliopsoas (left)",
+          "group": "Hips & legs",
+          "desc": "The iliopsoas runs from the lower spine and the inside of the pelvis to the thigh bone. It lifts the knee towards the chest.",
+          "fact": "It is the only muscle that connects the spine directly to the leg."
+        },
+        "mn": {
+          "name": "Тахим-бүсэлхийн булчин (зүүн)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Тахим-бүсэлхийн булчин нурууны доод хэсэг, аарцагны дотор талаас гуяны яс хүртэл явдаг. Өвдгийг цээж рүү өргөдөг.",
+          "fact": "Нурууг хөлтэй шууд холбодог цорын ганц булчин юм."
+        }
+      },
+      "gluteals_left": {
+        "info": "gluteals",
+        "dependsOn": [
+          "pelvic_floor"
+        ],
+        "en": {
+          "name": "Gluteal muscles (left)",
+          "group": "Hips & legs",
+          "desc": "The gluteal muscles form the buttock. They straighten the hip, keep the pelvis level while you walk, and rotate the thigh.",
+          "fact": "Gluteus maximus is the largest muscle in the human body."
+        },
+        "mn": {
+          "name": "Өгзөгний булчин (зүүн)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Өгзөгний булчингууд өгзгийг бүрдүүлдэг. Түнхийг тэнийлгэж, алхахад аарцгийг тэгш байлгаж, гуяг эргүүлдэг.",
+          "fact": "Өгзөгний том булчин бол хүний биеийн хамгийн том булчин."
+        }
+      },
+      "adductors_left": {
+        "info": "adductors",
+        "dependsOn": [
+          "hip_flexors_left"
+        ],
+        "en": {
+          "name": "Adductors (left)",
+          "group": "Hips & legs",
+          "desc": "The adductors on the inside of the thigh pull the legs together and help steady the hip.",
+          "fact": "Riders use them to grip a horse with their knees."
+        },
+        "mn": {
+          "name": "Ойртуулагч булчин (зүүн)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Гуяны дотор талын ойртуулагч булчингууд хөлийг ойртуулж, түнхийг тогтвортой байлгахад тусалдаг.",
+          "fact": "Морьтон өвдгөөрөө морио хавчихдаа эдгээрийг ашигладаг."
+        }
+      },
+      "quadriceps_left": {
+        "info": "quadriceps",
+        "dependsOn": [
+          "hip_flexors_left"
+        ],
+        "en": {
+          "name": "Quadriceps and sartorius (left)",
+          "group": "Hips & legs",
+          "desc": "The four quadriceps muscles at the front of the thigh straighten the knee — for standing up, kicking and jumping. Sartorius crosses diagonally over them.",
+          "fact": "Sartorius is the longest muscle in the body."
+        },
+        "mn": {
+          "name": "Гуяны дөрвөн толгойт булчин (зүүн)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Гуяны урд талын дөрвөн булчин өвдгийг тэнийлгэдэг, босох, өшиглөх, үсрэхэд. Оёдолчны булчин тэдгээрийн дээгүүр хиймэл хөндлөн дайрдаг.",
+          "fact": "Оёдолчны булчин бол биеийн хамгийн урт булчин."
+        }
+      },
+      "hamstrings_left": {
+        "info": "hamstrings",
+        "dependsOn": [
+          "gluteals_left"
+        ],
+        "en": {
+          "name": "Hamstrings (left)",
+          "group": "Hips & legs",
+          "desc": "The three hamstrings at the back of the thigh bend the knee and straighten the hip. They are key for running.",
+          "fact": "Sprinters often pull a hamstring because these muscles work very hard to slow the leg at full speed."
+        },
+        "mn": {
+          "name": "Гуяны арын булчин (зүүн)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Гуяны арын гурван булчин өвдгийг нугалж, түнхийг тэнийлгэдэг. Гүйхэд гол үүрэгтэй.",
+          "fact": "Спринтерүүд энэ булчинг ихэвчлэн татуулдаг, учир нь бүтэн хурдтай үед хөлийг удаашруулахад маш их ажилладаг."
+        }
+      },
+      "calf_left": {
+        "info": "calf",
+        "dependsOn": [
+          "hamstrings_left"
+        ],
+        "en": {
+          "name": "Calf muscles (left)",
+          "group": "Hips & legs",
+          "desc": "The calf muscles — gastrocnemius and soleus — lift the heel and push you forwards with every step. Deeper muscles curl the toes.",
+          "fact": "They join the Achilles tendon, the thickest and strongest tendon in the body."
+        },
+        "mn": {
+          "name": "Шилбэний арын булчин (зүүн)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Шилбэний арын булчингууд өсгийг өргөж, алхам бүрд таныг урагш түлхдэг. Гүн булчингууд хөлийн хурууг нугалдаг.",
+          "fact": "Тэдгээр нь биеийн хамгийн зузаан, бат бөх шөрмөс болох Ахиллын шөрмөстэй нийлдэг."
+        }
+      },
+      "shin_left": {
+        "info": "shin",
+        "dependsOn": [
+          "quadriceps_left"
+        ],
+        "en": {
+          "name": "Shin muscles (left)",
+          "group": "Hips & legs",
+          "desc": "The shin muscles at the front and side of the lower leg lift the foot and toes and turn the foot outwards.",
+          "fact": "When they are weak or tired, the toes can catch on the ground and trip you."
+        },
+        "mn": {
+          "name": "Шилбэний урд булчин (зүүн)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Шилбэний урд, хажуугийн булчингууд хөлийн тавхай, хурууг өргөж, тавхайг гадагш эргүүлдэг.",
+          "fact": "Тэдгээр сул эсвэл ядарсан үед хөлийн хуруу газар тээглэж бүдрэх магадлалтай."
+        }
+      },
+      "rotator_cuff_right": {
+        "info": "rotator_cuff",
+        "dependsOn": [
+          "skeleton_base"
+        ],
+        "en": {
+          "name": "Rotator cuff (right)",
+          "group": "Shoulders & arms",
+          "desc": "Four muscles wrap around the shoulder joint and hold the ball of the humerus in its shallow socket while the arm moves.",
+          "fact": "Throwing a ball hard puts huge strain on these muscles — rotator cuff injuries are common in sports."
+        },
+        "mn": {
+          "name": "Эргүүлэгч ханцуйвч (баруун)",
+          "group": "Мөр ба гар",
+          "desc": "Дөрвөн булчин мөрний үеийг ороож, гарыг хөдлөх үед бугалганы ясны бөмбөрцгийг гүехэн хонхорт нь барьдаг.",
+          "fact": "Бөмбөг хүчтэй шидэх нь эдгээр булчинд асар их ачаалал өгдөг, спортод түгээмэл гэмтэл юм."
+        }
+      },
+      "latissimus_dorsi_right": {
+        "info": "latissimus_dorsi",
+        "dependsOn": [
+          "back_muscles"
+        ],
+        "en": {
+          "name": "Latissimus dorsi (right)",
+          "group": "Neck & trunk",
+          "desc": "The latissimus dorsi is the widest muscle of the back. It runs from the lower spine and pelvis up to the upper arm and pulls the arm down and back — as in pull-ups, rowing and swimming.",
+          "fact": "Its name is Latin for \"widest muscle of the back\"; swimmers often have very large ones."
+        },
+        "mn": {
+          "name": "Нурууны өргөн булчин (баруун)",
+          "group": "Хүзүү ба их бие",
+          "desc": "Нурууны өргөн булчин бол нурууны хамгийн өргөн булчин. Нурууны доод хэсэг, аарцагнаас дээд гар хүртэл явж, гарыг доош, хойш татдаг, суниалт, сэлүүрдэх, усанд сэлэх үед.",
+          "fact": "Нэр нь латинаар \"нурууны хамгийн өргөн булчин\" гэсэн утгатай; усанд сэлэгчдийнх ихэвчлэн маш том байдаг."
+        }
+      },
+      "pectoral_right": {
+        "info": "pectoral",
+        "dependsOn": [
+          "intercostals"
+        ],
+        "en": {
+          "name": "Chest muscles (right)",
+          "group": "Neck & trunk",
+          "desc": "The chest muscles — pectoralis major and minor, plus serratus anterior on the side of the ribs — pull the arm across the body and move the shoulder blade forward.",
+          "fact": "Serratus anterior looks like a row of fingers on the side of the ribs — boxers use it to punch."
+        },
+        "mn": {
+          "name": "Цээжний булчин (баруун)",
+          "group": "Хүзүү ба их бие",
+          "desc": "Цээжний булчингууд, цээжний том, жижиг булчин, хавирганы хажуугийн шүдлэг булчин, гарыг биеийн урдуур татаж, далны ясыг урагш хөдөлгөдөг.",
+          "fact": "Урд шүдлэг булчин хавирганы хажууд хурууны эгнээ шиг харагддаг, боксчид цохихдоо ашигладаг."
+        }
+      },
+      "deltoid_right": {
+        "info": "deltoid",
+        "dependsOn": [
+          "rotator_cuff_right"
+        ],
+        "en": {
+          "name": "Deltoid (right)",
+          "group": "Shoulders & arms",
+          "desc": "The deltoid is the rounded muscle that caps the shoulder. Its three parts lift the arm forwards, sideways and backwards.",
+          "fact": "It is named after the Greek letter delta (Δ), because of its triangle shape."
+        },
+        "mn": {
+          "name": "Гурвалжин булчин (баруун)",
+          "group": "Мөр ба гар",
+          "desc": "Гурвалжин булчин мөрийг бүрхсэн бөөрөнхий булчин. Гурван хэсэг нь гарыг урагш, хажуу тийш, хойш өргөдөг.",
+          "fact": "Гурвалжин хэлбэрийнхээ учир грек үсэг дельта (Δ)-гийн нэрээр нэрлэгдсэн."
+        }
+      },
+      "biceps_brachii_right": {
+        "info": "biceps_brachii",
+        "dependsOn": [
+          "rotator_cuff_right"
+        ],
+        "en": {
+          "name": "Biceps and brachialis (right)",
+          "group": "Shoulders & arms",
+          "desc": "The biceps at the front of the upper arm bends the elbow and turns the palm up. The brachialis beneath it is the elbow’s strongest bender.",
+          "fact": "The biceps works hardest when you turn a screwdriver clockwise — the reason most screws tighten that way."
+        },
+        "mn": {
+          "name": "Хоёр толгойт булчин (баруун)",
+          "group": "Мөр ба гар",
+          "desc": "Дээд гарын урд талын хоёр толгойт булчин тохойг нугалж, алгыг дээш эргүүлдэг. Доор нь байрлах мөрний булчин тохойн хамгийн хүчтэй нугалагч юм.",
+          "fact": "Халив цагийн зүүний дагуу эргүүлэхэд хоёр толгойт булчин хамгийн их ажилладаг, ихэнх эрэг тийш чангардгийн шалтгаан."
+        }
+      },
+      "triceps_right": {
+        "info": "triceps",
+        "dependsOn": [
+          "rotator_cuff_right"
+        ],
+        "en": {
+          "name": "Triceps (right)",
+          "group": "Shoulders & arms",
+          "desc": "The triceps at the back of the upper arm straightens the elbow. It works opposite the biceps.",
+          "fact": "It makes up about two thirds of the muscle in the upper arm."
+        },
+        "mn": {
+          "name": "Гурван толгойт булчин (баруун)",
+          "group": "Мөр ба гар",
+          "desc": "Дээд гарын арын гурван толгойт булчин тохойг тэнийлгэдэг. Хоёр толгойт булчинтай эсрэгээр ажилладаг.",
+          "fact": "Дээд гарын булчингийн гуравны хоёр орчмыг эзэлдэг."
+        }
+      },
+      "forearm_flexors_right": {
+        "info": "forearm_flexors",
+        "dependsOn": [
+          "biceps_brachii_right"
+        ],
+        "en": {
+          "name": "Forearm flexors (right)",
+          "group": "Shoulders & arms",
+          "desc": "The forearm flexors on the palm side bend the wrist and fingers and turn the palm down. You use them to grip.",
+          "fact": "Watch the inside of your forearm while you wiggle your fingers — you can see these muscles move."
+        },
+        "mn": {
+          "name": "Шууны нугалагч булчин (баруун)",
+          "group": "Мөр ба гар",
+          "desc": "Алганы талын шууны нугалагч булчингууд бугуй, хурууг нугалж, алгыг доош эргүүлдэг. Атгахдаа ашигладаг.",
+          "fact": "Хуруугаа хөдөлгөхдөө шууныхаа дотор талыг ажиглаарай, эдгээр булчин хөдлөхийг харж болно."
+        }
+      },
+      "forearm_extensors_right": {
+        "info": "forearm_extensors",
+        "dependsOn": [
+          "triceps_right"
+        ],
+        "en": {
+          "name": "Forearm extensors (right)",
+          "group": "Shoulders & arms",
+          "desc": "The forearm extensors on the back of the forearm straighten the wrist and fingers and help turn the palm up.",
+          "fact": "\"Tennis elbow\" is pain where these muscles attach at the outside of the elbow."
+        },
+        "mn": {
+          "name": "Шууны тэнийлгэгч булчин (баруун)",
+          "group": "Мөр ба гар",
+          "desc": "Шууны ар талын тэнийлгэгч булчингууд бугуй, хурууг тэнийлгэж, алгыг дээш эргүүлэхэд тусалдаг.",
+          "fact": "\"Теннисний тохой\" бол эдгээр булчин тохойн гадна талд бэхлэгдэх хэсгийн өвдөлт юм."
+        }
+      },
+      "hip_flexors_right": {
+        "info": "hip_flexors",
+        "dependsOn": [
+          "skeleton_base"
+        ],
+        "en": {
+          "name": "Iliopsoas (right)",
+          "group": "Hips & legs",
+          "desc": "The iliopsoas runs from the lower spine and the inside of the pelvis to the thigh bone. It lifts the knee towards the chest.",
+          "fact": "It is the only muscle that connects the spine directly to the leg."
+        },
+        "mn": {
+          "name": "Тахим-бүсэлхийн булчин (баруун)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Тахим-бүсэлхийн булчин нурууны доод хэсэг, аарцагны дотор талаас гуяны яс хүртэл явдаг. Өвдгийг цээж рүү өргөдөг.",
+          "fact": "Нурууг хөлтэй шууд холбодог цорын ганц булчин юм."
+        }
+      },
+      "gluteals_right": {
+        "info": "gluteals",
+        "dependsOn": [
+          "pelvic_floor"
+        ],
+        "en": {
+          "name": "Gluteal muscles (right)",
+          "group": "Hips & legs",
+          "desc": "The gluteal muscles form the buttock. They straighten the hip, keep the pelvis level while you walk, and rotate the thigh.",
+          "fact": "Gluteus maximus is the largest muscle in the human body."
+        },
+        "mn": {
+          "name": "Өгзөгний булчин (баруун)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Өгзөгний булчингууд өгзгийг бүрдүүлдэг. Түнхийг тэнийлгэж, алхахад аарцгийг тэгш байлгаж, гуяг эргүүлдэг.",
+          "fact": "Өгзөгний том булчин бол хүний биеийн хамгийн том булчин."
+        }
+      },
+      "adductors_right": {
+        "info": "adductors",
+        "dependsOn": [
+          "hip_flexors_right"
+        ],
+        "en": {
+          "name": "Adductors (right)",
+          "group": "Hips & legs",
+          "desc": "The adductors on the inside of the thigh pull the legs together and help steady the hip.",
+          "fact": "Riders use them to grip a horse with their knees."
+        },
+        "mn": {
+          "name": "Ойртуулагч булчин (баруун)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Гуяны дотор талын ойртуулагч булчингууд хөлийг ойртуулж, түнхийг тогтвортой байлгахад тусалдаг.",
+          "fact": "Морьтон өвдгөөрөө морио хавчихдаа эдгээрийг ашигладаг."
+        }
+      },
+      "quadriceps_right": {
+        "info": "quadriceps",
+        "dependsOn": [
+          "hip_flexors_right"
+        ],
+        "en": {
+          "name": "Quadriceps and sartorius (right)",
+          "group": "Hips & legs",
+          "desc": "The four quadriceps muscles at the front of the thigh straighten the knee — for standing up, kicking and jumping. Sartorius crosses diagonally over them.",
+          "fact": "Sartorius is the longest muscle in the body."
+        },
+        "mn": {
+          "name": "Гуяны дөрвөн толгойт булчин (баруун)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Гуяны урд талын дөрвөн булчин өвдгийг тэнийлгэдэг, босох, өшиглөх, үсрэхэд. Оёдолчны булчин тэдгээрийн дээгүүр хиймэл хөндлөн дайрдаг.",
+          "fact": "Оёдолчны булчин бол биеийн хамгийн урт булчин."
+        }
+      },
+      "hamstrings_right": {
+        "info": "hamstrings",
+        "dependsOn": [
+          "gluteals_right"
+        ],
+        "en": {
+          "name": "Hamstrings (right)",
+          "group": "Hips & legs",
+          "desc": "The three hamstrings at the back of the thigh bend the knee and straighten the hip. They are key for running.",
+          "fact": "Sprinters often pull a hamstring because these muscles work very hard to slow the leg at full speed."
+        },
+        "mn": {
+          "name": "Гуяны арын булчин (баруун)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Гуяны арын гурван булчин өвдгийг нугалж, түнхийг тэнийлгэдэг. Гүйхэд гол үүрэгтэй.",
+          "fact": "Спринтерүүд энэ булчинг ихэвчлэн татуулдаг, учир нь бүтэн хурдтай үед хөлийг удаашруулахад маш их ажилладаг."
+        }
+      },
+      "calf_right": {
+        "info": "calf",
+        "dependsOn": [
+          "hamstrings_right"
+        ],
+        "en": {
+          "name": "Calf muscles (right)",
+          "group": "Hips & legs",
+          "desc": "The calf muscles — gastrocnemius and soleus — lift the heel and push you forwards with every step. Deeper muscles curl the toes.",
+          "fact": "They join the Achilles tendon, the thickest and strongest tendon in the body."
+        },
+        "mn": {
+          "name": "Шилбэний арын булчин (баруун)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Шилбэний арын булчингууд өсгийг өргөж, алхам бүрд таныг урагш түлхдэг. Гүн булчингууд хөлийн хурууг нугалдаг.",
+          "fact": "Тэдгээр нь биеийн хамгийн зузаан, бат бөх шөрмөс болох Ахиллын шөрмөстэй нийлдэг."
+        }
+      },
+      "shin_right": {
+        "info": "shin",
+        "dependsOn": [
+          "quadriceps_right"
+        ],
+        "en": {
+          "name": "Shin muscles (right)",
+          "group": "Hips & legs",
+          "desc": "The shin muscles at the front and side of the lower leg lift the foot and toes and turn the foot outwards.",
+          "fact": "When they are weak or tired, the toes can catch on the ground and trip you."
+        },
+        "mn": {
+          "name": "Шилбэний урд булчин (баруун)",
+          "group": "Аарцаг ба хөл",
+          "desc": "Шилбэний урд, хажуугийн булчингууд хөлийн тавхай, хурууг өргөж, тавхайг гадагш эргүүлдэг.",
+          "fact": "Тэдгээр сул эсвэл ядарсан үед хөлийн хуруу газар тээглэж бүдрэх магадлалтай."
+        }
+      },
+      "hand_muscles": {
+        "info": "hand_muscles",
+        "dependsOn": [
+          "forearm_flexors_left",
+          "forearm_flexors_right"
+        ],
+        "en": {
+          "name": "Hand muscles",
+          "group": "Shoulders & arms",
+          "desc": "Small muscles inside the hand make fine finger movements possible: spreading, closing, and bringing the thumb across the palm.",
+          "fact": "Most finger strength actually comes from forearm muscles pulling on long tendons, like puppet strings."
+        },
+        "mn": {
+          "name": "Сарвууны булчин",
+          "group": "Мөр ба гар",
+          "desc": "Гарын доторх жижиг булчингууд хурууны нарийн хөдөлгөөнийг, дэлгэх, хавчих, эрхий хурууг алга руу авчрах, боломжтой болгодог.",
+          "fact": "Хурууны хүчний ихэнх нь хүүхэлдэйн утас шиг урт шөрмөсийг татдаг шууны булчингаас гардаг."
+        }
+      },
+      "foot_muscles": {
+        "info": "foot_muscles",
+        "dependsOn": [
+          "calf_left",
+          "calf_right",
+          "shin_left",
+          "shin_right"
+        ],
+        "en": {
+          "name": "Foot muscles",
+          "group": "Hips & legs",
+          "desc": "Small muscles in the foot support its arches and move the toes, helping you balance and push off when you walk.",
+          "fact": "Walking barefoot works these little muscles much more than walking in shoes."
+        },
+        "mn": {
+          "name": "Хөлийн тавхайн булчин",
+          "group": "Аарцаг ба хөл",
+          "desc": "Хөлийн тавхайн жижиг булчингууд нуман хэлбэрийг тулж, хөлийн хурууг хөдөлгөж, алхахад тэнцвэр хадгалж, түлхэлт хийхэд тусалдаг.",
+          "fact": "Хөл нүцгэн алхах нь гутлаар алхахаас эдгээр жижиг булчинг хамаагүй их ажиллуулдаг."
+        }
+      }
+    }
+  },
+  "robotDog": {
+    "title": {
+      "en": "Robot dog",
+      "mn": "Робот нохой"
+    },
+    "parts": {
+      "frame": {
+        "info": "frame",
+        "dependsOn": [],
+        "en": {
+          "name": "Frame",
+          "group": "Body",
+          "desc": "The frame is the robot's skeleton. Every other part is fixed to it, so it has to be light but stiff — the legs need something solid to push against.",
+          "fact": "Engineers use the frame as the robot's reference point (the 'base link') when they describe where every other part is."
+        },
+        "mn": {
+          "name": "Их биеийн хүрээ",
+          "group": "Их бие",
+          "desc": "Хүрээ бол роботын араг яс. Бусад бүх эд анги үүнд бэхлэгддэг тул хөнгөн боловч хатуу байх ёстой, хөлнүүд түлхэх бат бэх тулгуур хэрэгтэй.",
+          "fact": "Инженерүүд бусад эд ангийн байрлалыг тодорхойлохдоо хүрээг роботын жишиг цэг (\"суурь холбоос\") болгон ашигладаг."
+        }
+      },
+      "battery": {
+        "info": "battery",
+        "dependsOn": [
+          "frame"
+        ],
+        "en": {
+          "name": "Battery pack",
+          "group": "Body",
+          "desc": "The rechargeable lithium battery stores energy for the motors, the computer and the sensors. It sits low and near the middle so the weight stays balanced.",
+          "fact": "When the robot jumps or climbs, all twelve motors pull current at once — the battery must deliver strong bursts of power, not just store energy."
+        },
+        "mn": {
+          "name": "Батарей",
+          "group": "Их бие",
+          "desc": "Цэнэглэдэг литийн батарей мотор, компьютер, мэдрэгчүүдэд зориулсан эрчим хүчийг хадгалдаг. Жин тэнцвэртэй байхын тулд доод хэсэгт, голд ойрхон байрладаг.",
+          "fact": "Робот үсрэх эсвэл авирах үед арван хоёр мотор бүгд зэрэг гүйдэл татдаг, батарей зөвхөн эрчим хүч хадгалах биш, хүчтэй түр гүйдэл өгөх чадвартай байх ёстой."
+        }
+      },
+      "controller_board": {
+        "info": "controller_board",
+        "dependsOn": [
+          "battery"
+        ],
+        "en": {
+          "name": "Controller board",
+          "group": "Body",
+          "desc": "The main circuit board carries a small computer, power circuits and connectors. It runs the control loop: read the sensors, decide, and send new angles to every motor many times per second.",
+          "fact": "It also holds an IMU (inertial measurement unit) — a tiny chip that senses tilt and acceleration, so the robot knows when it is about to fall."
+        },
+        "mn": {
+          "name": "Удирдлагын самбар",
+          "group": "Их бие",
+          "desc": "Үндсэн хэлхээний самбар жижиг компьютер, тэжээлийн хэлхээ, холбогчуудыг агуулдаг. Удирдлагын давталтыг ажиллуулдаг: мэдрэгчээс уншиж, шийдвэр гаргаж, мотор бүрт секундэд олон удаа шинэ өнцөг илгээдэг.",
+          "fact": "Мөн IMU (инерцийн хэмжих төхөөрөмж) агуулдаг, хазайлт, хурдатгалыг мэдэрдэг жижиг чип бөгөөд үүний ачаар робот унах гэж байгаагаа мэддэг."
+        }
+      },
+      "servos_lf": {
+        "info": "servos",
+        "dependsOn": [
+          "controller_board"
+        ],
+        "en": {
+          "name": "Front-left leg servos",
+          "group": "Motors",
+          "desc": "Each leg has three servo motors: one swings the leg out to the side, one swings the upper leg forward and back at the hip, and one bends the knee. A servo is a motor with gears and a sensor that can hold any angle it is told.",
+          "fact": "Twelve servos give the robot 12 'degrees of freedom' — 3 per leg, the minimum for a foot to reach any point beneath it."
+        },
+        "mn": {
+          "name": "Урд зүүн хөлийн серво моторууд",
+          "group": "Моторууд",
+          "desc": "Хөл бүр гурван серво мотортой: нэг нь хөлийг хажуу тийш, нэг нь түнхэн дээр дээд хөлийг урагш хойш хөдөлгөж, нөгөө нь өвдгийг нугалдаг. Серво бол араа, мэдрэгчтэй мотор бөгөөд өгсөн дурын өнцгийг барьж чаддаг.",
+          "fact": "Арван хоёр серво мотор робот нохойд 12 \"чөлөөний зэрэг\" өгдөг, хөл тус бүрд 3, энэ нь тавхай доорх дурын цэгт хүрэх хамгийн бага тоо юм."
+        }
+      },
+      "hip_lf": {
+        "info": "hip",
+        "dependsOn": [
+          "servos_lf"
+        ],
+        "en": {
+          "name": "Front-left hip module",
+          "group": "Legs",
+          "desc": "The hip module joins the leg to the body and holds the leg's motors. It tilts the whole leg in or out to keep the robot balanced.",
+          "fact": "Putting the heavy motors at the hip, close to the body, keeps the legs light and quick to swing."
+        },
+        "mn": {
+          "name": "Урд зүүн түнхний модуль",
+          "group": "Хөлнүүд",
+          "desc": "Түнхний модуль хөлийг их биетэй холбож, хөлийн моторуудыг барьдаг. Роботын тэнцвэрийг хадгалахын тулд хөлийг бүхэлд нь дотогш эсвэл гадагш хазайлгадаг.",
+          "fact": "Хүнд моторуудыг их биед ойрхон, түнхэнд байрлуулснаар хөлнүүд хөнгөн, хурдан хөдөлдөг болно."
+        }
+      },
+      "upper_leg_lf": {
+        "info": "upper_leg",
+        "dependsOn": [
+          "hip_lf"
+        ],
+        "en": {
+          "name": "Front-left upper leg",
+          "group": "Legs",
+          "desc": "The upper leg (thigh) swings forward and back from the hip, like your own thigh when you walk.",
+          "fact": "Robot legs are made light on purpose: the less weight at the end of a leg, the less force a motor needs to swing it."
+        },
+        "mn": {
+          "name": "Урд зүүн дээд хөл (гуя)",
+          "group": "Хөлнүүд",
+          "desc": "Дээд хөл (гуя) таны алхах үеийн гуя шиг түнхнээс урагш хойш хөдөлдөг.",
+          "fact": "Роботын хөлийг санаатайгаар хөнгөн хийдэг: хөлийн үзүүрт жин бага байх тусам түүнийг хөдөлгөхөд моторт бага хүч хэрэгтэй."
+        }
+      },
+      "lower_leg_lf": {
+        "info": "lower_leg",
+        "dependsOn": [
+          "upper_leg_lf"
+        ],
+        "en": {
+          "name": "Front-left lower leg and foot",
+          "group": "Legs",
+          "desc": "The lower leg bends at the knee and ends in a rubber foot that grips the floor. Upper and lower leg work together like your thigh and shin.",
+          "fact": "The foot is the only part that touches the ground — the grip there is what lets the robot push itself forward."
+        },
+        "mn": {
+          "name": "Урд зүүн доод хөл ба тавхай",
+          "group": "Хөлнүүд",
+          "desc": "Доод хөл өвдгөөр нугалагдаж, шалыг атгадаг резинэн тавхайгаар төгсдөг. Дээд, доод хөл хоёр таны гуя, шилбэ шиг хамтран ажилладаг.",
+          "fact": "Тавхай бол газарт хүрдэг цорын ганц хэсэг, тэнд үүсэх үрэлт роботыг урагш түлхэх боломж олгодог."
+        }
+      },
+      "servos_rf": {
+        "info": "servos",
+        "dependsOn": [
+          "controller_board"
+        ],
+        "en": {
+          "name": "Front-right leg servos",
+          "group": "Motors",
+          "desc": "Each leg has three servo motors: one swings the leg out to the side, one swings the upper leg forward and back at the hip, and one bends the knee. A servo is a motor with gears and a sensor that can hold any angle it is told.",
+          "fact": "Twelve servos give the robot 12 'degrees of freedom' — 3 per leg, the minimum for a foot to reach any point beneath it."
+        },
+        "mn": {
+          "name": "Урд баруун хөлийн серво моторууд",
+          "group": "Моторууд",
+          "desc": "Хөл бүр гурван серво мотортой: нэг нь хөлийг хажуу тийш, нэг нь түнхэн дээр дээд хөлийг урагш хойш хөдөлгөж, нөгөө нь өвдгийг нугалдаг. Серво бол араа, мэдрэгчтэй мотор бөгөөд өгсөн дурын өнцгийг барьж чаддаг.",
+          "fact": "Арван хоёр серво мотор робот нохойд 12 \"чөлөөний зэрэг\" өгдөг, хөл тус бүрд 3, энэ нь тавхай доорх дурын цэгт хүрэх хамгийн бага тоо юм."
+        }
+      },
+      "hip_rf": {
+        "info": "hip",
+        "dependsOn": [
+          "servos_rf"
+        ],
+        "en": {
+          "name": "Front-right hip module",
+          "group": "Legs",
+          "desc": "The hip module joins the leg to the body and holds the leg's motors. It tilts the whole leg in or out to keep the robot balanced.",
+          "fact": "Putting the heavy motors at the hip, close to the body, keeps the legs light and quick to swing."
+        },
+        "mn": {
+          "name": "Урд баруун түнхний модуль",
+          "group": "Хөлнүүд",
+          "desc": "Түнхний модуль хөлийг их биетэй холбож, хөлийн моторуудыг барьдаг. Роботын тэнцвэрийг хадгалахын тулд хөлийг бүхэлд нь дотогш эсвэл гадагш хазайлгадаг.",
+          "fact": "Хүнд моторуудыг их биед ойрхон, түнхэнд байрлуулснаар хөлнүүд хөнгөн, хурдан хөдөлдөг болно."
+        }
+      },
+      "upper_leg_rf": {
+        "info": "upper_leg",
+        "dependsOn": [
+          "hip_rf"
+        ],
+        "en": {
+          "name": "Front-right upper leg",
+          "group": "Legs",
+          "desc": "The upper leg (thigh) swings forward and back from the hip, like your own thigh when you walk.",
+          "fact": "Robot legs are made light on purpose: the less weight at the end of a leg, the less force a motor needs to swing it."
+        },
+        "mn": {
+          "name": "Урд баруун дээд хөл (гуя)",
+          "group": "Хөлнүүд",
+          "desc": "Дээд хөл (гуя) таны алхах үеийн гуя шиг түнхнээс урагш хойш хөдөлдөг.",
+          "fact": "Роботын хөлийг санаатайгаар хөнгөн хийдэг: хөлийн үзүүрт жин бага байх тусам түүнийг хөдөлгөхөд моторт бага хүч хэрэгтэй."
+        }
+      },
+      "lower_leg_rf": {
+        "info": "lower_leg",
+        "dependsOn": [
+          "upper_leg_rf"
+        ],
+        "en": {
+          "name": "Front-right lower leg and foot",
+          "group": "Legs",
+          "desc": "The lower leg bends at the knee and ends in a rubber foot that grips the floor. Upper and lower leg work together like your thigh and shin.",
+          "fact": "The foot is the only part that touches the ground — the grip there is what lets the robot push itself forward."
+        },
+        "mn": {
+          "name": "Урд баруун доод хөл ба тавхай",
+          "group": "Хөлнүүд",
+          "desc": "Доод хөл өвдгөөр нугалагдаж, шалыг атгадаг резинэн тавхайгаар төгсдөг. Дээд, доод хөл хоёр таны гуя, шилбэ шиг хамтран ажилладаг.",
+          "fact": "Тавхай бол газарт хүрдэг цорын ганц хэсэг, тэнд үүсэх үрэлт роботыг урагш түлхэх боломж олгодог."
+        }
+      },
+      "servos_lb": {
+        "info": "servos",
+        "dependsOn": [
+          "controller_board"
+        ],
+        "en": {
+          "name": "Back-left leg servos",
+          "group": "Motors",
+          "desc": "Each leg has three servo motors: one swings the leg out to the side, one swings the upper leg forward and back at the hip, and one bends the knee. A servo is a motor with gears and a sensor that can hold any angle it is told.",
+          "fact": "Twelve servos give the robot 12 'degrees of freedom' — 3 per leg, the minimum for a foot to reach any point beneath it."
+        },
+        "mn": {
+          "name": "Хойд зүүн хөлийн серво моторууд",
+          "group": "Моторууд",
+          "desc": "Хөл бүр гурван серво мотортой: нэг нь хөлийг хажуу тийш, нэг нь түнхэн дээр дээд хөлийг урагш хойш хөдөлгөж, нөгөө нь өвдгийг нугалдаг. Серво бол араа, мэдрэгчтэй мотор бөгөөд өгсөн дурын өнцгийг барьж чаддаг.",
+          "fact": "Арван хоёр серво мотор робот нохойд 12 \"чөлөөний зэрэг\" өгдөг, хөл тус бүрд 3, энэ нь тавхай доорх дурын цэгт хүрэх хамгийн бага тоо юм."
+        }
+      },
+      "hip_lb": {
+        "info": "hip",
+        "dependsOn": [
+          "servos_lb"
+        ],
+        "en": {
+          "name": "Back-left hip module",
+          "group": "Legs",
+          "desc": "The hip module joins the leg to the body and holds the leg's motors. It tilts the whole leg in or out to keep the robot balanced.",
+          "fact": "Putting the heavy motors at the hip, close to the body, keeps the legs light and quick to swing."
+        },
+        "mn": {
+          "name": "Хойд зүүн түнхний модуль",
+          "group": "Хөлнүүд",
+          "desc": "Түнхний модуль хөлийг их биетэй холбож, хөлийн моторуудыг барьдаг. Роботын тэнцвэрийг хадгалахын тулд хөлийг бүхэлд нь дотогш эсвэл гадагш хазайлгадаг.",
+          "fact": "Хүнд моторуудыг их биед ойрхон, түнхэнд байрлуулснаар хөлнүүд хөнгөн, хурдан хөдөлдөг болно."
+        }
+      },
+      "upper_leg_lb": {
+        "info": "upper_leg",
+        "dependsOn": [
+          "hip_lb"
+        ],
+        "en": {
+          "name": "Back-left upper leg",
+          "group": "Legs",
+          "desc": "The upper leg (thigh) swings forward and back from the hip, like your own thigh when you walk.",
+          "fact": "Robot legs are made light on purpose: the less weight at the end of a leg, the less force a motor needs to swing it."
+        },
+        "mn": {
+          "name": "Хойд зүүн дээд хөл (гуя)",
+          "group": "Хөлнүүд",
+          "desc": "Дээд хөл (гуя) таны алхах үеийн гуя шиг түнхнээс урагш хойш хөдөлдөг.",
+          "fact": "Роботын хөлийг санаатайгаар хөнгөн хийдэг: хөлийн үзүүрт жин бага байх тусам түүнийг хөдөлгөхөд моторт бага хүч хэрэгтэй."
+        }
+      },
+      "lower_leg_lb": {
+        "info": "lower_leg",
+        "dependsOn": [
+          "upper_leg_lb"
+        ],
+        "en": {
+          "name": "Back-left lower leg and foot",
+          "group": "Legs",
+          "desc": "The lower leg bends at the knee and ends in a rubber foot that grips the floor. Upper and lower leg work together like your thigh and shin.",
+          "fact": "The foot is the only part that touches the ground — the grip there is what lets the robot push itself forward."
+        },
+        "mn": {
+          "name": "Хойд зүүн доод хөл ба тавхай",
+          "group": "Хөлнүүд",
+          "desc": "Доод хөл өвдгөөр нугалагдаж, шалыг атгадаг резинэн тавхайгаар төгсдөг. Дээд, доод хөл хоёр таны гуя, шилбэ шиг хамтран ажилладаг.",
+          "fact": "Тавхай бол газарт хүрдэг цорын ганц хэсэг, тэнд үүсэх үрэлт роботыг урагш түлхэх боломж олгодог."
+        }
+      },
+      "servos_rb": {
+        "info": "servos",
+        "dependsOn": [
+          "controller_board"
+        ],
+        "en": {
+          "name": "Back-right leg servos",
+          "group": "Motors",
+          "desc": "Each leg has three servo motors: one swings the leg out to the side, one swings the upper leg forward and back at the hip, and one bends the knee. A servo is a motor with gears and a sensor that can hold any angle it is told.",
+          "fact": "Twelve servos give the robot 12 'degrees of freedom' — 3 per leg, the minimum for a foot to reach any point beneath it."
+        },
+        "mn": {
+          "name": "Хойд баруун хөлийн серво моторууд",
+          "group": "Моторууд",
+          "desc": "Хөл бүр гурван серво мотортой: нэг нь хөлийг хажуу тийш, нэг нь түнхэн дээр дээд хөлийг урагш хойш хөдөлгөж, нөгөө нь өвдгийг нугалдаг. Серво бол араа, мэдрэгчтэй мотор бөгөөд өгсөн дурын өнцгийг барьж чаддаг.",
+          "fact": "Арван хоёр серво мотор робот нохойд 12 \"чөлөөний зэрэг\" өгдөг, хөл тус бүрд 3, энэ нь тавхай доорх дурын цэгт хүрэх хамгийн бага тоо юм."
+        }
+      },
+      "hip_rb": {
+        "info": "hip",
+        "dependsOn": [
+          "servos_rb"
+        ],
+        "en": {
+          "name": "Back-right hip module",
+          "group": "Legs",
+          "desc": "The hip module joins the leg to the body and holds the leg's motors. It tilts the whole leg in or out to keep the robot balanced.",
+          "fact": "Putting the heavy motors at the hip, close to the body, keeps the legs light and quick to swing."
+        },
+        "mn": {
+          "name": "Хойд баруун түнхний модуль",
+          "group": "Хөлнүүд",
+          "desc": "Түнхний модуль хөлийг их биетэй холбож, хөлийн моторуудыг барьдаг. Роботын тэнцвэрийг хадгалахын тулд хөлийг бүхэлд нь дотогш эсвэл гадагш хазайлгадаг.",
+          "fact": "Хүнд моторуудыг их биед ойрхон, түнхэнд байрлуулснаар хөлнүүд хөнгөн, хурдан хөдөлдөг болно."
+        }
+      },
+      "upper_leg_rb": {
+        "info": "upper_leg",
+        "dependsOn": [
+          "hip_rb"
+        ],
+        "en": {
+          "name": "Back-right upper leg",
+          "group": "Legs",
+          "desc": "The upper leg (thigh) swings forward and back from the hip, like your own thigh when you walk.",
+          "fact": "Robot legs are made light on purpose: the less weight at the end of a leg, the less force a motor needs to swing it."
+        },
+        "mn": {
+          "name": "Хойд баруун дээд хөл (гуя)",
+          "group": "Хөлнүүд",
+          "desc": "Дээд хөл (гуя) таны алхах үеийн гуя шиг түнхнээс урагш хойш хөдөлдөг.",
+          "fact": "Роботын хөлийг санаатайгаар хөнгөн хийдэг: хөлийн үзүүрт жин бага байх тусам түүнийг хөдөлгөхөд моторт бага хүч хэрэгтэй."
+        }
+      },
+      "lower_leg_rb": {
+        "info": "lower_leg",
+        "dependsOn": [
+          "upper_leg_rb"
+        ],
+        "en": {
+          "name": "Back-right lower leg and foot",
+          "group": "Legs",
+          "desc": "The lower leg bends at the knee and ends in a rubber foot that grips the floor. Upper and lower leg work together like your thigh and shin.",
+          "fact": "The foot is the only part that touches the ground — the grip there is what lets the robot push itself forward."
+        },
+        "mn": {
+          "name": "Хойд баруун доод хөл ба тавхай",
+          "group": "Хөлнүүд",
+          "desc": "Доод хөл өвдгөөр нугалагдаж, шалыг атгадаг резинэн тавхайгаар төгсдөг. Дээд, доод хөл хоёр таны гуя, шилбэ шиг хамтран ажилладаг.",
+          "fact": "Тавхай бол газарт хүрдэг цорын ганц хэсэг, тэнд үүсэх үрэлт роботыг урагш түлхэх боломж олгодог."
+        }
+      },
+      "lidar": {
+        "info": "lidar",
+        "dependsOn": [
+          "controller_board"
+        ],
+        "en": {
+          "name": "LiDAR sensor",
+          "group": "Body",
+          "desc": "LiDAR spins a laser beam and measures how long the light takes to bounce back. That builds a 360° map of distances, so the robot can avoid walls and map a room.",
+          "fact": "Light travels about 30 cm in one billionth of a second — LiDAR measures time that precisely."
+        },
+        "mn": {
+          "name": "Лидар мэдрэгч",
+          "group": "Их бие",
+          "desc": "Лидар лазер цацрагийг эргүүлж, гэрэл ойж буцах хугацааг хэмждэг. Ингэснээр 360° зайн зураглал үүсгэж, робот хананаас зайлсхийж, өрөөний зургийг гаргаж чаддаг.",
+          "fact": "Гэрэл секундын тэрбумны нэгд 30 см орчим замыг туулдаг, лидар цагийг тэр нарийвчлалтай хэмждэг."
+        }
+      },
+      "front_plate": {
+        "info": "front_plate",
+        "dependsOn": [
+          "controller_board",
+          "lidar"
+        ],
+        "en": {
+          "name": "Front plate",
+          "group": "Body",
+          "desc": "The front plate closes the body at the front and protects the electronics behind it.",
+          "fact": "Covers go on last in real robot building too, so engineers can test the wiring before closing everything up."
+        },
+        "mn": {
+          "name": "Урд хаалт",
+          "group": "Их бие",
+          "desc": "Урд хаалт их биеийн урд хэсгийг хааж, ард нь байрлах электроникийг хамгаалдаг.",
+          "fact": "Бодит робот угсралтад ч бүрхүүлийг хамгийн сүүлд суулгадаг, ингэснээр инженерүүд бүгдийг хаахаас өмнө утаслагааг шалгаж чадна."
+        }
+      },
+      "side_shells": {
+        "info": "side_shells",
+        "dependsOn": [
+          "battery",
+          "controller_board",
+          "servos_lf",
+          "servos_rf",
+          "servos_lb",
+          "servos_rb"
+        ],
+        "en": {
+          "name": "Side shells",
+          "group": "Body",
+          "desc": "The side shells cover the body and keep dust and fingers away from the moving parts and circuits inside.",
+          "fact": "A shell also stiffens the body, a bit like how an egg shell is strong for its weight."
+        },
+        "mn": {
+          "name": "Хажуугийн бүрхүүл",
+          "group": "Их бие",
+          "desc": "Хажуугийн бүрхүүл их биеийг бүрхэж, доторх хөдөлгөөнт эд анги, хэлхээг тоос болон хуруунаас хамгаалдаг.",
+          "fact": "Бүрхүүл их биеийг бас бэхжүүлдэг, өндөгний хальс жиндээ харьцуулахад бат бөх байдагтай адил."
+        }
+      }
+    }
+  },
+  "rocketEngine": {
+    "title": {
+      "en": "Rocket engine",
+      "mn": "Пуужингийн хөдөлгүүр"
+    },
+    "parts": {
+      "combustion_chamber": {
+        "info": "combustion_chamber",
+        "dependsOn": [],
+        "en": {
+          "name": "Combustion chamber",
+          "group": "Thrust chamber",
+          "desc": "Kerosene and liquid oxygen burn here at over 3,000 °C and very high pressure. The hot gas speeds up as it is squeezed through the narrow throat at the bottom.",
+          "fact": "The flame is hotter than the melting point of the chamber wall — the wall survives only because cold fuel flows through channels right behind it."
+        },
+        "mn": {
+          "name": "Шаталтын камер",
+          "group": "Түлхэлтийн камер",
+          "desc": "Керосин болон шингэн хүчилтөрөгч энд 3000 °C-аас дээш халуунд, маш өндөр даралтад шатдаг. Халуун хий доод талын нарийн хоолойгоор шахагдахдаа хурдасдаг.",
+          "fact": "Дөл нь камерын ханын хайлах цэгээс халуун, хананы цаана хүйтэн түлш урсдаг учраас л хана тэсдэг."
+        }
+      },
+      "injector": {
+        "info": "injector",
+        "dependsOn": [
+          "combustion_chamber"
+        ],
+        "en": {
+          "name": "Injector",
+          "group": "Thrust chamber",
+          "desc": "The injector sprays fuel and oxygen into the chamber through dozens of small elements, mixing them into a fine mist so they burn evenly.",
+          "fact": "Badly designed injectors can make the flame vibrate violently — engineers once tested them by setting off small explosions inside running engines."
+        },
+        "mn": {
+          "name": "Тарилгын хавтан",
+          "group": "Түлхэлтийн камер",
+          "desc": "Тарилгын хавтан олон жижиг цоргоор түлш ба хүчилтөрөгчийг камерт шүршиж, жигд шатахын тулд нарийн манан болгон холидог.",
+          "fact": "Муу зохион бүтээгдсэн тарилга дөлийг хүчтэй чичиргээнд оруулдаг, инженерүүд үүнийг шалгахын тулд ажиллаж буй хөдөлгүүр дотор жижиг дэлбэрэлт хийж байжээ."
+        }
+      },
+      "nozzle": {
+        "info": "nozzle",
+        "dependsOn": [
+          "combustion_chamber"
+        ],
+        "en": {
+          "name": "Bell nozzle",
+          "group": "Thrust chamber",
+          "desc": "Below the throat the nozzle widens like a bell. The hot gas expands and speeds up to several kilometres per second, and pushing it out backwards pushes the rocket forwards.",
+          "fact": "This is Newton's third law in action: for every action there is an equal and opposite reaction."
+        },
+        "mn": {
+          "name": "Хонх хэлбэрийн цорго",
+          "group": "Түлхэлтийн камер",
+          "desc": "Хоолойн доор цорго хонх шиг өргөсдөг. Халуун хий тэлж, секундэд хэдэн километр хүртэл хурдасдаг бөгөөд үүнийг хойш түлхэх нь пуужинг урагш түлхдэг.",
+          "fact": "Энэ бол Ньютоны гуравдугаар хууль: үйлчлэл бүрд тэнцүү, эсрэг чиглэлтэй эсрэг үйлчлэл байдаг."
+        }
+      },
+      "cooling_jacket": {
+        "info": "cooling_jacket",
+        "dependsOn": [
+          "nozzle"
+        ],
+        "en": {
+          "name": "Cooling channels",
+          "group": "Thrust chamber",
+          "desc": "Before it is burned, the fuel flows through channels along the chamber and nozzle walls. It soaks up heat and keeps the metal from melting — this is called regenerative cooling.",
+          "fact": "The heat the fuel picks up is not wasted: it goes back into the chamber when the fuel is burned."
+        },
+        "mn": {
+          "name": "Хөргөлтийн суваг",
+          "group": "Түлхэлтийн камер",
+          "desc": "Шатахаас өмнө түлш камер болон цоргоны хананы дагуух сувгаар урсдаг. Халууныг шингээж, металыг хайлахаас хамгаалдаг, үүнийг регенератив хөргөлт гэдэг.",
+          "fact": "Түлшний шингээсэн дулаан дэмий үрэгдэхгүй: түлш шатахад камерт буцаж ордог."
+        }
+      },
+      "igniter": {
+        "info": "igniter",
+        "dependsOn": [
+          "injector"
+        ],
+        "en": {
+          "name": "Igniter",
+          "group": "Thrust chamber",
+          "desc": "The igniter starts the fire. Many kerosene engines inject a few drops of a chemical mix that bursts into flame on its own when it touches oxygen.",
+          "fact": "That self-igniting mix burns with a bright green flash — you can see it in many launch videos."
+        },
+        "mn": {
+          "name": "Асаагуур",
+          "group": "Түлхэлтийн камер",
+          "desc": "Асаагуур галыг эхлүүлдэг. Олон керосинтой хөдөлгүүр хүчилтөрөгчтэй хүрэлцэхдээ өөрөө дүрэлздэг химийн хольцоос хэдэн дусал шахдаг.",
+          "fact": "Өөрөө асдаг тэр хольц тод ногоон гэрлээр шатдаг, олон хөөргөлтийн бичлэгт харж болно."
+        }
+      },
+      "gimbal": {
+        "info": "gimbal",
+        "dependsOn": [
+          "injector"
+        ],
+        "en": {
+          "name": "Gimbal",
+          "group": "Structure & control",
+          "desc": "The gimbal is a pivot joint at the top of the engine. It lets the whole engine tilt a few degrees, so the rocket can steer by pointing its thrust.",
+          "fact": "Rockets steer more like a broom balanced on your hand than like a car — the engine keeps moving under the rocket to stop it tipping over."
+        },
+        "mn": {
+          "name": "Гимбал (эргэдэг холбоос)",
+          "group": "Бүтэц ба удирдлага",
+          "desc": "Гимбал бол хөдөлгүүрийн орой дээрх эргэдэг холбоос. Хөдөлгүүрийг хэдэн градус хазайлгаж, түлхэлтийн чиглэлийг өөрчлөн пуужинг жолоодох боломж олгодог.",
+          "fact": "Пуужин машин шиг биш, алган дээр тэнцвэржүүлсэн шүүр шиг жолоодогддог, хөдөлгүүр унахаас сэргийлж байнга хөдөлж байдаг."
+        }
+      },
+      "thrust_frame": {
+        "info": "thrust_frame",
+        "dependsOn": [
+          "gimbal"
+        ],
+        "en": {
+          "name": "Thrust frame",
+          "group": "Structure & control",
+          "desc": "The thrust frame carries the engine's huge push into the body of the rocket. It must be strong, but as light as possible.",
+          "fact": "A medium-sized rocket engine can push with the weight of around 80 cars."
+        },
+        "mn": {
+          "name": "Түлхэлтийн хүрээ",
+          "group": "Бүтэц ба удирдлага",
+          "desc": "Түлхэлтийн хүрээ хөдөлгүүрийн асар их түлхэлтийг пуужингийн их бие рүү дамжуулдаг. Бат бөх хэрнээ аль болох хөнгөн байх ёстой.",
+          "fact": "Дунд оврын пуужингийн хөдөлгүүр 80 орчим машины жинтэй тэнцэх хүчээр түлхэж чаддаг."
+        }
+      },
+      "actuators": {
+        "info": "actuators",
+        "dependsOn": [
+          "thrust_frame"
+        ],
+        "en": {
+          "name": "Steering actuators",
+          "group": "Structure & control",
+          "desc": "Two actuators — powerful pistons — push and pull on the engine to tilt it on its gimbal, one for each direction.",
+          "fact": "They correct the engine’s angle many times every second while the rocket climbs."
+        },
+        "mn": {
+          "name": "Жолоодлогын хөдөлгүүрүүд",
+          "group": "Бүтэц ба удирдлага",
+          "desc": "Хоёр актуатор, хүчирхэг поршень, хөдөлгүүрийг гимбал дээр нь хазайлгахын тулд түлхэж, татдаг; чиглэл бүрд нэг.",
+          "fact": "Пуужин өгсөх үед хөдөлгүүрийн өнцгийг секунд бүрд олон удаа засдаг."
+        }
+      },
+      "turbine": {
+        "info": "turbine",
+        "dependsOn": [
+          "combustion_chamber"
+        ],
+        "en": {
+          "name": "Turbine",
+          "group": "Turbopump",
+          "desc": "Hot gas spins the turbine wheel at tens of thousands of turns per minute. The turbine shares one shaft with the pumps and drives them.",
+          "fact": "A rocket turbopump can be as powerful as a large ship’s engine, yet small enough to carry in your arms."
+        },
+        "mn": {
+          "name": "Турбин",
+          "group": "Турбонасос",
+          "desc": "Халуун хий турбины дугуйг минутад хэдэн арван мянган эргэлтээр эргүүлдэг. Турбин насосуудтай нэг гол дээр байрлаж, тэдгээрийг хөдөлгөдөг.",
+          "fact": "Пуужингийн турбонасос том хөлөг онгоцны хөдөлгүүр шиг хүчтэй хэрнээ гартаа барьж болохоор жижиг байж болно."
+        }
+      },
+      "fuel_pump": {
+        "info": "fuel_pump",
+        "dependsOn": [
+          "turbine"
+        ],
+        "en": {
+          "name": "Fuel pump",
+          "group": "Turbopump",
+          "desc": "The fuel pump takes kerosene from the tank and raises its pressure so it can be forced through the cooling channels and into the chamber.",
+          "fact": "The pressure it makes is hundreds of times higher than the air pressure around you."
+        },
+        "mn": {
+          "name": "Түлшний насос",
+          "group": "Турбонасос",
+          "desc": "Түлшний насос савнаас керосин авч, хөргөлтийн суваг дамжуулан камер руу шахахын тулд даралтыг нь өсгөдөг.",
+          "fact": "Түүний үүсгэх даралт таны эргэн тойрон дахь агаарын даралтаас хэдэн зуу дахин их."
+        }
+      },
+      "lox_pump": {
+        "info": "lox_pump",
+        "dependsOn": [
+          "fuel_pump"
+        ],
+        "en": {
+          "name": "Liquid oxygen pump",
+          "group": "Turbopump",
+          "desc": "The oxygen pump moves liquid oxygen at about −183 °C into the injector. Burning needs oxygen, and there is no air in space, so the rocket carries its own.",
+          "fact": "A rocket usually carries more than twice as much oxygen as fuel, by weight."
+        },
+        "mn": {
+          "name": "Шингэн хүчилтөрөгчийн насос",
+          "group": "Турбонасос",
+          "desc": "Хүчилтөрөгчийн насос −183 °C орчим хүйтэн шингэн хүчилтөрөгчийг тарилга руу шилжүүлдэг. Шаталтад хүчилтөрөгч хэрэгтэй, сансарт агаар байхгүй тул пуужин өөрийнхөө хүчилтөрөгчийг авч явдаг.",
+          "fact": "Пуужин ихэвчлэн түлшнээсээ жингээрээ хоёр дахин илүү хүчилтөрөгч авч явдаг."
+        }
+      },
+      "gas_generator": {
+        "info": "gas_generator",
+        "dependsOn": [
+          "turbine"
+        ],
+        "en": {
+          "name": "Gas generator",
+          "group": "Turbopump",
+          "desc": "The gas generator burns a small amount of fuel and oxygen to make hot gas that drives the turbine. It is like a tiny rocket engine powering the big one.",
+          "fact": "It burns with extra fuel on purpose, so the gas is cool enough not to melt the turbine blades."
+        },
+        "mn": {
+          "name": "Хий үүсгэгч",
+          "group": "Турбонасос",
+          "desc": "Хий үүсгэгч бага хэмжээний түлш ба хүчилтөрөгч шатааж, турбиныг эргүүлэх халуун хий гаргадаг. Энэ бол том хөдөлгүүрийг ажиллуулдаг жижигхэн пуужингийн хөдөлгүүр шиг.",
+          "fact": "Хийг турбины ирийг хайлуулахгүй хэмжээнд сэрүүн байлгахын тулд санаатайгаар илүү түлштэй шатдаг."
+        }
+      },
+      "turbine_exhaust": {
+        "info": "turbine_exhaust",
+        "dependsOn": [
+          "turbine"
+        ],
+        "en": {
+          "name": "Turbine exhaust",
+          "group": "Turbopump",
+          "desc": "After spinning the turbine, the gas is dumped overboard through this pipe. In a gas-generator engine this gas adds a little thrust.",
+          "fact": "Its smoky, fuel-rich exhaust is the dark plume you often see next to the main flame."
+        },
+        "mn": {
+          "name": "Турбины яндан",
+          "group": "Турбонасос",
+          "desc": "Турбиныг эргүүлсний дараа хий энэ хоолойгоор гадагш гардаг. Хий үүсгэгчтэй хөдөлгүүрт энэ хий бага зэрэг түлхэлт нэмдэг.",
+          "fact": "Түлш ихтэй утаатай яндангийн хий нь гол дөлний хажууд харагддаг бараан утаа юм."
+        }
+      },
+      "oxidizer_lines": {
+        "info": "oxidizer_lines",
+        "dependsOn": [
+          "lox_pump",
+          "injector"
+        ],
+        "en": {
+          "name": "Oxygen lines",
+          "group": "Propellant lines & valves",
+          "desc": "These pipes carry liquid oxygen from the tank into the pump and from the pump to the injector.",
+          "fact": "Liquid oxygen is so cold that the pipes are often covered in frost before launch."
+        },
+        "mn": {
+          "name": "Хүчилтөрөгчийн хоолой",
+          "group": "Түлшний хоолой ба хавхлага",
+          "desc": "Эдгээр хоолой шингэн хүчилтөрөгчийг савнаас насос руу, насосоос тарилга руу зөөдөг.",
+          "fact": "Шингэн хүчилтөрөгч маш хүйтэн тул хөөргөлтийн өмнө хоолойнууд ихэвчлэн цантай байдаг."
+        }
+      },
+      "main_oxidizer_valve": {
+        "info": "main_oxidizer_valve",
+        "dependsOn": [
+          "oxidizer_lines"
+        ],
+        "en": {
+          "name": "Main oxygen valve",
+          "group": "Propellant lines & valves",
+          "desc": "This valve opens and closes the flow of oxygen to the engine. Opening the valves in the right order is what starts and stops the engine safely.",
+          "fact": "The whole start-up sequence takes only a few seconds and is run by the computer."
+        },
+        "mn": {
+          "name": "Хүчилтөрөгчийн гол хавхлага",
+          "group": "Түлшний хоолой ба хавхлага",
+          "desc": "Энэ хавхлага хөдөлгүүр рүү урсах хүчилтөрөгчийг нээж, хаадаг. Хавхлагуудыг зөв дарааллаар нээх нь хөдөлгүүрийг аюулгүй асааж, унтраах арга юм.",
+          "fact": "Асаах бүх дараалал хэдхэн секунд үргэлжилдэг бөгөөд компьютер удирддаг."
+        }
+      },
+      "fuel_lines": {
+        "info": "fuel_lines",
+        "dependsOn": [
+          "fuel_pump",
+          "cooling_jacket"
+        ],
+        "en": {
+          "name": "Fuel lines",
+          "group": "Propellant lines & valves",
+          "desc": "These pipes carry kerosene from the tank to the fuel pump, and from the pump to the cooling channels at the bottom of the nozzle.",
+          "fact": "The kerosene used in rockets is a very pure version of the fuel used in jet airliners."
+        },
+        "mn": {
+          "name": "Түлшний хоолой",
+          "group": "Түлшний хоолой ба хавхлага",
+          "desc": "Эдгээр хоолой керосинг савнаас түлшний насос руу, насосоос цоргоны доод хэсэг дэх хөргөлтийн суваг руу зөөдөг.",
+          "fact": "Пуужинд хэрэглэдэг керосин нь тийрэлтэт онгоцны түлшний маш цэвэр хувилбар юм."
+        }
+      },
+      "main_fuel_valve": {
+        "info": "main_fuel_valve",
+        "dependsOn": [
+          "fuel_lines"
+        ],
+        "en": {
+          "name": "Main fuel valve",
+          "group": "Propellant lines & valves",
+          "desc": "This valve controls the flow of fuel to the engine. Together with the oxygen valve it sets how strongly the engine burns.",
+          "fact": "Some engines can be throttled down to less than half power to land a rocket gently."
+        },
+        "mn": {
+          "name": "Түлшний гол хавхлага",
+          "group": "Түлшний хоолой ба хавхлага",
+          "desc": "Энэ хавхлага хөдөлгүүр рүү урсах түлшийг зохицуулдаг. Хүчилтөрөгчийн хавхлагатай хамт хөдөлгүүр хэр хүчтэй шатахыг тодорхойлдог.",
+          "fact": "Зарим хөдөлгүүрийг пуужинг зөөлөн буулгахын тулд хүчийг нь талаас доош бууруулж болдог."
+        }
+      },
+      "controller": {
+        "info": "controller",
+        "dependsOn": [
+          "thrust_frame"
+        ],
+        "en": {
+          "name": "Engine controller",
+          "group": "Structure & control",
+          "desc": "The engine controller is a computer that reads sensors for pressure, temperature and speed, and opens valves and moves actuators to keep the engine running safely.",
+          "fact": "If something goes wrong, it can shut the engine down in a fraction of a second."
+        },
+        "mn": {
+          "name": "Хөдөлгүүрийн удирдлага",
+          "group": "Бүтэц ба удирдлага",
+          "desc": "Хөдөлгүүрийн удирдлага бол даралт, температур, хурдны мэдрэгчээс уншиж, хөдөлгүүрийг аюулгүй ажиллуулахын тулд хавхлага нээж, актуатор хөдөлгөдөг компьютер юм.",
+          "fact": "Ямар нэг зүйл буруу болбол хөдөлгүүрийг секундын өчүүхэн хэсэгт унтрааж чадна."
+        }
+      }
+    }
+  },
+  "electricMotor": {
+    "title": {
+      "en": "Electric motor",
+      "mn": "Цахилгаан мотор"
+    },
+    "parts": {
+      "housing": {
+        "info": "housing",
+        "dependsOn": [],
+        "en": {
+          "name": "Housing",
+          "group": "Stator (still part)",
+          "desc": "The steel housing holds everything together. It also carries the magnetic field from one magnet round to the other, which makes the motor stronger.",
+          "fact": "Electric motors turn up to 90% or more of their electrical energy into motion — far more efficient than a petrol engine."
+        },
+        "mn": {
+          "name": "Их бие (гэр)",
+          "group": "Статор (хөдөлгөөнгүй хэсэг)",
+          "desc": "Ган гэр бүх зүйлийг хамтад нь барьдаг. Мөн соронзон орныг нэг соронзноос нөгөө рүү дамжуулж, моторыг илүү хүчтэй болгодог.",
+          "fact": "Цахилгаан мотор цахилгаан энергийн 90%-иас илүүг хөдөлгөөн болгодог, бензин хөдөлгүүрээс хамаагүй үр ашигтай."
+        }
+      },
+      "north_magnet": {
+        "info": "north_magnet",
+        "dependsOn": [
+          "housing"
+        ],
+        "en": {
+          "name": "North magnet",
+          "group": "Stator (still part)",
+          "desc": "Two permanent magnets face each other inside the housing, with their north and south poles pointing at the rotor. Together they make a strong magnetic field across the middle.",
+          "fact": "Like poles push apart and opposite poles pull together — a motor is a machine that keeps using that push and pull."
+        },
+        "mn": {
+          "name": "Хойд туйлын соронз",
+          "group": "Статор (хөдөлгөөнгүй хэсэг)",
+          "desc": "Гэрийн дотор хоёр байнгын соронз хойд, өмнөд туйлаараа ротор руу харж байрладаг. Хамтдаа голд нь хүчтэй соронзон орон үүсгэдэг.",
+          "fact": "Ижил туйлууд түлхэлцэж, эсрэг туйлууд татагддаг, мотор бол энэ түлхэлт, таталтыг тасралтгүй ашигладаг машин юм."
+        }
+      },
+      "south_magnet": {
+        "info": "south_magnet",
+        "dependsOn": [
+          "housing"
+        ],
+        "en": {
+          "name": "South magnet",
+          "group": "Stator (still part)",
+          "desc": "The south magnet sits opposite the north one. The magnetic field runs from north to south straight through the spinning rotor.",
+          "fact": "Strong modern magnets are made from neodymium, a rare-earth metal."
+        },
+        "mn": {
+          "name": "Өмнөд туйлын соронз",
+          "group": "Статор (хөдөлгөөнгүй хэсэг)",
+          "desc": "Өмнөд соронз хойд соронзны эсрэг талд байрладаг. Соронзон орон хойдоос өмнө рүү эргэдэг роторыг шууд нэвтэлж явдаг.",
+          "fact": "Орчин үеийн хүчтэй соронзыг газрын ховор металл болох неодимоор хийдэг."
+        }
+      },
+      "shaft": {
+        "info": "shaft",
+        "dependsOn": [
+          "housing"
+        ],
+        "en": {
+          "name": "Shaft",
+          "group": "Rotor (spinning part)",
+          "desc": "The steel shaft runs through the middle of the motor. The rotor is fixed to it, and its end sticks out to drive a wheel, a fan or a propeller.",
+          "fact": "The turning force a motor produces at its shaft is called torque."
+        },
+        "mn": {
+          "name": "Гол",
+          "group": "Ротор (эргэдэг хэсэг)",
+          "desc": "Ган гол моторын голоор дайрдаг. Ротор түүнд бэхлэгдсэн бөгөөд үзүүр нь гадагш гарч дугуй, сэнс, эсвэл сэлүүрийг эргүүлдэг.",
+          "fact": "Моторын гол дээр үүсгэх эргүүлэх хүчийг эргүүлэх момент гэдэг."
+        }
+      },
+      "armature_core": {
+        "info": "armature_core",
+        "dependsOn": [
+          "shaft"
+        ],
+        "en": {
+          "name": "Armature core",
+          "group": "Rotor (spinning part)",
+          "desc": "The armature core is a stack of thin iron sheets with teeth. The copper coils are wound around the teeth, and the iron makes their magnetic field much stronger.",
+          "fact": "It is made from thin insulated sheets, not solid iron, so that wasteful swirling currents (eddy currents) cannot heat it up."
+        },
+        "mn": {
+          "name": "Якорийн гол",
+          "group": "Ротор (эргэдэг хэсэг)",
+          "desc": "Якорийн гол нь шүдтэй нимгэн төмөр хавтангуудын овоолго юм. Зэс ороомог шүдийг ороож ороогдсон бөгөөд төмөр тэдгээрийн соронзон орныг хамаагүй хүчтэй болгодог.",
+          "fact": "Цул төмрөөр биш, тусгаарлагдсан нимгэн хавтангаар хийдэг нь дэмий эргэлдэх гүйдэл (эргүүлэг гүйдэл) халаахаас сэргийлдэг."
+        }
+      },
+      "windings": {
+        "info": "windings",
+        "dependsOn": [
+          "armature_core"
+        ],
+        "en": {
+          "name": "Copper windings",
+          "group": "Rotor (spinning part)",
+          "desc": "When current flows through a coil it becomes an electromagnet. The magnets push one side of the coil and pull the other, so the rotor turns.",
+          "fact": "More turns of wire or more current make a stronger electromagnet — and more torque."
+        },
+        "mn": {
+          "name": "Зэс ороомог",
+          "group": "Ротор (эргэдэг хэсэг)",
+          "desc": "Ороомгоор гүйдэл гүйхэд тэр нь цахилгаан соронз болдог. Соронзууд ороомгийн нэг талыг түлхэж, нөгөөг нь татдаг тул ротор эргэдэг.",
+          "fact": "Утасны ороолт эсвэл гүйдлийг нэмэх нь цахилгаан соронзыг хүчтэй болгож, эргүүлэх моментыг ихэсгэдэг."
+        }
+      },
+      "commutator": {
+        "info": "commutator",
+        "dependsOn": [
+          "shaft"
+        ],
+        "en": {
+          "name": "Commutator",
+          "group": "Electrical contacts",
+          "desc": "The commutator is a ring of copper segments on the shaft, each joined to a coil. As the rotor turns it keeps switching which coils get current, so the push always continues in the same direction.",
+          "fact": "Without the commutator the rotor would just turn half a turn, stop and rock back and forth."
+        },
+        "mn": {
+          "name": "Коллектор (сэлгүүр)",
+          "group": "Цахилгаан холбоос",
+          "desc": "Коллектор нь гол дээрх зэс сегментүүдийн цагираг бөгөөд тус бүр нэг ороомогтой холбогддог. Ротор эргэхэд аль ороомогт гүйдэл өгөхийг байнга сэлгэж, түлхэлтийг үргэлж нэг чиглэлд үргэлжлүүлдэг.",
+          "fact": "Коллекторгүй бол ротор хагас эргээд зогсож, нааш цааш савлах байсан."
+        }
+      },
+      "front_bearing": {
+        "info": "front_bearing",
+        "dependsOn": [
+          "shaft"
+        ],
+        "en": {
+          "name": "Front bearing",
+          "group": "Frame & bearings",
+          "desc": "A ball bearing lets the shaft spin smoothly with very little friction. Steel balls roll between an inner and an outer ring.",
+          "fact": "Rolling is far easier than sliding — the same reason wheels were such a big invention."
+        },
+        "mn": {
+          "name": "Урд холхивч",
+          "group": "Их бие ба холхивч",
+          "desc": "Бөмбөлөгт холхивч голыг маш бага үрэлттэйгээр жигд эргэх боломж олгодог. Ган бөмбөлгүүд дотор, гадна цагирагийн хооронд өнхөрдөг.",
+          "fact": "Өнхрөх нь гулсахаас хамаагүй хялбар, дугуй яагаад агуу шинэ бүтээл байсны шалтгаан ч мөн."
+        }
+      },
+      "rear_bearing": {
+        "info": "rear_bearing",
+        "dependsOn": [
+          "shaft"
+        ],
+        "en": {
+          "name": "Rear bearing",
+          "group": "Frame & bearings",
+          "desc": "The second bearing supports the other end of the shaft, so the rotor stays perfectly centred between the magnets.",
+          "fact": "The gap between the spinning rotor and the magnets is often less than a millimetre."
+        },
+        "mn": {
+          "name": "Хойд холхивч",
+          "group": "Их бие ба холхивч",
+          "desc": "Хоёр дахь холхивч голын нөгөө үзүүрийг тулж, роторыг соронзуудын хооронд яг голд нь байлгадаг.",
+          "fact": "Эргэдэг ротор ба соронзуудын хоорондох зай ихэвчлэн нэг миллиметрээс бага байдаг."
+        }
+      },
+      "front_end_cap": {
+        "info": "front_end_cap",
+        "dependsOn": [
+          "front_bearing",
+          "north_magnet",
+          "south_magnet",
+          "windings"
+        ],
+        "en": {
+          "name": "Front end cap",
+          "group": "Frame & bearings",
+          "desc": "The front end cap closes the housing and holds the front bearing in place.",
+          "fact": "The vents in the caps let air flow through to cool the coils."
+        },
+        "mn": {
+          "name": "Урд таг",
+          "group": "Их бие ба холхивч",
+          "desc": "Урд таг гэрийг хааж, урд холхивчийг байранд нь барьдаг.",
+          "fact": "Таган дээрх нүхнүүд ороомгийг хөргөхийн тулд агаар нэвтрүүлдэг."
+        }
+      },
+      "rear_end_cap": {
+        "info": "rear_end_cap",
+        "dependsOn": [
+          "rear_bearing",
+          "commutator",
+          "north_magnet",
+          "south_magnet",
+          "windings"
+        ],
+        "en": {
+          "name": "Rear end cap",
+          "group": "Frame & bearings",
+          "desc": "The rear end cap holds the rear bearing and the brush holders that keep the brushes in position on the commutator.",
+          "fact": "It is usually made of plastic or another insulator so the brushes are not short-circuited."
+        },
+        "mn": {
+          "name": "Хойд таг",
+          "group": "Их бие ба холхивч",
+          "desc": "Хойд таг хойд холхивч болон шүүрийг коллектор дээр байранд нь барьдаг шүүрний эзэмшигчийг барьдаг.",
+          "fact": "Шүүр богино холболтод орохгүйн тулд ихэвчлэн хуванцар эсвэл бусад тусгаарлагчаар хийдэг."
+        }
+      },
+      "brushes": {
+        "info": "brushes",
+        "dependsOn": [
+          "rear_end_cap"
+        ],
+        "en": {
+          "name": "Carbon brushes",
+          "group": "Electrical contacts",
+          "desc": "Two carbon blocks are pressed onto the commutator by springs. They slide on it as it spins and carry current from the battery into the coils.",
+          "fact": "Brushes slowly wear away, which is why modern electric cars and drones use brushless motors controlled by electronics."
+        },
+        "mn": {
+          "name": "Нүүрсэн шүүр",
+          "group": "Цахилгаан холбоос",
+          "desc": "Хоёр нүүрсэн блок пүршээр коллектор дээр дарагддаг. Эргэх үед түүн дээр гулсаж, батарейн гүйдлийг ороомог руу дамжуулдаг.",
+          "fact": "Шүүр аажмаар элэгддэг тул орчин үеийн цахилгаан машин, дрон электроникоор удирддаг шүүргүй моторыг ашигладаг."
+        }
+      },
+      "terminals": {
+        "info": "terminals",
+        "dependsOn": [
+          "brushes"
+        ],
+        "en": {
+          "name": "Terminals",
+          "group": "Electrical contacts",
+          "desc": "The terminals are where the battery wires connect. Swap the two wires and the motor spins the other way.",
+          "fact": "The same motor can also work backwards as a generator: spin the shaft and it makes electricity."
+        },
+        "mn": {
+          "name": "Холбох клемм",
+          "group": "Цахилгаан холбоос",
+          "desc": "Клемм бол батарейн утас холбогддог газар. Хоёр утсыг солиход мотор эсрэг тийш эргэдэг.",
+          "fact": "Ижил мотор эсрэгээрээ генератор болж ажиллаж чадна: голыг эргүүлбэл цахилгаан үйлдвэрлэнэ."
+        }
+      },
+      "fan": {
+        "info": "fan",
+        "dependsOn": [
+          "front_end_cap"
+        ],
+        "en": {
+          "name": "Cooling fan",
+          "group": "Frame & bearings",
+          "desc": "The fan spins with the shaft and blows air through the motor, carrying away heat from the coils.",
+          "fact": "Heat is the main thing that limits how hard you can push a motor."
+        },
+        "mn": {
+          "name": "Хөргөлтийн сэнс",
+          "group": "Их бие ба холхивч",
+          "desc": "Сэнс голтой хамт эргэж, мотор дундуур агаар үлээж ороомгийн дулааныг зайлуулдаг.",
+          "fact": "Моторыг хэр их ачаалж болохыг хязгаарладаг гол зүйл бол дулаан."
+        }
+      }
+    }
+  },
   "computer": {
     "title": {
       "en": "Computer hardware",

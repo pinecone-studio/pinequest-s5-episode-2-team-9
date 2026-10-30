@@ -18,7 +18,7 @@ const connectionLine = (model: TutorModelId, c: Connection) =>
 export function partContext(model: TutorModelId, partId: string, lang: TutorLang): string {
   const card: TutorCard | undefined = cards[model].parts[partId]
   if (!card) return ''
-  const info = knowledge[model][card.info]
+  const info = knowledge[model]?.[card.info]
   const text = card[lang]
   const lines = [
     `Part: ${card.en.name}${lang === 'mn' ? ` (${text.name})` : ''}`,
@@ -39,8 +39,18 @@ export function partContext(model: TutorModelId, partId: string, lang: TutorLang
 
 const ROLE = {
   heart: 'a human heart',
+  lungs: 'the human lungs and airways',
+  brain: 'a human brain',
+  skeleton: 'a human skeleton',
+  muscles: 'the human muscles',
+  robotDog: 'a four-legged robot dog (Mini Pupper 2)',
+  rocketEngine: 'a liquid-fuel rocket engine (kerosene and liquid oxygen)',
+  electricMotor: 'a brushed DC electric motor',
   computer: 'a desktop computer (ATX build)',
 } satisfies Record<TutorModelId, string>
+
+/** Body models: medical questions get the safety rule instead of the connector rule. */
+const ANATOMY = new Set<TutorModelId>(['heart', 'lungs', 'brain', 'skeleton', 'muscles'])
 
 /** What the assembly guide adds: the student is fitting this part right now. */
 function assemblyContext(model: TutorModelId, partId: string): string {
@@ -67,9 +77,11 @@ export function systemPrompt(
   return [
     `You are Hologemma, a tutor inside a 3D science lab for students aged 14–18. The student is exploring ${ROLE[model]}.`,
     `Answer in ${lang === 'mn' ? 'Mongolian (Cyrillic)' : 'English'}, in 2–5 short sentences, clear and friendly, as plain text (no markdown, no bold, no lists). Use the facts below; if the answer is not in them and you are not sure, say so.`,
-    model === 'heart'
+    ANATOMY.has(model)
       ? 'Medical questions: explain at school level and never diagnose. If the student describes their own symptoms, tell them to see a doctor.'
-      : 'Connection questions: name the exact connector or slot and where it sits.',
+      : model === 'computer'
+        ? 'Connection questions: name the exact connector or slot and where it sits.'
+        : 'How-it-works questions: explain how the part works together with the parts around it.',
     'Only answer questions about this model or closely related science; politely decline anything else.',
     `Parts in this model: ${names}.`,
     partId && cards[model].parts[partId]
