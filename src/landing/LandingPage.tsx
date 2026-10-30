@@ -295,19 +295,6 @@ export default function LandingPage() {
         {!mobile && <p className="library-note">{t('landing.mouseNote')}</p>}
       </section>
 
-      <motion.section className="privacy" {...reveal}>
-        <div className="privacy-icon" aria-hidden="true">
-          <svg viewBox="0 0 48 48">
-            <path d="M24 5 9 11v11c0 10 6.5 17.5 15 21 8.5-3.5 15-11 15-21V11z" />
-            <path d="m17 24 5 5 9-10" />
-          </svg>
-        </div>
-        <div>
-          <h2>{t('landing.privacyTitle')}</h2>
-          <p>{t('landing.privacyText')}</p>
-        </div>
-      </motion.section>
-
       <footer className="landing-footer">
         <span>© {YEAR} Hologemma</span>
         <span>

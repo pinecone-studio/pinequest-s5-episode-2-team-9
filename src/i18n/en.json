@@ -349,8 +349,6 @@
   "landing.libraryTitle": "The library",
   "landing.librarySubtitle": "Choose a model. More are on the way.",
   "landing.parts": "parts",
-  "landing.privacyTitle": "Your camera stays yours",
-  "landing.privacyText": "Hand tracking runs entirely inside your browser. No video or images are uploaded, stored or recorded — ever.",
   "landing.needsLaptop": "Open on a laptop with a webcam",
   "landing.needsLaptopText": "Hologemma uses your hands in front of a webcam, so it needs a laptop or desktop computer with Chrome or Edge.",
   "landing.copyLink": "Copy link",
